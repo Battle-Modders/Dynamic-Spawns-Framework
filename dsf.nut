@@ -1,4 +1,18 @@
-// dsf-1
+// dsf-2
+// ------------------------------------------------
+
+local resources = 1000;
+local idealSize = 10;
+local upgradeChance = 0.5;
+local detailedLog = true;
+
+local unitBlocks = {
+	Frontline = { Cost = 70, Min = 0.6, Max = 0.8, UpgradeCost = 100 },
+	Backline = { Cost = 50, Min = 0.1, Max = 0.4, UpgradeCost = 70 },
+	Support = { Cost = 10, Min = 0.05, Max = 0.2, UpgradeCost = 30 }
+}
+
+// ------------------------------------------------
 
 local function printn( _string )
 {
@@ -15,38 +29,45 @@ local function rndint( _max )
 	return rndfloat(_max).tointeger();
 }
 
-local unitBlocks = {
-	Frontline = { Cost = 70, Min = 0.6, Max = 0.8 },
-	Backline = { Cost = 50, Min = 0.1, Max = 0.4 },
-	Support = { Cost = 10, Min = 0.05, Max = 0.2 }
-}
-
 local totalCount = 0.0;
 local count = {};
+local upgradeCount = {};
 local unitBlockIDs = [];
 foreach (blockID, block in unitBlocks)
 {	
 	count[blockID] <- 0;
+	upgradeCount[blockID] <- 0;
 	unitBlockIDs.push(blockID);
 }
 
-local resources = 1000;
-
 printn("======================================================================")
 
-while (resources > 0)
+local function spawnUnit( _unitBlockID )
 {
+	if (detailedLog) printn("\nSpawning: " + _unitBlockID + "\n");
+	count[_unitBlockID] += 1;
+	totalCount++;
+	resources -= unitBlocks[_unitBlockID].Cost;
+}
+
+local function upgradeUnit( _unitBlockID )
+{
+	if (detailedLog) printn("\n**Upgrading: " + _unitBlockID + "**\n");
+	upgradeCount[_unitBlockID] += 1;		
+	resources -= unitBlocks[_unitBlockID].Cost;
+}
+
+foreach (blockID, block in unitBlocks)
+{
+	if (block.Min != 0) spawnUnit(blockID);
+}
+
+while (resources > 0)
+{	
 	local diffFromMax = 0;
 	local chosenBlockID;
 	foreach (blockID, block in unitBlocks)
-	{		
-		// print("Checking block: " + blockID + ". Current Ratio: " + (count[totalCount] / total));
-		if (count[blockID] == 0 && block.Min != 0)
-		{
-			chosenBlockID = blockID;
-			break;
-		}
-
+	{
 		local min = rndfloat(1) > 0.5 ? block.Max : block.Min;		
 		
 		if (count[blockID] / totalCount < min)
@@ -67,19 +88,27 @@ while (resources > 0)
 
 	if (chosenBlockID == null) chosenBlockID = unitBlockIDs[rndint(unitBlockIDs.len())];
 
-	// foreach (blockID, num in count)
-	// {
-	// 	printn(blockID + ": " + num + " (" + (100 * num / totalCount) + "%)");
-	// }
+	if (detailedLog)
+	{
+		foreach (blockID, num in count)
+		{
+			printn(blockID + ": " + num + "(" + upgradeCount[blockID] + "U) (" + (100 * num / totalCount) + "%)");
+		}
+	}
 
-	// printn("\nSpawning: " + chosenBlockID + "\n");
-
-	count[chosenBlockID] += 1;
-	totalCount++;
-	resources -= unitBlocks[chosenBlockID].Cost;
+	if (totalCount > idealSize && rndfloat(1) > 0.5)
+	{
+		upgradeUnit(chosenBlockID);
+	}
+	else
+	{
+		spawnUnit(chosenBlockID);
+	}
 }
 
 foreach (blockID, num in count)
 {
-	printn(blockID + ": " + num + " (" + (100 * num / totalCount) + "%)");
+	printn(blockID + ": " + num + "(" + upgradeCount[blockID] + "U) (" + (100 * num / totalCount) + "%)");
 }
+
+print("Total Units: " + totalCount);
