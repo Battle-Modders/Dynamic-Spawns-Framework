@@ -1,4 +1,4 @@
-// dsf-5
+// dsf-6
 // ------------------------------------------------------
 
 local detailedLogging = false; // Turn on for a detailed run down of a party generation, step by step.
@@ -17,7 +17,7 @@ local unitsDefs = [
 // You can define new unit blocks here using the format provided
 // Each Unit Block must have an ID.
 // Each Unit inside the block must have an ID and Cost.
-// Optional fields include "StrengthMin", "StrengthMax", "Party"
+// Optional fields include "StrengthMin", "StrengthMax", "Party", "MinSize"
 
 local unitBlocks = [
 	{
@@ -39,6 +39,7 @@ local unitBlocks = [
 	},
 	{
 		ID = "Animals",
+		MinSize = 15,
 		Units = [
 			{ EntityType = "Dog", Cost = 10 },
 			{ EntityType = "Armored Dog", Cost = 30 }			
@@ -50,16 +51,17 @@ local unitBlocks = [
 // IdealSize is the ideal total number of units that should be spawned
 // UpgradeChance - This is the chance that a unit is upgraded instead of spawning a new unit once the party has exceeded the IdealSize. A smaller number will lead to larger variation from the IdealSize, and more lower tier units.
 // UnitBlocks should specify an ID that corresponds to a unit block ID. The Min and Max values refer to the the desired minimum and maximum ratio of this unit block in the party.
+// MinSize defined here will overwrite the one defined in the original unitBlock definition
 
 local partyDef = {
-	ID = "BanditEliteGuards",
+	ID = "BanditRoamers",
 	Resources = 2000,
 	IdealSize = 10,	
 	UpgradeChance = 0.7,
 	UnitBlocks = [
 		{ ID = "Frontline", Min = 0.6, Max = 0.8 },
 		{ ID = "Ranged", Min = 0.1, Max = 0.4 },
-		{ ID = "Animals", Min = 0.05, Max = 0.1 },		
+		{ ID = "Animals", Min = 0.05, Max = 0.1, MinSize = 0 },		
 		// { 
 		// 	Min = 0.5,
 		// 	Max = 0.8,
@@ -74,7 +76,7 @@ local partyDef = {
 }
 
 local guardPartyDef = {
-	ID = "MortarEngineers"
+	ID = "BanditEliteGuards"
 	Resources = 100,
 	IdealSize = 2,
 	UpgradeChance = 0.7,
@@ -164,6 +166,7 @@ printn("======================================================================")
 					blockDef.ID <- this.ID + ".Block." + i;
 					block = ::DSF.Class.UnitBlock(blockDef);
 				}
+				if ("MinSize" in blockDef) block.MinSize = blockDef.MinSize;
 				this.UnitBlocks.push(blockDef);
 				::DSF.UnitBlocks.LookupMap[blockDef.ID] <- block;
 			}
@@ -252,9 +255,9 @@ printn("======================================================================")
 				if (::DSF.UnitBlocks.findById(block.ID).canAffordSpawn(this))
 				{
 					local weight = block.Max - (this.SpawnInfo.getBlockTotal(block.ID) / this.SpawnInfo.getTotal());
-					if (weight < 0)
+					if (weight <= 0)
 					{
-						if (this.SpawnInfo.getTotal() > this.IdealSize * (1.0 + 1.0 - this.UpgradeChance)) weight = 0; // TODO: Improve the logic on this line
+						if (this.SpawnInfo.getTotal() + 1 > this.IdealSize * (1.0 + 1.0 - this.UpgradeChance)) weight = 0; // TODO: Improve the logic on this line
 						else weight = 0.00000001;
 					} 
 					if ((this.SpawnInfo.getBlockTotal(block.ID) == 0 && block.Min != 0) || (this.SpawnInfo.getBlockTotal(block.ID) / this.SpawnInfo.getTotal() < block.Min))
@@ -321,7 +324,7 @@ printn("======================================================================")
 		{
 			if (ret[i].getParty() != null)
 			{
-				if (!benchmark) printn("====== Spawning Party for " + ret[i].getID() + " ======")
+				if (!benchmark) printn("====== Spawning Party for " + ret[i].getEntityType() + " ======")
 				ret.extend(::DSF.Parties.findById(ret[i].getParty()).getSpawn());
 			}
 		}
@@ -470,6 +473,7 @@ printn("======================================================================")
 	Units = null;
 	LookupMap = null;
 	IsStatic = null;
+	MinSize = null;
 
 	constructor( _unitBlock )
 	{
@@ -477,6 +481,8 @@ printn("======================================================================")
 		this.ID = _unitBlock.ID;		
 		this.Units = [];
 		this.IsStatic = false;
+		if ("MinSize" in _unitBlock) this.MinSize = _unitBlock.MinSize;
+		else this.MinSize = 0;
 		this.addUnits(_unitBlock.Units);		
 	}
 
@@ -652,6 +658,8 @@ printn("======================================================================")
 
 	function canAffordSpawn( _party )
 	{
+		if (_party.getSpawnInfo().getTotal() < this.MinSize) return false;
+
 		foreach (unit in this.Units)
 		{
 			if (unit.canSpawn(_party) && _party.getSpawnInfo().getResources() >= unit.getCost()) return true;
