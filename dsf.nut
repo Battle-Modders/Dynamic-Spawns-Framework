@@ -3,13 +3,35 @@
 
 local resources = 1000;
 local idealSize = 10;
-local upgradeChance = 0.5;
-local detailedLog = true;
+local upgradeChance = 0.8;
+local detailedLog = false;
 
 local unitBlocks = {
-	Frontline = { Cost = 70, Min = 0.6, Max = 0.8, UpgradeCost = 100 },
-	Backline = { Cost = 50, Min = 0.1, Max = 0.4, UpgradeCost = 70 },
-	Support = { Cost = 10, Min = 0.05, Max = 0.2, UpgradeCost = 30 }
+	Frontline = { 
+		Min = 0.6,
+		Max = 0.8,
+		Units = {
+			Thug = { Cost = 70 },
+			Raider = { Cost = 100 },
+			Veteran = { Cost = 200 },
+		}
+	},
+	Backline = {
+		Min = 0.1,
+		Max = 0.4,
+		Units = {
+			Poacher = { Cost = 50 },
+			Hunter = { Cost = 100 },			
+		}
+	},
+	Support = {
+		Min = 0.05,
+		Max = 0.1,
+		Units = {
+			Dog = { Cost = 10 },
+			ArmoredDog = { Cost = 50 }
+		}		
+	}
 }
 
 // ------------------------------------------------
@@ -30,29 +52,71 @@ local function rndint( _max )
 }
 
 local totalCount = 0.0;
-local count = {};
-local upgradeCount = {};
+local spawnedBlocks = {};
 local unitBlockIDs = [];
 foreach (blockID, block in unitBlocks)
 {	
-	count[blockID] <- 0;
-	upgradeCount[blockID] <- 0;
+	spawnedBlocks[blockID] <- {};	
 	unitBlockIDs.push(blockID);
+	foreach (unitID, unit in block.Units)
+	{
+		spawnedBlocks[blockID][unitID] <- 0;
+	}
 }
 
 local function spawnUnit( _unitBlockID )
-{
-	if (detailedLog) printn("\nSpawning: " + _unitBlockID + "\n");
-	count[_unitBlockID] += 1;
+{	
+	local ids = [];
+	foreach (unitID, unit in unitBlocks[_unitBlockID].Units)
+	{
+		ids.push([unit.Cost, unitID]);
+	}
+
+	ids.sort(@(a, b) a[0] <=> b[0]);
+
+	local spawnID = ids[0][1];
+
+	spawnedBlocks[_unitBlockID][spawnID] += 1;
 	totalCount++;
-	resources -= unitBlocks[_unitBlockID].Cost;
+	resources -= unitBlocks[_unitBlockID].Units[spawnID].Cost;
+
+	if (detailedLog) printn("\nSpawning - Block: " + _unitBlockID + " - Unit: " + spawnID + "\n");
 }
 
 local function upgradeUnit( _unitBlockID )
 {
-	if (detailedLog) printn("\n**Upgrading: " + _unitBlockID + "**\n");
-	upgradeCount[_unitBlockID] += 1;		
-	resources -= unitBlocks[_unitBlockID].Cost;
+	local ids = [];
+	foreach (unitID, unitCount in spawnedBlocks[_unitBlockID])
+	{
+		for (local i = 0; i < unitCount; i++)
+		{
+			ids.push([unitBlocks[_unitBlockID].Units[unitID].Cost, unitID]);
+		}		
+	}
+
+	// if (ids.len() == 0) return;
+
+	local idToUpgrade = ids[rndint(ids.len())][1];
+	ids.clear();
+
+	foreach (unitID, unit in unitBlocks[_unitBlockID].Units)
+	{
+		if (unit.Cost > unitBlocks[_unitBlockID].Units[idToUpgrade].Cost) ids.push([unit.Cost, unitID]);
+	}
+
+	if (ids.len() == 0) return;
+
+	ids.sort(@(a, b) a[0] <=> b[0]);
+
+	local spawnID = ids[0][1];
+
+	resources += unitBlocks[_unitBlockID].Units[idToUpgrade].Cost;
+	spawnedBlocks[_unitBlockID][idToUpgrade] -= 1;
+
+	spawnedBlocks[_unitBlockID][spawnID] += 1;
+	resources -= unitBlocks[_unitBlockID].Units[spawnID].Cost;
+
+	if (detailedLog) printn("\n**Upgrading - Block: " + _unitBlockID + " - Unit: " + idToUpgrade + " to " + spawnID + "**\n");
 }
 
 printn("======================================================================")
@@ -66,10 +130,14 @@ for (local i = 0; i < iterations; i++)
 	totalCount = 0.0;
 	foreach (blockID, block in unitBlocks)
 	{	
-		count[blockID] <- 0;
-		upgradeCount[blockID] <- 0;
+		spawnedBlocks[blockID] <- {};	
+		unitBlockIDs.push(blockID);
+		foreach (unitID, unit in block.Units)
+		{
+			spawnedBlocks[blockID][unitID] <- 0;
+		}
 	}
-
+	
 	foreach (blockID, block in unitBlocks)
 	{
 		if (block.Min != 0) spawnUnit(blockID);
@@ -82,15 +150,21 @@ for (local i = 0; i < iterations; i++)
 		local chosenBlockID;
 		foreach (blockID, block in unitBlocks)
 		{
-			local min = rndfloat(1) > 0.5 ? block.Max : block.Min;		
+			local min = rndfloat(1) > 0.5 ? block.Max : block.Min;
+
+			local count = 0;
+			foreach (unitCount in spawnedBlocks[blockID])
+			{
+				count += unitCount;
+			}
 			
-			if (count[blockID] / totalCount < min)
+			if (count / totalCount < min)
 			{
 				chosenBlockID = blockID;
 				break;
 			} 
 
-			local diff = block.Max - (count[blockID] / totalCount);
+			local diff = block.Max - (count / totalCount);
 			if (diff < 0) continue;
 
 			if (diff > diffFromMax)
@@ -104,13 +178,20 @@ for (local i = 0; i < iterations; i++)
 
 		if (detailedLog)
 		{
-			foreach (blockID, num in count)
+			foreach (blockID, block in spawnedBlocks)
 			{
-				printn(blockID + ": " + num + "(" + upgradeCount[blockID] + "U) (" + (100 * num / totalCount) + "%)");
+				local count = 0;
+				local str = "";
+				foreach (unitID, unitCount in block)
+				{
+					count += unitCount;
+					str += unitID + ": " + unitCount + ", ";
+				}				
+				printn(blockID + ": " + count + "(" + (100 * count / totalCount) + "%) - " + str.slice(0, -2));				
 			}
 		}
 
-		if (totalCount > idealSize && upgradeCount[chosenBlockID] < count[chosenBlockID] && rndfloat(1) < upgradeChance)
+		if (totalCount > idealSize && rndfloat(1) < upgradeChance)
 		{
 			upgradeUnit(chosenBlockID);
 		}
@@ -120,9 +201,16 @@ for (local i = 0; i < iterations; i++)
 		}
 	}
 
-	foreach (blockID, num in count)
+	foreach (blockID, block in spawnedBlocks)
 	{
-		printn(blockID + ": " + num + "(" + upgradeCount[blockID] + "U) (" + (100 * num / totalCount) + "%)");
+		local count = 0;
+		local str = "";
+		foreach (unitID, unitCount in block)
+		{
+			count += unitCount;
+			str += unitID + ": " + unitCount + ", ";
+		}				
+		printn(blockID + ": " + count + "(" + (100 * count / totalCount) + "%) - " + str.slice(0, -2));				
 	}
 
 	printn("Total Units: " + totalCount);
