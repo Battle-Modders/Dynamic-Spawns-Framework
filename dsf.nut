@@ -1,8 +1,50 @@
-// dsf-4
+// dsf-5
 // ------------------------------------------------------
 
 local detailedLogging = false; // Turn on for a detailed run down of a party generation, step by step.
 local iterations = 5; // If detailedLogging is false, then generates this many parties for you to compare how the variation looks like
+local benchmark = false; // If true then generates a ton of parties, without printing anything. At the end, prints the average CPU time spent per party creation.
+
+local unitsDefs = [
+	{
+		ID = "ThugFromID",
+		EntityType = "Thug",
+		Cost = 70,
+		StrengthMax = 1000		
+	}
+]
+
+// You can define new unit blocks here using the format provided
+// Each Unit Block must have an ID.
+// Each Unit inside the block must have an ID and Cost.
+// Optional fields include "StrengthMin", "StrengthMax", "Party"
+
+local unitBlocks = [
+	{
+		ID = "Frontline",
+		Units = [
+			{ ID = "ThugFromID" },
+			{ EntityType = "Raider", Cost = 100, },
+			{ EntityType = "Veteran", Cost = 200 },
+			{ EntityType = "Elite", Cost = 400, StrengthMin = 2000, Party = "BanditEliteGuards" },
+		]
+	},
+	{
+		ID = "Ranged",
+		Units = [
+			{ EntityType = "Poacher", Cost = 50 },
+			{ EntityType = "Hunter", Cost = 100 },
+			{ EntityType = "Master Archer", Cost = 300 }
+		]
+	},
+	{
+		ID = "Animals",
+		Units = [
+			{ EntityType = "Dog", Cost = 10 },
+			{ EntityType = "Armored Dog", Cost = 30 }			
+		]
+	}
+]
 
 // Resources are consumed by each spawned unit based on the unit's Cost
 // IdealSize is the ideal total number of units that should be spawned
@@ -10,45 +52,38 @@ local iterations = 5; // If detailedLogging is false, then generates this many p
 // UnitBlocks should specify an ID that corresponds to a unit block ID. The Min and Max values refer to the the desired minimum and maximum ratio of this unit block in the party.
 
 local partyDef = {
-	Resources = 1500,
-	IdealSize = 10,
-	UpgradeChance = 0.8,
+	ID = "BanditEliteGuards",
+	Resources = 2000,
+	IdealSize = 10,	
+	UpgradeChance = 0.7,
 	UnitBlocks = [
 		{ ID = "Frontline", Min = 0.6, Max = 0.8 },
 		{ ID = "Ranged", Min = 0.1, Max = 0.4 },
-		{ ID = "Animals", Min = 0.05, Max = 0.1 }
+		{ ID = "Animals", Min = 0.05, Max = 0.1 },		
+		// { 
+		// 	Min = 0.5,
+		// 	Max = 0.8,
+		// 	Units = [
+		// 		{ ID = "ThugFromID" }
+		// 	]
+		// }
+	],
+	StaticUnits = [
+		{ EntityType = "Master Archer", Cost = 300, StrengthMin = 1500 }
 	]
 }
 
-// You can define new unit blocks here using the format provided
-// Each Unit Block must have an ID.
-// Each Unit inside the block must have an ID and Cost.
-
-local unitBlocks = [
-	{
-		ID = "Frontline",
-		Units = [
-			{ ID = "Thug", Cost = 70 },
-			{ ID = "Raider", Cost = 100 },
-			{ ID = "Veteran", Cost = 200 },
-			{ ID = "Elite", Cost = 400 },
-		]
-	},
-	{
-		ID = "Ranged",
-		Units = [
-			{ ID = "Poacher", Cost = 50 },
-			{ ID = "Hunter", Cost = 100 }			
-		]
-	},
-	{
-		ID = "Animals",
-		Units = [
-			{ ID = "Dog", Cost = 10 },
-			{ ID = "Armored Dog", Cost = 30 }			
-		]
-	}
-]
+local guardPartyDef = {
+	ID = "MortarEngineers"
+	Resources = 100,
+	IdealSize = 2,
+	UpgradeChance = 0.7,
+	UnitBlocks = [
+		// { ID = "Ranged", Min = 0.3, Max = 0.4 },
+		{ ID = "Animals", Min = 0.3, Max = 0.4 }
+		// { ID = "Animals", Min = 1.0, Max = 1.0 }
+	]
+}
 
 // ------------------------------------------------------
 
@@ -79,24 +114,74 @@ printn("======================================================================")
 		return this.LookupMap[_id];
 	}
 }
+::DSF.Parties <- {
+	LookupMap = {},
+	function findById( _id )
+	{
+		return this.LookupMap[_id];
+	}
+}
+::DSF.Units <- {
+	LookupMap = {},
+	function findById( _id )
+	{
+		return this.LookupMap[_id];
+	}	
+}
+
 ::DSF.Class <- {};
 ::DSF.Class.Party <- class
 {
-	ID = null;
+	ID = null;	
 	UnitBlocks = null;
 	Resources = null;
 	IdealSize = null;
 	UpgradeChance = null;
 	SpawnInfo = null;
 	AdditionalResources = null;
+	StaticUnits = null;
 
 	constructor( _party )
 	{
-		this.UnitBlocks = _party.UnitBlocks;
+		this.ID = _party.ID;		
 		this.Resources = _party.Resources;
 		this.IdealSize = _party.IdealSize;
-		this.UpgradeChance = _party.UpgradeChance;
+		this.UpgradeChance = _party.UpgradeChance;		
 		this.AdditionalResources = 0;
+
+		if ("UnitBlocks" in _party)
+		{
+			this.UnitBlocks = [];
+			foreach (i, blockDef in _party.UnitBlocks)
+			{
+				local block;
+				if ("ID" in blockDef)
+				{
+					block = ::DSF.UnitBlocks.findById(blockDef.ID);
+				}
+				else
+				{
+					blockDef.ID <- this.ID + ".Block." + i;
+					block = ::DSF.Class.UnitBlock(blockDef);
+				}
+				this.UnitBlocks.push(blockDef);
+				::DSF.UnitBlocks.LookupMap[blockDef.ID] <- block;
+			}
+		}
+
+		if ("StaticUnits" in _party)
+		{
+			this.StaticUnits = _party.StaticUnits;
+			local block = {
+				ID = this.ID + ".Block.Static",
+				Units = _party.StaticUnits
+			}
+			this.UnitBlocks.push(block);
+			::DSF.UnitBlocks.LookupMap[block.ID] <- ::DSF.Class.UnitBlock(block);
+			::DSF.UnitBlocks.findById(block.ID).IsStatic = true;
+		}
+
+		::DSF.Parties.LookupMap[this.ID] <- this;
 	}
 
 	function getUnitBlocks()
@@ -107,7 +192,7 @@ printn("======================================================================")
 	function getResources()
 	{
 		// if (this.Resources != null) return this.Resources + this.AdditionalResources;
-		// return ::Math.rand(this.MinStrength, this.MaxStrength == null ? ::DSF.getPlayerPartyStrength() + this.AdditionalResources);
+		// return ::Math.rand(this.StrengthMin, this.StrengthMax == null ? ::DSF.getPlayerPartyStrength() + this.AdditionalResources);
 		return this.Resources;
 	}
 
@@ -121,40 +206,64 @@ printn("======================================================================")
 		return this.SpawnInfo;
 	}
 
-	function getUnits( _additionalResources = 0 )
+	function getStaticUnitBlock()
 	{
+		if (this.StaticUnits != null) return ::DSF.UnitBlocks.findById(this.ID + ".Block.Static");
+	}
+
+	function getSpawn( _additionalResources = 0 )
+	{		
+		foreach (block in this.UnitBlocks)
+		{
+			::DSF.UnitBlocks.findById(block.ID).onPartySpawnStart();
+		}
 		this.AdditionalResources = _additionalResources;
-		// this.SpawnInfo = ::new(::DSF.Class.SpawnInfo).init(this);
-		this.SpawnInfo = ::DSF.Class.SpawnInfo(this);		
+		this.SpawnInfo = ::DSF.Class.SpawnInfo(this);
+
+		local ret = [];
+
+		if (this.StaticUnits != null)
+		{
+			foreach (unit in this.getStaticUnitBlock().getUnits())
+			{
+				if (unit.canSpawn(this) && this.SpawnInfo.getResources() >= unit.getCost())
+				{
+					this.SpawnInfo.incrementUnit(unit.getID(), this.getStaticUnitBlock().getID());
+					this.SpawnInfo.consumeResources(unit.getCost());
+				}
+			}
+		}
 
 		local spawnAffordableBlocks = ::MSU.Class.WeightedContainer();
 		local upgradeAffordableBlocks = ::MSU.Class.WeightedContainer();
+		local forcedSpawn = false;
 
 		while (this.SpawnInfo.canSpawn())
 		{
-			if (detailedLogging) this.SpawnInfo.printLog();
+			if (!benchmark && detailedLogging) this.SpawnInfo.printLog(this);
 			spawnAffordableBlocks.clear();
 			upgradeAffordableBlocks.clear();
+			forcedSpawn = false;			
 
 			foreach (block in this.UnitBlocks)
 			{
-				local diff = block.Max - (this.SpawnInfo.getBlockTotal(block.ID) / this.SpawnInfo.getTotal());
-				if (diff <= 0) continue;
+				if (::DSF.UnitBlocks.findById(block.ID).IsStatic) continue;
 
-				local plus1 = this.SpawnInfo.getBlockTotal(block.ID) + 1;
-				if (this.SpawnInfo.getTotal() > 0 && plus1 / this.SpawnInfo.getTotal() > block.Max)
-				{
-					diff = 0;
-				}
-
-				if ((this.SpawnInfo.getBlockTotal(block.ID) == 0 && block.Min != 0) || (this.SpawnInfo.getBlockTotal(block.ID) / this.SpawnInfo.getTotal() < block.Min))
-				{
-					diff = -1;
-				}
-				
 				if (::DSF.UnitBlocks.findById(block.ID).canAffordSpawn(this))
 				{
-					spawnAffordableBlocks.add(block.ID, diff);
+					local weight = block.Max - (this.SpawnInfo.getBlockTotal(block.ID) / this.SpawnInfo.getTotal());
+					if (weight < 0)
+					{
+						if (this.SpawnInfo.getTotal() > this.IdealSize * (1.0 + 1.0 - this.UpgradeChance)) weight = 0; // TODO: Improve the logic on this line
+						else weight = 0.00000001;
+					} 
+					if ((this.SpawnInfo.getBlockTotal(block.ID) == 0 && block.Min != 0) || (this.SpawnInfo.getBlockTotal(block.ID) / this.SpawnInfo.getTotal() < block.Min))
+					{
+						::DSF.UnitBlocks.findById(block.ID).spawnUnit(this);
+						forcedSpawn = true;
+						break;
+					}
+					spawnAffordableBlocks.add(block.ID, weight);
 				}
 
 				if (this.SpawnInfo.getTotal() >= this.getIdealSize() && this.SpawnInfo.getBlockTotal(block.ID) > 0 && ::DSF.UnitBlocks.findById(block.ID).canAffordUpgrade(this))
@@ -163,9 +272,11 @@ printn("======================================================================")
 				}
 			}
 
+			if (forcedSpawn) continue;
+
 			if (spawnAffordableBlocks.len() == 0 && upgradeAffordableBlocks.len() == 0) break;
 
-			if (detailedLogging)
+			if (!benchmark && detailedLogging)
 			{
 				if (spawnAffordableBlocks.len() > 0)
 				{
@@ -190,23 +301,38 @@ printn("======================================================================")
 
 			if (upgradeAffordableBlocks.len() > 0 && randfloat(1.0) < (this.UpgradeChance * this.SpawnInfo.getTotal() / this.IdealSize))
 			{
-				local blockID = upgradeAffordableBlocks.roll();
+				local blockID = upgradeAffordableBlocks.roll();				
 				if (blockID != null) ::DSF.UnitBlocks.findById(blockID).upgradeUnit(this);
-				else break;
+				else if (spawnAffordableBlocks.len() == 0) break;
 			}
 			else if (spawnAffordableBlocks.len() > 0)
 			{
 				local blockID = spawnAffordableBlocks.roll();				
 				if (blockID != null) ::DSF.UnitBlocks.findById(blockID).spawnUnit(this);	
-				else break;
-				// ::DSF.UnitBlocks.findById(spawnAffordableBlocks.roll()).spawnUnit(this);
+				else if (upgradeAffordableBlocks.len() == 0) break;
 			}
 		}
 
-		this.SpawnInfo.printLog();
+		if (!benchmark) this.SpawnInfo.printLog(this);
 
-		local ret = this.SpawnInfo.getUnits();
+		ret.extend(this.SpawnInfo.getUnits());
+
+		for (local i = ret.len() - 1; i >= 0; i--)
+		{
+			if (ret[i].getParty() != null)
+			{
+				if (!benchmark) printn("====== Spawning Party for " + ret[i].getID() + " ======")
+				ret.extend(::DSF.Parties.findById(ret[i].getParty()).getSpawn());
+			}
+		}
+
+		foreach (block in this.UnitBlocks)
+		{
+			::DSF.UnitBlocks.findById(block.ID).onPartySpawnEnd();
+		}
+		
 		this.SpawnInfo = null;
+
 		return ret;
 	}
 }
@@ -215,12 +341,14 @@ printn("======================================================================")
 {
 	Info = null;
 	Resources = null;
+	PlayerStrength = null;
 	Total = null;
 
 	constructor( _party )
 	{
 		this.Info = {};
-		this.Resources = _party.getResources();
+		this.Resources = _party.getResources() + _party.AdditionalResources;
+		this.PlayerStrength = this.Resources;
 		this.Total = 0.0;
 		foreach (block in _party.getUnitBlocks())
 		{
@@ -230,23 +358,27 @@ printn("======================================================================")
 
 			foreach (unit in ::DSF.UnitBlocks.findById(block.ID).getUnits())
 			{
-				this.Info[block.ID][unit.ID] <- 0;
+				this.Info[block.ID][unit.getID()] <- 0;
 			}
-		}
+		}	
 	}
 
-	function printLog()
+	function printLog( _party )
 	{
 		printn("Resources remaining: " + this.Resources);
-		foreach (block in unitBlocks)
+		local printBlock = function( _blockID )
 		{
-			local str = block.ID + ": " + this.Info[block.ID].Total + " (" + (100 * this.Info[block.ID].Total / this.Total) + "%) - ";			
-			foreach (unit in ::DSF.UnitBlocks.findById(block.ID).getUnits())
+			local str = (_blockID.find("Static") != null ? "Static" : _blockID) + ": " + this.Info[_blockID].Total + " (" + (100 * this.Info[_blockID].Total / this.Total) + "%) - ";			
+			foreach (unit in ::DSF.UnitBlocks.findById(_blockID).getUnits())
 			{
-				str += unit.ID + ": " + this.Info[block.ID][unit.ID] + ", ";				
+				str += unit.getEntityType() + ": " + this.Info[_blockID][unit.getID()] + ", ";				
 			}
 
 			printn(str.slice(0, -2));
+		}
+		foreach (block in _party.getUnitBlocks())
+		{
+			printBlock(block.ID);
 		}
 		printn("Total Units: " + this.Total);
 		print("\n");
@@ -280,28 +412,18 @@ printn("======================================================================")
 		return count;
 	}
 
-	function incrementTotal()
+	function incrementUnit( _unitID, _unitBlockID, _count = 1 )
 	{
-		this.Total++;
+		this.Info[_unitBlockID][_unitID] += _count;
+		this.Info[_unitBlockID].Total += _count;		
+		this.Total += _count;
 	}
 
-	function incrementUnit( _unitID, _unitBlockID )
+	function decrementUnit( _unitID, _unitBlockID, _count = 1 )
 	{
-		this.Info[_unitBlockID][_unitID] += 1;
-		this.Info[_unitBlockID].Total += 1;
-		this.incrementTotal();
-	}
-
-	function decrementTotal()
-	{
-		this.Total--;
-	}
-
-	function decrementUnit( _unitID, _unitBlockID )
-	{
-		this.Info[_unitBlockID][_unitID] -= 1;
-		this.Info[_unitBlockID].Total -= 1;
-		this.decrementTotal();
+		this.Info[_unitBlockID][_unitID] -= _count;
+		this.Info[_unitBlockID].Total -= _count;
+		this.Total -= _count;
 	}
 
 	function getResources()
@@ -322,18 +444,23 @@ printn("======================================================================")
 	function getUnits()
 	{
 		local units = [];
-		foreach (block in this.Info)
+		foreach (blockID, block in this.Info)
 		{
 			foreach (unitID, count in block)
 			{
 				if (unitID == "Total") continue;
 				for (local i = 0; i < count; i++)
 				{
-					units.push(unitID);
+					units.push(::DSF.UnitBlocks.findById(blockID).getUnit(unitID));
 				}
 			}
 		}
 		return units;
+	}
+
+	function getPlayerStrength()
+	{
+		return this.PlayerStrength;
 	}
 }
 
@@ -342,17 +469,15 @@ printn("======================================================================")
 	ID = null;
 	Units = null;
 	LookupMap = null;
+	IsStatic = null;
 
 	constructor( _unitBlock )
 	{
 		this.LookupMap = {};
-		this.ID = _unitBlock.ID;
-		this.Units = _unitBlock.Units;
-		this.Units.sort(@(a, b) a.Cost <=> b.Cost);
-		foreach (unit in this.Units)
-		{
-			this.LookupMap[unit.ID] <- unit;
-		}
+		this.ID = _unitBlock.ID;		
+		this.Units = [];
+		this.IsStatic = false;
+		this.addUnits(_unitBlock.Units);		
 	}
 
 	function getID()
@@ -367,9 +492,19 @@ printn("======================================================================")
 
 	function addUnit( _unit )
 	{
-		this.Units.push(_unit);
-		this.LookupMap[_unit.ID] <- _unit;
-		this.Units.sort(@(a, b) a.Cost <=> b.Cost);
+		local unit;
+		if ("ID" in _unit)
+		{
+			unit = ::DSF.Units.findById(_unit.ID);
+		}
+		else
+		{
+			_unit.ID <- this.ID + ".Unit." + this.Units.len();
+			unit = ::DSF.Class.Unit(_unit);
+		}
+		
+		this.Units.push(unit);
+		this.LookupMap[unit.getID()] <- unit;
 	}
 
 	function addUnits( _units )
@@ -392,16 +527,50 @@ printn("======================================================================")
 		}
 	}
 
-	// TODO: implement canSpawn for the unit
-	function spawnUnit( _party )
+	function getUnit( _id )
 	{
-		_party.getSpawnInfo().incrementUnit(this.Units[0].ID, this.getID());
-		_party.getSpawnInfo().consumeResources(this.Units[0].Cost);
-
-		if (detailedLogging) printn("Spawning - Block: " + this.getID() + " - Unit: " + this.Units[0].ID + " (Cost: " + this.Units[0].Cost + ")\n");
+		return this.LookupMap[_id];
 	}
 
-	// TODO: implement canSpawn for the unit
+	function spawnUnit( _party )
+	{
+		foreach (unit in this.Units)
+		{
+			if (unit.canSpawn(_party))
+			{
+				_party.getSpawnInfo().incrementUnit(unit.getID(), this.getID());
+				_party.getSpawnInfo().consumeResources(unit.getCost());
+				if (!benchmark && detailedLogging) printn("Spawning - Block: " + this.getID() + " - Unit: " + unit.getEntityType() + " (Cost: " + unit.getCost() + ")\n");
+				break;
+			}
+		}
+	}
+
+	function despawnUnit( _party )
+	{
+		local ids = ::MSU.Class.WeightedContainer();
+
+		foreach (unit in this.Units)
+		{
+			local count = _party.getSpawnInfo().getUnitCount(unit.getID(), this.getID());
+			if (count > 0) ids.add(unit.ID, count);
+		}
+
+		if (ids.len() > 0)
+		{
+			local despawnID = ids.roll();
+
+			_party.getSpawnInfo().addResources(this.LookupMap[despawnID].getCost());
+			_party.getSpawnInfo().decrementUnit(despawnID, this.getID());
+ 
+			if (!benchmark && detailedLogging) printn("--> Despawning - Block: " + this.getID() + " - Unit: " + ::DSF.Units.findById(despawnID).getEntityType() + " (Cost: " + this.LookupMap[roll.ID].Cost + ") <--\n");
+
+			return true;
+		}
+
+		return false;
+	}
+
 	function upgradeUnit( _party )
 	{
 		local ids = ::MSU.Class.WeightedContainer();
@@ -409,38 +578,73 @@ printn("======================================================================")
 		// Ignore the highest tier
 		for (local i = 0; i < this.Units.len() - 1; i++)
 		{
+			if (!this.Units[i].canSpawn(_party)) continue;
+
 			local id = this.Units[i].ID;
 			local count = _party.getSpawnInfo().getUnitCount(id, this.getID());
-			if (count > 0) ids.add(id, count);
+			if (count > 0)
+			{
+				for (local j = i + 1; j < this.Units.len(); j++)
+				{
+					if (this.Units[j].canSpawn(_party) && _party.getSpawnInfo().getResources() >= this.Units[j].getCost() - this.Units[i].getCost())
+					{
+						ids.add({ID = id, UpgradeID = this.Units[j].getID()}, count);
+						break;
+					}
+				}
+			}			
 		}
 
-		while (ids.len() > 0)
+		if (ids.len() > 0)
 		{
-			local idToUpgrade = ids.roll();
-			local upgradeTo;
-			foreach (unit in this.Units)
+			local roll = ids.roll();
+
+			_party.getSpawnInfo().addResources(this.LookupMap[roll.ID].Cost);
+			_party.getSpawnInfo().decrementUnit(roll.ID, this.getID());
+
+			_party.getSpawnInfo().incrementUnit(roll.UpgradeID, this.getID());
+			_party.getSpawnInfo().consumeResources(this.LookupMap[roll.UpgradeID].Cost);
+
+			if (!benchmark && detailedLogging) printn("**Upgrading - Block: " + this.getID() + " - Unit: " + this.LookupMap[roll.ID].getEntityType() + " (Cost: " + this.LookupMap[roll.ID].Cost + ") to " + this.LookupMap[roll.UpgradeID].getEntityType() + " (Cost: " + this.LookupMap[roll.UpgradeID].Cost + ")**\n");
+
+			return true;
+		}
+
+		return false;
+	}
+
+	function downgradeUnit( _party )
+	{
+		local ids = ::MSU.Class.WeightedContainer();
+
+		// Ignore the bottom most tier
+		for (local i = this.Units.len() - 1; i > 0; i--)
+		{
+			local id = this.Units[i].getID();
+			local count = _party.getSpawnInfo().getUnitCount(id, this.getID());
+			if (count > 0)
 			{
-				if (unit.Cost > this.LookupMap[idToUpgrade].Cost)
+				for (local j = i; j >= 0; j--)
 				{
-					upgradeTo = unit.ID;
-					break;
+					if (this.Units[j].canSpawn(_party)) ids.add({ID = id, DowngradeID = this.Units[i-1].getID()}, count);
 				}
-			}
+				
+			} 
+		}
 
-			if (_party.getSpawnInfo().getResources() >= this.LookupMap[upgradeTo].Cost - this.LookupMap[idToUpgrade].Cost)
-			{
-				_party.getSpawnInfo().addResources(this.LookupMap[idToUpgrade].Cost);
-				_party.getSpawnInfo().decrementUnit(idToUpgrade, this.getID());
+		if (ids.len() > 0)
+		{
+			local roll = ids.roll();
 
-				_party.getSpawnInfo().incrementUnit(upgradeTo, this.getID());
-				_party.getSpawnInfo().consumeResources(this.LookupMap[upgradeTo].Cost);
+			_party.getSpawnInfo().addResources(this.LookupMap[roll.ID].Cost);
+			_party.getSpawnInfo().decrementUnit(roll.ID, this.getID());
 
-				if (detailedLogging) printn("**Upgrading - Block: " + this.getID() + " - Unit: " + idToUpgrade + " (Cost: " + this.LookupMap[idToUpgrade].Cost + ") to " + upgradeTo + " (Cost: " + this.LookupMap[upgradeTo].Cost + ")**\n");
+			_party.getSpawnInfo().incrementUnit(roll.DowngradeID, this.getID());
+			_party.getSpawnInfo().consumeResources(this.LookupMap[roll.DowngradeID].Cost);
 
-				return true;
-			}
+			if (!benchmark && detailedLogging) printn("!! Downgrading - Block: " + this.getID() + " - Unit: " + roll.ID + " (Cost: " + this.LookupMap[roll.ID].Cost + ") to " + roll.DowngradeID + " (Cost: " + this.LookupMap[roll.DowngradeID].Cost + ") !!\n");
 
-			ids.remove(idToUpgrade);
+			return true;
 		}
 
 		return false;
@@ -448,23 +652,109 @@ printn("======================================================================")
 
 	function canAffordSpawn( _party )
 	{
-		return _party.getSpawnInfo().getResources() >= this.Units[0].Cost;
+		foreach (unit in this.Units)
+		{
+			if (unit.canSpawn(_party) && _party.getSpawnInfo().getResources() >= unit.getCost()) return true;
+		}
+
+		return false;
 	}
 
 	function canAffordUpgrade( _party )
 	{
 		for (local i = 0; i < this.Units.len() - 1; i++)
 		{
-			if (_party.getSpawnInfo().getUnitCount(this.Units[i].ID, this.getID()) > 0 && _party.getSpawnInfo().getResources() >= this.Units[i+1].Cost - this.Units[i].Cost) return true;
+			if (this.Units[i].canSpawn(_party) && _party.getSpawnInfo().getUnitCount(this.Units[i].getID(), this.getID()) > 0)
+			{
+				for (local j = i + 1; j < this.Units.len(); j++)
+				{
+					if (this.Units[j].canSpawn(_party) && _party.getSpawnInfo().getResources() >= this.Units[j].getCost() - this.Units[i].getCost()) return true;
+				}
+			}
 		}
 
 		return false;
+	}
+
+	function sort()
+	{
+		this.Units.sort(@(a, b) a.getCost() <=> b.getCost());
+	}
+
+	function onPartySpawnStart()
+	{
+		this.sort();
+	}
+
+	function onPartySpawnEnd()
+	{		
+	}
+}
+
+::DSF.Class.Unit <- class
+{
+	ID = null;	
+	EntityType = null;
+	Cost = null;
+	StrengthMin = null;
+	StrengthMax = null;
+	Party = null;	
+
+	constructor( _unit )
+	{
+		this.ID = _unit.ID;
+		if ("EntityType" in _unit) this.EntityType = _unit.EntityType;
+		if ("Cost" in _unit) this.Cost = _unit.Cost;
+		if ("StrengthMax" in _unit) this.StrengthMax = _unit.StrengthMax.tofloat();
+		if ("StrengthMin" in _unit) this.StrengthMin = _unit.StrengthMin.tofloat();
+		else this.StrengthMin = 0.0;
+		if ("Party" in _unit) this.Party = _unit.Party;
+
+		::DSF.Units.LookupMap[this.ID] <- this;
+	}
+
+	function getID()
+	{
+		return this.ID;
+	}
+
+	function getEntityType()
+	{
+		return this.EntityType;
+	}
+
+	function getCost()
+	{
+		return this.Cost;
+	}
+
+	function getStrengthMin()
+	{
+		return this.StrengthMin;
+	}
+
+	function getStrengthMax()
+	{
+		return this.StrengthMax;
+	}
+
+	function getParty()
+	{
+		return this.Party;
+	}
+
+	function canSpawn( _party )
+	{	
+		if (this.getStrengthMin() == 0 && this.getStrengthMax() == null) return true;
+		if (this.getStrengthMax() == null) return _party.getSpawnInfo().getPlayerStrength() >= this.getStrengthMin();
+
+		return this.getStrengthMin() <= _party.getSpawnInfo().getPlayerStrength() && _party.getSpawnInfo().getPlayerStrength() <= this.getStrengthMax();
 	}
 }
 
 ::MSU <- {
 	Table = {
-		function getKeys( _table )
+		function keys( _table )
 		{
 			local ret = array(_table.len());
 			local i = 0;
@@ -473,6 +763,8 @@ printn("======================================================================")
 				ret[i] = key;
 				i++;
 			}
+
+			return ret;
 		}
 	}
 };
@@ -511,7 +803,7 @@ printn("======================================================================")
 	{
 		if (_prev == null)
 		{
-			this.NextIItems = ::MSU.Table.getKeys(this.Table);
+			this.NextIItems = ::MSU.Table.keys(this.Table);
 			this.NextIIndex = 0;
 		}
 		_prev = this.NextIIndex++;
@@ -705,7 +997,7 @@ printn("======================================================================")
 		if (forced.len() > 0)
 		{
 			// return ::MSU.Array.rand(forced);
-			return forced[randint(forced.len())];
+			return forced[randint(forced.len() - 1)];
 		}
 
 		local roll = randfloat(this.getTotal(_exclude));
@@ -779,18 +1071,28 @@ printn("======================================================================")
 	}
 }
 
+foreach (unit in unitsDefs)
+{
+	::DSF.Units.LookupMap[unit.ID] <- ::DSF.Class.Unit(unit);
+}
+
 foreach (block in unitBlocks)
 {
 	::DSF.UnitBlocks.LookupMap[block.ID] <- ::DSF.Class.UnitBlock(block);
 }
 
 local party = ::DSF.Class.Party(partyDef);
+local guardParty = ::DSF.Class.Party(guardPartyDef);
 
 if (detailedLogging) iterations = 1;
+if (benchmark) iterations = 1000;
 
-printn("=== Starting Resources: " + party.getResources() + " ===\n");
+local time = clock();
 
 for (local i = 0; i < iterations; i++)
 {
-	party.getUnits();
+	if (!benchmark) printn("----------------------------------------------------------------------")
+	party.getSpawn();
 }
+
+if (benchmark) print("\nTime: " + ((clock() - time) / iterations));
