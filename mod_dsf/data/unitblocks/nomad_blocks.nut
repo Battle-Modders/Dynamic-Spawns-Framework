@@ -13,7 +13,7 @@
 	},
 	{
 		ID = "Nomad.Elite",
-		Units = [{ ID = "Nomad.Executioner" }, { ID = "Nomad.DesertStalker" }, { ID = "DesertDevil" }]
+		Units = [{ ID = "Nomad.Executioner" }, { ID = "Nomad.DesertStalker" }, { ID = "Nomad.DesertDevil" }]
 	}
 ]
 

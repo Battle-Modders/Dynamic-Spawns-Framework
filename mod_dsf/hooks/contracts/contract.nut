@@ -15,4 +15,4 @@
         }
         return oldAddUnitsToEntity(_worldParty, _party, _resources);
     }
-}
+});

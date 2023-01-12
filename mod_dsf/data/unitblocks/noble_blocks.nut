@@ -32,10 +32,6 @@
 	{
 		ID = "Noble.Donkeys",
 		Units = [{ ID = "Noble.CaravanDonkey" }]
-	},
-	{
-		ID = "Noble.Donkeys",
-		Units = [{ ID = "Noble.CaravanDonkey" }]
 	}
 ]
 

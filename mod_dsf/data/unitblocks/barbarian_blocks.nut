@@ -18,6 +18,15 @@
 	{
 		ID = "Barbarian.HunterFrontline",
 		Units = [{ ID = "Barbarian.Thrall" }]
+	},
+
+	{
+		ID = "Barbarian.Unholds",
+		Units = [{ ID = "Barbarian.Unhold" }]
+	},
+	{
+		ID = "Barbarian.UnholdsFrost",
+		Units = [{ ID = "Barbarian.UnholdFrost" }]
 	}
 ]
 

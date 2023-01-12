@@ -42,7 +42,7 @@
 		ID = "Southern.CaravanDonkeys",
 		Units = [{ ID = "Southern.CaravanDonkey" }]
 	}
-]CaravanDonkey
+]
 
 foreach (block in ::DSF.Data.UnitBlocks)
 {

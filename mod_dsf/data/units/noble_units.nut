@@ -41,6 +41,13 @@
             EntityType = "Knight",
             Cost = 35,
             Figure = "figure_noble_03"
+        },
+
+        {   // This already exists under human_units but noble caravans use a different figure
+            ID = "Noble.CaravanDonkey",
+            EntityType = "CaravanDonkey",
+            Cost = 10,      // 0 in Vanilla
+            Figure = "cart_01"
         }
     ]
 

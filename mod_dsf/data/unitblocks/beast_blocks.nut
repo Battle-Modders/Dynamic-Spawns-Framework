@@ -26,7 +26,7 @@
 	},
 	{
 		ID = "Beast.Spiders",
-		Units = [{ ID = "Beast.Spiders" }]
+		Units = [{ ID = "Beast.Spider" }]
 	},
 	{
 		ID = "Beast.Alps",

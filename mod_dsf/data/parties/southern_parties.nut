@@ -41,7 +41,7 @@ local parties = [
     {
         ID = "CaravanSouthernEscort",   // For Contract Escort missions
         UpgradeChance = 1.0,
-        HardMin = 2,    // In Vanilla this is 10
+        HardMin = 2,    // In Vanilla this is 2
         DefaultFigure = "cart_03",
 		MovementSpeedMult = 0.5,
 		VisibilityMult = 1.0,

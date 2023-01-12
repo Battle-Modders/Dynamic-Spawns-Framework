@@ -42,7 +42,7 @@ local parties = [
 		HardMin = 1,
 		HardMax = 1,
 		UnitBlocks = [
-			{ ID = "Barbarian.Unhold"}
+			{ ID = "Barbarian.Unholds"}
 		]
 	},
 	{
@@ -50,7 +50,7 @@ local parties = [
 		HardMin = 2,
 		HardMax = 2,
 		UnitBlocks = [
-			{ ID = "Barbarian.Unhold"}
+			{ ID = "Barbarian.Unholds"}
 		]
 	},
 	{
@@ -58,7 +58,7 @@ local parties = [
 		HardMin = 1,
 		HardMax = 1,
 		UnitBlocks = [
-			{ ID = "Barbarian.UnholdFrost"}
+			{ ID = "Barbarian.UnholdsFrost"}
 		]
 	},
 	{
@@ -66,7 +66,7 @@ local parties = [
 		HardMin = 2,
 		HardMax = 2,
 		UnitBlocks = [
-			{ ID = "Barbarian.UnholdFrost"}
+			{ ID = "Barbarian.UnholdsFrost"}
 		]
 	}
 ]

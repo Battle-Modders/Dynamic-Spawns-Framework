@@ -6,9 +6,9 @@
 	spawnProcess.init(_party, _resources, _opposingParty, _customHardMin, _customHardMax);
 	local spawnedUnits = spawnProcess.spawn();
 
-	_worldParty.setMovementSpeed(_party.MovementSpeedMult * ::Const.World.MovementSettings.Speed);
-	_worldParty.setVisibilityMult(_party.VisibilityMult);
-	_worldParty.setVisionRadius(_party.VisionMult * ::Const.World.Settings.Vision);
+	_worldParty.setMovementSpeed(_party.m.MovementSpeedMult * ::Const.World.MovementSettings.Speed);
+	_worldParty.setVisibilityMult(_party.m.VisibilityMult);
+	_worldParty.setVisionRadius(_party.m.VisionMult * ::Const.World.Settings.Vision);
 	_worldParty.getSprite("body").setBrush(_party.Body);
 
 	foreach (unit in spawnedUnits)

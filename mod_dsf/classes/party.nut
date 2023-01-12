@@ -12,8 +12,11 @@ this.party <- {
 		// Vanilla Variables that are required
 		MovementSpeedMult = 1.0,
 		VisibilityMult = 1.0,
-		VisionMult = 1.0
-	}
+		VisionMult = 1.0,
+	},
+
+	// Figure that represents this party on the world map. This is always filled at the very end of a spawn-process and uses DefaultFigure by default.
+	Body = null,
 
 	function create()
 	{

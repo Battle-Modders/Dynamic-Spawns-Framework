@@ -7,7 +7,7 @@
     },
     {
         ID = "Southern.Conscript_Polearm",
-        EntityType = "Conscript_Polearm",
+        EntityType = "ConscriptPolearm",
         Cost = 15
     },
     {
