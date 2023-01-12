@@ -64,7 +64,8 @@ this.party <- {
 
 	function getFigure( _spawnProcess )
 	{
-		local priciestFigure = this.m.DefaultFigure;	// Will be used if nothing overwrites it
+		local priciestFigure = this.m.DefaultFigure;
+		if(typeof this.m.DefaultFigure == "array") priciestFigure = this.m.DefaultFigure[::Math.rand(0, this.m.DefaultFigure.len() - 1)];
 		local figurePrice = -9000;
 		foreach (pBlock in this.getUnitBlocks())
 		{

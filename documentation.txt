@@ -35,6 +35,7 @@ _customHardMax: int
     - BeastMaster should be upgraded way earlier and more consistent alongside the rest of the group just like in vanilla
     - Mabye a new custom variable for UnitBlocks? e.g. UpgradeChance Bonus
 
+- HardMin allows a party to purchase an expensive troop even if it doesnt have the resources for that. E.G. Barbarians in Early game buying BeastMaster and going into -50 resources
 
 ### Discussion Points
 

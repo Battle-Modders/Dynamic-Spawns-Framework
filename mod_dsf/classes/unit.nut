@@ -55,7 +55,8 @@ this.unit <- {
 
 	function getFigure()
 	{
-		return this.m.Figure;
+		if(typeof this.m.Figure == "string") return this.m.Figure;
+		return this.m.Figure[::Math.rand(0, this.m.Figure.len() - 1)];
 	}
 
 	function getStrengthMin()

@@ -315,15 +315,18 @@ this.spawn_process <- {
 		}
 
 		// Hardcoded Print for StaticUnits
-		local percentage = (this.getTotal() == 0) ? 0 : (100 * this.getBlockTotal("StaticUnits") / this.getTotal());
-		local staticString = "Static: " + this.getBlockTotal("StaticUnits") + " (" + percentage + "%) - ";
-		foreach (key, value in this.m.SpawnInfo["StaticUnits"])
+		if("StaticUnits" in this.m.SpawnInfo)
 		{
-			if(key == "Total") continue;
-			if(value == 0) continue;
-			staticString += key + ": " + value + ", ";
+			local percentage = (this.getTotal() == 0) ? 0 : (100 * this.getBlockTotal("StaticUnits") / this.getTotal());
+			local staticString = "Static: " + this.getBlockTotal("StaticUnits") + " (" + percentage + "%) - ";
+			foreach (key, value in this.m.SpawnInfo["StaticUnits"])
+			{
+				if(key == "Total") continue;
+				if(value == 0) continue;
+				staticString += key + ": " + value + ", ";
+			}
+			::logInfo(staticString.slice(0, -2));
 		}
-		::logInfo(staticString.slice(0, -2));
 
 		::logInfo("Total Units: " + this.getTotal());
 		::logInfo("\n");
