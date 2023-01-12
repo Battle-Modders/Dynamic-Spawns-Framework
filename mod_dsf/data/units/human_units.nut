@@ -23,6 +23,11 @@
         Cost = 15,
         Figure = "figure_civilian_03"
     },
+    {
+        ID = "Human.Slave",
+        EntityType = "NorthernSlave",
+        Cost = 7
+    },
 
 // Caravans
     {

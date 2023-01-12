@@ -100,7 +100,7 @@ this.unit_block <- {
 		local count = 0
 		foreach (unit in this.getUnits())
 		{
-			if(unit.getCost() > _unit.getCost()) count++;
+			if (unit.getCost() > _unit.getCost()) count++;
 		}
 		return count;
 	}

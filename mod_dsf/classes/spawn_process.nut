@@ -250,7 +250,7 @@ this.spawn_process <- {
 		local units = [];
 		foreach (blockID, block in this.m.SpawnInfo)
 		{
-			if(_unitBlockID != null && blockID != _unitBlockID) continue;	// skip all blocks that I don't want (optional)
+			if (_unitBlockID != null && blockID != _unitBlockID) continue;	// skip all blocks that I don't want (optional)
 			foreach (unitID, count in block)
 			{
 				if (unitID == "Total") continue;
@@ -279,7 +279,7 @@ this.spawn_process <- {
 
 	function canGenerate()	// "Generate" in this context means either spawn or upgrade which is why this is a very broad check
 	{
-		if(this.getTotal() < this.getParty().getHardMin()) return true;
+		if (this.getTotal() < this.getParty().getHardMin()) return true;
 		return this.getResources() > 0;
 	}
 
@@ -288,7 +288,7 @@ this.spawn_process <- {
 	{
 		if (::DSF.Const.Benchmark) return;
 		local text = "====== Spawning the Party '" + _partyName + "'";
-		if(_vip != "") text += " for '" + _vip + "'";
+		if (_vip != "") text += " for '" + _vip + "'";
 		text += " ======";
 		::logWarning(text);
 	}
@@ -315,14 +315,14 @@ this.spawn_process <- {
 		}
 
 		// Hardcoded Print for StaticUnits
-		if("StaticUnits" in this.m.SpawnInfo)
+		if ("StaticUnits" in this.m.SpawnInfo)
 		{
 			local percentage = (this.getTotal() == 0) ? 0 : (100 * this.getBlockTotal("StaticUnits") / this.getTotal());
 			local staticString = "Static: " + this.getBlockTotal("StaticUnits") + " (" + percentage + "%) - ";
 			foreach (key, value in this.m.SpawnInfo["StaticUnits"])
 			{
-				if(key == "Total") continue;
-				if(value == 0) continue;
+				if (key == "Total") continue;
+				if (value == 0) continue;
 				staticString += key + ": " + value + ", ";
 			}
 			::logInfo(staticString.slice(0, -2));

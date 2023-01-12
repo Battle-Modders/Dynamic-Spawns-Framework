@@ -1,28 +1,23 @@
 ::DSF.Data.UnitBlocks <- [
-    // Barbarians
 	{
 		ID = "Barbarian.Frontline",
-		Units = [{ ID = "Thrall" }, { ID = "Marauder" }, { ID = "Chosen" }]
+		Units = [{ ID = "Barbarian.Thrall" }, { ID = "Barbarian.Marauder" }, { ID = "Barbarian.Chosen" }]
 	},
 	{
 		ID = "Barbarian.Support",
-		Units = [{ ID = "Drummer" }]
+		Units = [{ ID = "Barbarian.Drummer" }]
 	},
 	{
-		ID = "Barbarian.Flank",
-		Units = [{ ID = "Warhound" }]
+		ID = "Barbarian.Dogs",
+		Units = [{ ID = "Barbarian.Warhound" }]
 	},
 	{
 		ID = "Barbarian.Beastmaster",
-		Units = [{ ID = "BeastmasterU" }, { ID = "BeastmasterF" }, { ID = "BeastmasterUU" }, { ID = "BeastmasterFF" }]
+		Units = [{ ID = "Barbarian.BeastmasterU" }, { ID = "Barbarian.BeastmasterF" }, { ID = "Barbarian.BeastmasterUU" }, { ID = "Barbarian.BeastmasterFF" }]
 	},
 	{
-		ID = "Barbarian.Unhold",
-		Units = [{ ID = "Unhold" }]
-	},
-	{
-		ID = "Barbarian.UnholdFrost",
-		Units = [{ ID = "UnholdFrost" }]
+		ID = "Barbarian.HunterFrontline",
+		Units = [{ ID = "Barbarian.Thrall" }]
 	}
 ]
 

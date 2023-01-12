@@ -47,8 +47,8 @@ this.party <- {
 
 		foreach (unitBlock in this.m.UnitBlocks)	// Make sure there are default values for these Variables
 		{
-			if(!("RatioMin" in unitBlock)) unitBlock.RatioMin <- 0.0;
-			if(!("RatioMax" in unitBlock)) unitBlock.RatioMax <- 1.0;
+			if (!("RatioMin" in unitBlock)) unitBlock.RatioMin <- 0.0;
+			if (!("RatioMax" in unitBlock)) unitBlock.RatioMax <- 1.0;
 			if (!("DeterminesFigure" in unitBlock)) unitBlock.DeterminesFigure <- false;
 		}
 
@@ -65,24 +65,24 @@ this.party <- {
 	function getFigure( _spawnProcess )
 	{
 		local priciestFigure = this.m.DefaultFigure;
-		if(typeof this.m.DefaultFigure == "array") priciestFigure = this.m.DefaultFigure[::Math.rand(0, this.m.DefaultFigure.len() - 1)];
+		if (typeof this.m.DefaultFigure == "array") priciestFigure = this.m.DefaultFigure[::Math.rand(0, this.m.DefaultFigure.len() - 1)];
 		local figurePrice = -9000;
 		foreach (pBlock in this.getUnitBlocks())
 		{
-			if (pBlock.DeterminesFigure)
+			if (pBlock.DeterminesFigure == false) continue;
+
+			local unitBlock = ::DSF.UnitBlocks.findById(pBlock.ID);
+			foreach (unit in unitBlock.getUnits())
 			{
-				local unitBlock = ::DSF.UnitBlocks.findById(pBlock.ID);
-				foreach (unit in unitBlock.getUnits())
-				{
-					if (unit.getFigure() == "") continue;
-					if (unit.getCost() <= figurePrice) continue;
-					if (_spawnProcess.getUnitCount(unit.getID(), pBlock.ID) == 0) continue;
-					priciestFigure = unit.getFigure();
-					figurePrice = unit.getCost();
-				}
+				if (unit.getFigure() == "") continue;
+				if (unit.getCost() <= figurePrice) continue;
+				if (_spawnProcess.getUnitCount(unit.getID(), pBlock.ID) == 0) continue;
+
+				priciestFigure = unit.getFigure();
+				figurePrice = unit.getCost();
 			}
 		}
-		if(priciestFigure == "") ::MSU.Exception.InvalidValue( "Figure cant be an empty string. Provide a DefaultFigure for this Party or make sure UnitBlocks with DeterminesFigure=True actually spawn units" )
+		if (priciestFigure == "") ::MSU.Exception.InvalidValue( "Figure cant be an empty string. Provide a DefaultFigure for this Party or make sure UnitBlocks with DeterminesFigure=True actually spawn units" )
 		return priciestFigure;
 	}
 
@@ -108,8 +108,8 @@ this.party <- {
 	// _opposingParty: Party that this party is expected to fight
 	function generateIdealSize( _spawnProcess, _opposingPartySize = null )
 	{
-//		if(_opposingPartySize == null) _opposingPartySize = ::Math.max(::World.Roster.getAll().len(), (::DSF.Static.getExpectedNPCWorldSize() * ::World.Roster.getAll().len() / 2));
-		if(_opposingPartySize == null) _opposingPartySize = 10;
+//		if (_opposingPartySize == null) _opposingPartySize = ::Math.max(::World.Roster.getAll().len(), (::DSF.Static.getExpectedNPCWorldSize() * ::World.Roster.getAll().len() / 2));
+		if (_opposingPartySize == null) _opposingPartySize = 10;
 		return _opposingPartySize * 1.5;
 	}
 

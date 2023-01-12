@@ -75,6 +75,11 @@ I solve this currently by just returning the party object and have each party ob
 - Make it so UnitBlocks can only upgrade the lowest X UnitTypes at any given time. That way we prevent singular super weak units ever appearing alongside super strong units
 - Make it so a UnitBlock can only spawn units of the lowest X UnitTypes that already spawned (if any). That way we prevent singular super weak units ever appearing
 
+- HardMin and HardMax support for individual UnitBlocks? That way we can put a hard maximum on specific units like Bannerman or make sure that essential units like CaravanDonkey for a Caravan spawn atleast once
+
+- Let UnitBlocks check whether the Units added to them really exist to improve debugging of released mod
+- Let Parties check whether the UnitBlocks added to them really exist to improve debugging of released mod
+
 
 ## Notes from recent Midas/Darxo talk
 - Static Units should count towards certain troop blocks optionally
@@ -86,6 +91,8 @@ I solve this currently by just returning the party object and have each party ob
 - party should be able to overwrite reqSize of all of its used unitBlocks for this spawn process
 
 
-
-
-
+Ideas for new Enemy Types:
+- weaker Schrat Variant looking like a Bush
+- Young Direwolf, Hyena, Serpent (and in return make their adult variants slightly stronger)
+- Necromancer Apprentice (can only do 1 revive or 1 buff a turn instead of 2)
+- [escaped] gladiator slave to spawn in slave parties or southern caravans. This version would probably have less equipment but the same experience

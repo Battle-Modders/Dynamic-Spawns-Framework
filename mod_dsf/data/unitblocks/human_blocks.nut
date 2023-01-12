@@ -23,6 +23,10 @@
 		ID = "Human.Wardogs",
 		Units = [{ ID = "Human.Wardog" }]
 	},
+	{
+		ID = "Human.Slaves",
+		Units = [{ ID = "Human.Slave" }]
+	},
 
 // Civilians
 	{

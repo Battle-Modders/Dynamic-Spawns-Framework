@@ -85,9 +85,9 @@ local parties = [
 		VisibilityMult = 1.0,
 		VisionMult = 1.0,
         UnitBlocks = [
-            { ID = "Human.MilitiaFrontline", RatioMin = 0.60, RatioMax = 1.00},
-            { ID = "Human.MilitiaRanged", RatioMin = 0.12, RatioMax = 0.35},
-            { ID = "Human.MilitiaCaptain", RatioMin = 0.09, RatioMax = 0.09}
+            { ID = "Human.MilitiaFrontline",    RatioMin = 0.60, RatioMax = 1.00},
+            { ID = "Human.MilitiaRanged",       RatioMin = 0.12, RatioMax = 0.35},
+            { ID = "Human.MilitiaCaptain",      RatioMin = 0.09, RatioMax = 0.09}
         ]
     },
     {
@@ -98,28 +98,31 @@ local parties = [
 		MovementSpeedMult = 0.5,
 		VisibilityMult = 1.0,
 		VisionMult = 0.25,
+        StaticUnits = [
+            "Human.CaravanDonkey"
+        ],
         UnitBlocks = [
-            { ID = "Human.CaravanDonkeys", RatioMin = 0.25, RatioMax = 0.25},
-            { ID = "Human.CaravanHands", RatioMin = 0.35, RatioMax = 0.80},
-            { ID = "Human.CaravanGuards", RatioMin = 0.15, RatioMax = 0.55}
+            { ID = "Human.CaravanDonkeys",  RatioMin = 0.17, RatioMax = 0.22},
+            { ID = "Human.CaravanHands",    RatioMin = 0.35, RatioMax = 0.80},
+            { ID = "Human.CaravanGuards",   RatioMin = 0.15, RatioMax = 0.55}
         ]
     },
     {
-        ID = "Caravan",
+        ID = "CaravanEscort",   // Caravans spawned for player escort contract
         UpgradeChance = 1.0,
         HardMin = 3,
         DefaultFigure = "cart_02",
 		MovementSpeedMult = 0.5,
 		VisibilityMult = 1.0,
 		VisionMult = 0.25,
+        StaticUnits = [
+            "Human.CaravanDonkey"
+        ],
         UnitBlocks = [
-            { ID = "Human.CaravanDonkeys", RatioMin = 0.35, RatioMax = 0.50},
-            { ID = "Human.CaravanHands", RatioMin = 0.35, RatioMax = 0.80}
+            { ID = "Human.CaravanDonkeys",  RatioMin = 0.35, RatioMax = 0.40},
+            { ID = "Human.CaravanHands",    RatioMin = 0.50, RatioMax = 0.85}
         ]
     }
-
-
-
 ]
 
 foreach(party in parties)
