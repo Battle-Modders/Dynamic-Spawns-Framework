@@ -1,28 +1,20 @@
 
 local parties = [
     {
-        ID = "Barbarians",
-        UpgradeChance = 1.0,
-        HardMin = 6,
-        // HardMax = 30,
-        UnitBlocks = [
-            { ID = "Barbarian.Frontline", RatioMin = 0.60, RatioMax = 1.0 },				// Vanilla: doesn't care about size
-            { ID = "Barbarian.Support", RatioMin = 0.05, RatioMax = 0.07 },					// Vanilla: Start spawning in armies of 15+; At 24+ a second drummer spawns
-            { ID = "Barbarian.Flank", RatioMin = 0.0, RatioMax = 0.17 },						// Vanilla: Start spawning in armies of 6+
-            { ID = "Barbarian.Beastmaster", RatioMin = 0.0, RatioMax = 0.11},		// Vanilla: Start spawning in armies of 7+ (singular case) but more like 9+
-        ]
-    },
-    {
         ID = "SouthernArmy",
         UpgradeChance = 1.0,
         HardMin = 7,
         // HardMax = 40,
+        DefaultFigure = "figure_southern_01",
+        MovementSpeedMult = 1.0,
+        VisibilityMult = 1.0,
+        VisionMult = 1.0
         UnitBlocks = [
-            { ID = "Southern.Frontline", RatioMin = 0.50, RatioMax = 0.9},			// Vanilla: doesn't care about size
+            { ID = "Southern.Frontline", RatioMin = 0.50, RatioMax = 0.9, DeterminesFigure = true},			// Vanilla: doesn't care about size
             { ID = "Southern.Backline", RatioMin = 0.1, RatioMax = 0.4 },				// Vanilla: doesn't care about size
             { ID = "Southern.Ranged", RatioMin = 0.1, RatioMax = 0.3 },		// Vanilla: doesn't care about size
             { ID = "Southern.Assassin", RatioMin = 0.0, RatioMax = 0.12},		// Vanilla: Start spawning at 8+
-            { ID = "Southern.Officer", RatioMin = 0.07, RatioMax = 0.07},		// Vanilla: Start spawning at 15+
+            { ID = "Southern.Officer", RatioMin = 0.07, RatioMax = 0.07, DeterminesFigure = true},		// Vanilla: Start spawning at 15+
             { ID = "Southern.Siege", RatioMin = 0.00, RatioMax = 0.07}		// Vanilla: Start spawning at 19+
         ]
     },
@@ -30,7 +22,11 @@ local parties = [
         ID = "SouthernArmyWithLeader",
         UpgradeChance = 1.0,
         HardMin = 7,
-        // HardMax = 40,
+        // HardMax = 40,,
+        DefaultFigure = "figure_southern_01",
+        MovementSpeedMult = 1.0,
+        VisibilityMult = 1.0,
+        VisionMult = 1.0,
         StaticUnits = [
             "Officer++",
             "Officer++",
@@ -46,40 +42,7 @@ local parties = [
         ]
     },
 
-
     // SubParties
-	{
-		ID = "OneUnhold"
-		HardMin = 1,
-		HardMax = 1,
-		UnitBlocks = [
-			{ ID = "Barbarian.Unhold"}
-		]
-	},
-	{
-		ID = "TwoUnhold"
-		HardMin = 2,
-		HardMax = 2,
-		UnitBlocks = [
-			{ ID = "Barbarian.Unhold"}
-		]
-	},
-	{
-		ID = "OneFrostUnhold"
-		HardMin = 1,
-		HardMax = 1,
-		UnitBlocks = [
-			{ ID = "Barbarian.UnholdFrost"}
-		]
-	},
-	{
-		ID = "TwoFrostUnhold"
-		HardMin = 2,
-		HardMax = 2,
-		UnitBlocks = [
-			{ ID = "Barbarian.UnholdFrost"}
-		]
-	},
     {
         ID = "MortarEngineers"
 		HardMin = 2,
@@ -93,6 +56,8 @@ local parties = [
 foreach(party in parties)
 {
     local partyObj = ::new(::DSF.Class.Party).init(party);
-    ::DSF.Parties.LookupMap[partyObj.m.ID] <- partyObj;
+    ::DSF.Parties.LookupMap[partyObj.m.ID] <- partyObj; // Currently only needed for Guard-Parties
+
+    ::Const.World.Spawn[partyObj.m.ID] <- partyObj;     // Overwrites all vanilla party objects that we defined replacements for
 }
 

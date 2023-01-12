@@ -20,9 +20,9 @@ _customHardMin: int
 _customHardMax: int
     - overwrites the HardMax given by the Party
 
-- PartMin: float
+- RatioMin: float
     - states what percentage of the generated party should consist of this UnitBlocks
-- PartMax: float
+- RatioMax: float
     - states what percentage of the generated party can at most be from this UnitBlocks
 - ReqSize: int
     - this unitBlock will only start spawning if the generated party is at least ReqSize big
@@ -34,9 +34,6 @@ _customHardMax: int
     - Given high resources the frontline always ends up being only Chosen while the beastmaster rarely get one to highest level
     - BeastMaster should be upgraded way earlier and more consistent alongside the rest of the group just like in vanilla
     - Mabye a new custom variable for UnitBlocks? e.g. UpgradeChance Bonus
-
-- When giving custom PartMin and PartMax values then I currently overwrite the original values with those custom onces.
-- And since I'm working on references here I tarnish the original data in case other spawns also use them.
 
 
 ### Discussion Points
@@ -53,6 +50,12 @@ _customHardMax: int
 - At the start of the spawn() function I optionally overwrite the HardMin/HardMax of the party I'm spawning with. This is to streamline how those variables are accessed.
 - At the end of that function I change them back to their original value because I don't want to permanently change those default values
 
+- Vanilla expects the return value from 'assignTroops' to be a table that contains at least the entry 'Body' which needs to be a string.
+I solve this currently by just returning the party object and have each party object manually add that entry themselves upon creation
+
+- The Figure of a generated Party is currently decided by the highest costing spawned troop in that party from a block that has been marked as 'DeterminesFigure = True'
+- For Vanilla Purposes this does a fine job. But if we ever introduce Figures that also/just depend on the amount of spawned troops then this system can't support that
+
 
 ### Improvements?
 
@@ -64,10 +67,24 @@ _customHardMax: int
 - Introduce a second set of parameters similar to PartMin and PartMax but for spend resources.
 - That way UnitBlocks will guarantee that they get some resource to invest in them every now and then even if they only consist of very few troops
 
-- ADd handling for AI Behviours to this framework?
+- Add handling for AI Behviours to this framework?
 - It would be one of the possible next things to add support for once the basic dynamic spawn works.
 - But currently: Low Priority
 
 - Make it so UnitBlocks can only upgrade the lowest X UnitTypes at any given time. That way we prevent singular super weak units ever appearing alongside super strong units
 - Make it so a UnitBlock can only spawn units of the lowest X UnitTypes that already spawned (if any). That way we prevent singular super weak units ever appearing
+
+
+## Notes from recent Midas/Darxo talk
+- Static Units should count towards certain troop blocks optionally
+- optionally mark a unit to not use its cost
+- remove the defaults of ratioMin and ratioMax and be explicit and require them.
+    This would make sub-parties look bad which is why I didn't immediately implemented this
+
+(Option) - allow overwriting of parties by cloning them
+- party should be able to overwrite reqSize of all of its used unitBlocks for this spawn process
+
+
+
+
 

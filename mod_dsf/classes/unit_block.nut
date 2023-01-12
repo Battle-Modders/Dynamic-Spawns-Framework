@@ -171,12 +171,15 @@ this.unit_block <- {
 			local count = _spawnProcess.getUnitCount(id, this.getID());
 			if (count > 0)
 			{
-				local j = i + 1;
-				if (this.m.Units[j].canSpawn(_spawnProcess, this.m.Units[i].getCost()))
+				for (local j = i + 1; j < this.m.Units.len(); j++)	// for loop because the next very unitType could have some requirements (like playerstrength) preventing spawn
 				{
-					local weight = count + (this.m.Units.len() - i) * 3;	// weight higher for weaker troopTypes and those that already spawned a lot
-					ids.add({ID = id, UpgradeID = this.m.Units[j].getID()}, weight);
+					if (this.m.Units[j].canSpawn(_spawnProcess, this.m.Units[i].getCost()))
+					{
+						local weight = count + (this.m.Units.len() - i) * 3;	// weight higher for weaker troopTypes and those that already spawned a lot
+						ids.add({ID = id, UpgradeID = this.m.Units[j].getID()}, weight);
+					}
 				}
+
 			}
 		}
 

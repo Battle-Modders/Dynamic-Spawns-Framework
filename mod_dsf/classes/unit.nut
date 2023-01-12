@@ -1,8 +1,9 @@
 this.unit <- {
 	m = {
 		ID = null,
-		EntityType = null,		// ID of a vanilla entity that will spawn
-		Cost = 0,		// Cost of spawning this troop
+		EntityType = null,		// String-IDs referencing entities from ::Const.World.Spawn.Troops table
+		Cost = 0,		// Cost of spawning this unit
+		Figure = "",	// A party consisting of this unit as its highest costing unit, will be represented by this figure
 		StrengthMin = 0.0,
 		StrengthMax = -1.0,
 		SubParty = null		// abilty to optionally spawn an additional party. Most commonly body guards or operators
@@ -50,6 +51,11 @@ this.unit <- {
 	function getCost()
 	{
 		return this.m.Cost;
+	}
+
+	function getFigure()
+	{
+		return this.m.Figure;
 	}
 
 	function getStrengthMin()

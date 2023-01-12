@@ -1,14 +1,19 @@
 this.party <- {
 	m = {
         ID = null,
-        UnitBlocks = [],	// Array of Tables that require a 'ID' and optionally 'RatioMin' and 'RatioMax'
-        // IdealSize = 5;
+        UnitBlocks = [],	// Array of Tables that require a 'ID', 'RatioMin', 'RatioMax' and optionally 'DeterminesFigure'
         // Resources = 0;
         HardMin = 0,		// @Darxo: Smallest army size that is allowed for this troop to even make sense. Ressources are disregarded while trying to satisfy this. Could maybe be set to 1 be default
         HardMax = -1,		// @Darxo: Greatest army size that is allowed for this troop to even make sense. All spawning (not upgrading) is stopped when this is reached
         UpgradeChance = 1.0,	// Chance that this Party will upgrade a unit instead of spawning a new unit when IdealSize is reached
-        StaticUnits = []	// Array of UnitObjects that are forced to spawn if the Resources allow it. Can have multiples of the same unit
-    }
+        StaticUnits = [],	// Array of UnitObjects that are forced to spawn if the Resources allow it. Can have multiples of the same unit
+		DefaultFigure = ""		// This Figure will be used if the spawned units couldnt provide a better fitting one
+
+		// Vanilla Variables that are required
+		MovementSpeedMult = 1.0,
+		VisibilityMult = 1.0,
+		VisionMult = 1.0
+	}
 
 	function create()
 	{
@@ -17,6 +22,7 @@ this.party <- {
     function init( _partyDef )
 	{
 		this.m.ID = _partyDef.ID;
+		// this.m.DefaultFigure = _partyDef.DefaultFigure;
 
 		foreach (key, value in _partyDef)
 		{
@@ -43,8 +49,40 @@ this.party <- {
 		{
 			if(!("RatioMin" in unitBlock)) unitBlock.RatioMin <- 0.0;
 			if(!("RatioMax" in unitBlock)) unitBlock.RatioMax <- 1.0;
+			if (!("DeterminesFigure" in unitBlock)) unitBlock.DeterminesFigure <- false;
 		}
+
+		this.Body <- this.m.DefaultFigure;	// Because Vanilla expects a Table with this entry
+
 		return this;
+	}
+
+	function updateFigure( _spawnProcess )
+	{
+		this.Body = this.getFigure(_spawnProcess);
+	}
+
+	function getFigure( _spawnProcess )
+	{
+		local priciestFigure = this.m.DefaultFigure;	// Will be used if nothing overwrites it
+		local figurePrice = -9000;
+		foreach (pBlock in this.getUnitBlocks())
+		{
+			if (pBlock.DeterminesFigure)
+			{
+				local unitBlock = ::DSF.UnitBlocks.findById(pBlock.ID);
+				foreach (unit in unitBlock.getUnits())
+				{
+					if (unit.getFigure() == "") continue;
+					if (unit.getCost() <= figurePrice) continue;
+					if (_spawnProcess.getUnitCount(unit.getID(), pBlock.ID) == 0) continue;
+					priciestFigure = unit.getFigure();
+					figurePrice = unit.getCost();
+				}
+			}
+		}
+		if(priciestFigure == "") ::MSU.Exception.InvalidValue( "Figure cant be an empty string. Provide a DefaultFigure for this Party or make sure UnitBlocks with DeterminesFigure=True actually spawn units" )
+		return priciestFigure;
 	}
 
 	function getID()
@@ -57,9 +95,21 @@ this.party <- {
 		return this.m.UnitBlocks;
 	}
 
-	function getIdealSize()
+	function spawn( _resources, _opposingParty = null, _customHardMin = -1, _customHardMax = -1 )
 	{
-		return this.m.IdealSize != null ? this.m.IdealSize : ::World.Roster.getAll().len() * 1.5;
+		// ::logWarning("Spawning the party '" + this.m.ID + "' with '" + _resources + "' Resources");
+		local spawnProcess = ::new(::DSF.Class.SpawnProcess);
+		spawnProcess.init(this, _resources, _opposingParty, _customHardMin, _customHardMax);
+		return spawnProcess.spawn();
+	}
+
+	// Returns an unsigned integer. This can be random as this function is called only once during a SpawnProcess
+	// _opposingParty: Party that this party is expected to fight
+	function generateIdealSize( _spawnProcess, _opposingPartySize = null )
+	{
+//		if(_opposingPartySize == null) _opposingPartySize = ::Math.max(::World.Roster.getAll().len(), (::DSF.Static.getExpectedNPCWorldSize() * ::World.Roster.getAll().len() / 2));
+		if(_opposingPartySize == null) _opposingPartySize = 10;
+		return _opposingPartySize * 1.5;
 	}
 
 	function getHardMin()

@@ -1,20 +1,21 @@
 ::DSF.Data.UnitDefs <- [
-
-// Barbarians
 	{
 		ID = "Thrall",
 		EntityType = "BarbarianThrall",
-		Cost = 12
+		Cost = 12,
+        Figure = "figure_wildman_01"
 	},
 	{
 		ID = "Marauder",
 		EntityType = "BarbarianMarauder",
-		Cost = 25
+		Cost = 25,
+        Figure = "figure_wildman_02"
 	},
 	{
 		ID = "Chosen",
 		EntityType = "BarbarianChosen",
-		Cost = 35
+		Cost = 35,
+        Figure = "figure_wildman_03"
 	},
 	{
 		ID = "Drummer",
@@ -29,12 +30,14 @@
 	{
 		ID = "Unhold",
 		EntityType = "BarbarianUnhold",
-		Cost = 55
+		Cost = 55,
+        Figure = "figure_unhold_01"     // Not really needed as barbarian unholds never determin their Figure in Vanilla
 	},
 	{
 		ID = "UnholdFrost",
 		EntityType = "BarbarianUnholdFrost",
-		Cost = 75
+		Cost = 75,
+        Figure = "figure_unhold_02"     // Not really needed as barbarian unholds never determin their Figure in Vanilla
 	},
 	{
 		ID = "BeastmasterU",
@@ -59,70 +62,7 @@
 		EntityType = "BarbarianBeastmaster",	// Usually it's 1 Beastmaster for 1-2 Unholds. In one case vanilla spawns 3 Unholds for one Beastmaster. And in one case Vanilla spawns 3 Beastmaster for 4 Unholds. I would disregard these.
 		Cost = 15 + 75 + 75,
 		SubParty = "TwoFrostUnhold"
-	},
-
-// Southern Army
-    {
-        ID = "Conscript",
-        EntityType = "Conscript",
-        Cost = 20
-    },
-    {
-        ID = "Conscript++",
-        EntityType = "Conscript++",
-        Cost = 30
-    },
-    {
-        ID = "Conscript_Polearm",
-        EntityType = "Conscript_Polearm",
-        Cost = 15
-    },
-    {
-        ID = "Conscript_Polearm++",
-        EntityType = "Conscript_Polearm++",
-        Cost = 23
-    },
-    {
-        ID = "Officer",
-        EntityType = "Officer",
-        Cost = 25
-    },
-    {
-        ID = "Officer++",
-        EntityType = "Officer++",
-        Cost = 38
-    },
-    {
-        ID = "Gunner",
-        EntityType = "Gunner",
-        Cost = 20
-    },
-    {
-        ID = "Gunner++",
-        EntityType = "Gunner++",
-        Cost = 30
-    },
-    {
-        ID = "Engineer",
-        EntityType = "Engineer",
-        Cost = 10
-    },
-    {
-        ID = "Mortar",
-        EntityType = "Mortar",
-        Cost = 20,
-        SubParty = "MortarEngineers"
-    },
-    {
-        ID = "Assassin",
-        EntityType = "Assassin",
-        Cost = 35
-    },
-    {
-        ID = "Assassin++",
-        EntityType = "Assassin++",
-        Cost = 53
-    }
+	}
 ]
 
 foreach (unit in ::DSF.Data.UnitDefs)

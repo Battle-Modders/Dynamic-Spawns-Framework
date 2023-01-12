@@ -4,7 +4,7 @@ this.spawn_process <- {
         SpawnInfo = {},     // Table of Tables. For each UnitBlock and for each spawned units from that Block
         UnitCount = 0,      // Amount of units spawned during this process. This does not include SubParties
 
-		Party = null,		// Reference to the party that is currently used for spawning
+		Party = null,		// Weak Reference to the party that is currently used for spawning
 		Resources = 0,		// Available resources during this run
 		IdealSize = -1,
 
@@ -18,23 +18,22 @@ this.spawn_process <- {
     {
     }
 
-    function init( _party, _availableResources = 0, _idealSize = -1, _customHardMin = -1, _customHardMax = -1 )
+    function init( _party, _availableResources = 0, _opposingParty = null, _customHardMin = -1, _customHardMax = -1 )
     {
 		this.m.SpawnInfo = {};
 		this.m.UnitCount = 0;
 
-		this.m.Party = _party;
+		this.m.Party = _party.weakref();
 		this.m.Resources = _availableResources;
-		this.m.IdealSize = _idealSize;
+		this.m.IdealSize = _party.generateIdealSize(this, _opposingParty);
 		this.m.CustomHardMin = _customHardMin;
 		this.m.CustomHardMax = _customHardMax;
 
-		this.m.SpawnInfo["StaticUnits"] <- {	// HardCoded entry just for static units
-			Total = 0
-		};
-
 		foreach (staticUnit in _party.getStaticUnits())
 		{
+			this.m.SpawnInfo["StaticUnits"] <- {	// HardCoded entry just for static units
+				Total = 0
+			};
 			this.m.SpawnInfo["StaticUnits"][staticUnit.getID()] <- 0;
 		}
 
@@ -74,7 +73,7 @@ this.spawn_process <- {
         // Spawn static units
 		foreach (unit in this.getParty().getStaticUnits())
 		{
-			if (this.getParty().canSpawn(this) && unit.canSpawn(this))
+			if (unit.canSpawn(this))
 			{
 				this.incrementUnit(unit.getID(), "StaticUnits");
 				this.consumeResources(unit.getCost());
@@ -189,7 +188,7 @@ this.spawn_process <- {
 				ret.extend(spawnProcess.init(::DSF.Parties.findById(ret[i].getSubParty())).spawn());
 			}
 		}
-
+		this.getParty().updateFigure(this);
 		return ret;
     }
 
@@ -220,8 +219,7 @@ this.spawn_process <- {
 
 	function isIgnoringCost()
 	{
-		if (this.getTotal() < this.getParty().getHardMin()) return true;
-		return false;
+		return (this.getTotal() < this.getParty().getHardMin());
 	}
 
 	function getTotal()
