@@ -1,25 +1,34 @@
 this.party <- {
 	m = {
         ID = null,
-        UnitBlocks = [],	// Array of Tables that require a 'ID' and optionally 'RatioMin', 'RatioMax' and 'ReqPartySize'
+        UnitBlocks = [],	// Array of Tables that require a 'ID' and optionally 'RatioMin' and 'RatioMax'
         // IdealSize = 5;
         // Resources = 0;
         HardMin = 0,		// @Darxo: Smallest army size that is allowed for this troop to even make sense. Ressources are disregarded while trying to satisfy this. Could maybe be set to 1 be default
         HardMax = -1,		// @Darxo: Greatest army size that is allowed for this troop to even make sense. All spawning (not upgrading) is stopped when this is reached
-        UpgradeChance = 0.5,
-        StaticUnits = null
+        UpgradeChance = 1.0,	// Chance that this Party will upgrade a unit instead of spawning a new unit when IdealSize is reached
+        StaticUnits = []	// Array of UnitObjects that are forced to spawn if the Resources allow it. Can have multiples of the same unit
     }
 
 	function create()
 	{
 	}
 
-    function init( _party )
+    function init( _partyDef )
 	{
-		this.m.ID = _party.ID;
+		this.m.ID = _partyDef.ID;
 
-		foreach (key, value in _party)
+		foreach (key, value in _partyDef)
 		{
+			if (key == "StaticUnits")	// StaticUnits are passed by their IDs
+			{
+				foreach (unitID in value)
+				{
+					this.m.StaticUnits.push(::DSF.Units.findById(unitID));
+				}
+				continue;
+			}
+
 			if (typeof value == "function")
 			{
 				this[key] = value;
@@ -28,6 +37,12 @@ this.party <- {
 			{
 				this.m[key] = value;
 			}
+		}
+
+		foreach (unitBlock in this.m.UnitBlocks)	// Make sure there are default values for these Variables
+		{
+			if(!("RatioMin" in unitBlock)) unitBlock.RatioMin <- 0.0;
+			if(!("RatioMax" in unitBlock)) unitBlock.RatioMax <- 1.0;
 		}
 		return this;
 	}
@@ -62,10 +77,9 @@ this.party <- {
 		return this.m.UpgradeChance;
 	}
 
-	function getStaticUnitBlock()
+	function getStaticUnits()
 	{
-		if (this.m.StaticUnits != null) return ::DSF.UnitBlocks.findById(this.ID + ".Block.Static");
-		return null;
+		return this.m.StaticUnits;
 	}
 
 	// Checks only against HardMax and HardMin
@@ -79,7 +93,7 @@ this.party <- {
 	function isWithinRatioMax( _spawnProcess, _pBlock )
 	{
 		local referencedTotal = (_spawnProcess.getTotal() + 1 > this.getHardMin()) ? _spawnProcess.getTotal() + 1 : this.getHardMin();
-		local maxAllowed = ::Math.round(this.getRatioMax(_pBlock) * referencedTotal);
+		local maxAllowed = ::Math.round(_pBlock.RatioMax * referencedTotal);
 		return (_spawnProcess.getBlockTotal(_pBlock.ID) < maxAllowed);
 	}
 
@@ -87,29 +101,10 @@ this.party <- {
 	function satisfiesRatioMin( _spawnProcess, _pBlock )
 	{
 		local referencedTotal = (_spawnProcess.getTotal() + 1 > this.getHardMin()) ? _spawnProcess.getTotal() + 1 : this.getHardMin();		// this is just ::Math.max() function which isn't available here
-		local minRequired = ::Math.floor(referencedTotal * this.getRatioMin(_pBlock));	// This floor() strictness is good to prevent exotic spawns in low troop sizes.
+		local minRequired = ::Math.floor(referencedTotal * _pBlock.RatioMin);	// This floor() strictness is good to prevent exotic spawns in low troop sizes.
 		// In return you will sometimes be 1 troop short of the required minimum
 
 		return (_spawnProcess.getBlockTotal(_pBlock.ID) >= minRequired);
-	}
-
-// Getter to retrieve optional parameters out of the unitBlock tables of this Party
-	function getRatioMin( _pBlock )
-	{
-		if ("RatioMin" in _pBlock) return _pBlock.RatioMin;
-		return ::DSF.UnitBlocks.findById(_pBlock.ID).getRatioMin();
-	}
-
-	function getRatioMax( _pBlock )
-	{
-		if ("RatioMax" in _pBlock) return _pBlock.RatioMax;
-		return ::DSF.UnitBlocks.findById(_pBlock.ID).getRatioMax();
-	}
-
-	function getReqPartySize( _pBlock )
-	{
-		if ("ReqPartySize" in _pBlock) return _pBlock.ReqPartySize;
-		return ::DSF.UnitBlocks.findById(_pBlock.ID).getReqPartySize();
 	}
 
 };

@@ -18,7 +18,7 @@
 	},
 	{
 		ID = "Drummer",
-		EntityType = "BarbarianDrummer",	
+		EntityType = "BarbarianDrummer",
 		Cost = 20
 	},
 	{
@@ -40,25 +40,25 @@
 		ID = "BeastmasterU",
 		EntityType = "BarbarianBeastmaster",	// Usually it's 1 Beastmaster for 1-2 Unholds. In one case vanilla spawns 3 Unholds for one Beastmaster. And in one case Vanilla spawns 3 Beastmaster for 4 Unholds. I would disregard these.
 		Cost = 15 + 55,
-		Party = "OneUnhold" 
+		SubParty = "OneUnhold"
 	},
 	{
 		ID = "BeastmasterUU",
 		EntityType = "BarbarianBeastmaster",	// Usually it's 1 Beastmaster for 1-2 Unholds. In one case vanilla spawns 3 Unholds for one Beastmaster. And in one case Vanilla spawns 3 Beastmaster for 4 Unholds. I would disregard these.
 		Cost = 15 + 55 + 55,
-		Party = "TwoUnhold" 
+		SubParty = "TwoUnhold"
 	},
 	{
 		ID = "BeastmasterF",
 		EntityType = "BarbarianBeastmaster",	// Usually it's 1 Beastmaster for 1-2 Unholds. In one case vanilla spawns 3 Unholds for one Beastmaster. And in one case Vanilla spawns 3 Beastmaster for 4 Unholds. I would disregard these.
 		Cost = 15 + 75,
-		Party = "OneFrostUnhold" 
+		SubParty = "OneFrostUnhold"
 	},
 	{
 		ID = "BeastmasterFF",
 		EntityType = "BarbarianBeastmaster",	// Usually it's 1 Beastmaster for 1-2 Unholds. In one case vanilla spawns 3 Unholds for one Beastmaster. And in one case Vanilla spawns 3 Beastmaster for 4 Unholds. I would disregard these.
 		Cost = 15 + 75 + 75,
-		Party = "TwoFrostUnhold" 
+		SubParty = "TwoFrostUnhold"
 	},
 
 // Southern Army
@@ -110,8 +110,8 @@
     {
         ID = "Mortar",
         EntityType = "Mortar",
-        Cost = 20, 
-        Party = "MortarEngineers" 
+        Cost = 20,
+        SubParty = "MortarEngineers"
     },
     {
         ID = "Assassin",

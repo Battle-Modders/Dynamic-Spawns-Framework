@@ -5,18 +5,20 @@ this.unit <- {
 		Cost = 0,		// Cost of spawning this troop
 		StrengthMin = 0.0,
 		StrengthMax = -1.0,
-		Party = null		// abilty to optionally spawn an additional party
+		SubParty = null		// abilty to optionally spawn an additional party. Most commonly body guards or operators
 	}
 
 	function create()
 	{
 	}
 
-    function init( _unit )
+    function init( _unitDef )
 	{
-		this.m.ID = _unit.ID;
+		this.m.ID = _unitDef.ID;
+		this.m.Cost = _unitDef.Cost;
+		this.m.EntityType = _unitDef.EntityType;
 
-		foreach (key, value in _unit)
+		foreach (key, value in _unitDef)
 		{
 			if (typeof value == "function")
 			{
@@ -35,9 +37,9 @@ this.unit <- {
 		return this.m.ID;
 	}
 
-	function getParty()
+	function getSubParty()
 	{
-		return this.m.Party;
+		return this.m.SubParty;
 	}
 
 	function getEntityType()

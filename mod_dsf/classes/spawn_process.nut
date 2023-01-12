@@ -1,10 +1,16 @@
 // "Class" that manages the dynamic spawning given a Party-Class and additional variables
 this.spawn_process <- {
 	m = {
-        SpawnInfo = {},     // Array of Arrays. For each UnitBlock and for each spawned units from that Block
-        UnitCount = 0,      // Amount of units spawned during this process. This does not include Guards
-		Resources = 0,		// Available resources during this run
+        SpawnInfo = {},     // Table of Tables. For each UnitBlock and for each spawned units from that Block
+        UnitCount = 0,      // Amount of units spawned during this process. This does not include SubParties
+
 		Party = null,		// Reference to the party that is currently used for spawning
+		Resources = 0,		// Available resources during this run
+		IdealSize = -1,
+
+		CustomHardMin = -1,
+		CustomHardMax = -1,
+
 		PlayerStrength = 0		// Strength of the Playerparty
 	}
 
@@ -12,12 +18,26 @@ this.spawn_process <- {
     {
     }
 
-    function init(_party)
+    function init( _party, _availableResources = 0, _idealSize = -1, _customHardMin = -1, _customHardMax = -1 )
     {
 		this.m.SpawnInfo = {};
 		this.m.UnitCount = 0;
-		this.m.Resources = 0;
+
 		this.m.Party = _party;
+		this.m.Resources = _availableResources;
+		this.m.IdealSize = _idealSize;
+		this.m.CustomHardMin = _customHardMin;
+		this.m.CustomHardMax = _customHardMax;
+
+		this.m.SpawnInfo["StaticUnits"] <- {	// HardCoded entry just for static units
+			Total = 0
+		};
+
+		foreach (staticUnit in _party.getStaticUnits())
+		{
+			this.m.SpawnInfo["StaticUnits"][staticUnit.getID()] <- 0;
+		}
+
 		foreach (block in _party.getUnitBlocks())
 		{
 			this.m.SpawnInfo[block.ID] <- {
@@ -29,18 +49,22 @@ this.spawn_process <- {
 				this.m.SpawnInfo[block.ID][unit.getID()] <- 0;
 			}
 		}
+		return this;
     }
 
-    function spawn( _party, _availableResources = 0, _idealSize = -1, _customHardMin = -1, _customHardMax = -1 )
+    function spawn()
     {
-		this.init(_party);
-		if (_customHardMin != -1) _party.m.HardMin = _customHardMin;	// Proof of Concept. We cant just overwrite the HardMins of our Data sets with these tempory onces
-		if (_customHardMax != -1) _party.m.HardMax = _customHardMax;
-		if (_idealSize == -1) _idealSize = ::Math.max(_party.getHardMin(), _party.getHardMax());
-		if (_idealSize == 0) _idealSize = 1;	// To prevent division by zero later on. But realistically you should never have such a low idealSize here
-        this.m.Resources = _availableResources;
+		// Temporary overwrite Party Variables; Proof of Concept. We cant just overwrite the HardMins of our Data sets with these tempory onces. Otherwise we change other spawns in the game
+		local oldHardMin = this.getParty().getHardMin();
+		if (this.m.CustomHardMin != -1) this.getParty().m.HardMin = this.m.CustomHardMin;
+		local oldHardMax = this.getParty().getHardMax();
+		if (this.m.CustomHardMax != -1) this.getParty().m.HardMin = this.m.CustomHardMax;
+
+		if (this.getIdealSize() == -1) this.m.IdealSize = ::Math.max(this.getParty().getHardMin(), this.getParty().getHardMax());
+		if (this.getIdealSize() == 0) this.m.IdealSize = 1;	// To prevent division by zero later on. But realistically you should never have such a low idealSize here
+
         this.m.PlayerStrength = 100;     // Placeholder. This needs to be passed as argument or taken from global variable/function
-		foreach (block in _party.m.UnitBlocks)
+		foreach (block in this.getParty().m.UnitBlocks)
 		{
 			::DSF.UnitBlocks.findById(block.ID).onPartySpawnStart();
 		}
@@ -48,80 +72,59 @@ this.spawn_process <- {
 		local ret = [];
 
         // Spawn static units
-		/*if (_party.m.StaticUnits != null)
+		foreach (unit in this.getParty().getStaticUnits())
 		{
-			foreach (unit in _party.getStaticUnitBlock().getUnits())
+			if (this.getParty().canSpawn(this) && unit.canSpawn(this))
 			{
-				if (unit.canSpawn(this.getPlayerStrength(), budget))
-				{
-					this.incrementUnit(unit.getID(), _party.getStaticUnitBlock().getID());
-					this.consumeResources(unit.getCost());
-				}
+				this.incrementUnit(unit.getID(), "StaticUnits");
+				this.consumeResources(unit.getCost());
 			}
-		}*/
+		}
 
 		local spawnAffordableBlocks = ::MSU.Class.WeightedContainer();
 		local upgradeAffordableBlocks = ::MSU.Class.WeightedContainer();
 
 		// Every while spawns or upgrades only one unit
-		while (this.canGenerate(_party))	// Is True while Resources are positive and HardMin is respected
+		while (this.canGenerate())	// Is True while Resources are positive and HardMin is respected
 		{
 			spawnAffordableBlocks.clear();
 			upgradeAffordableBlocks.clear();
 
-			if (_party.canSpawn(this))	// Checks against HardMax of the Party
+			local ratioSpawn = false;
+			foreach (pBlock in this.getParty().m.UnitBlocks)		// A pBlock (partyUnitBlock) contains a unitBlock ID and sometimes optional parameter
 			{
-				// Ratio-Spawns: If a UnitBlock doesn't satisfy their RatioMin yet then they will spawn a troop deterministically
-				local ratioSpawn = false;
-				foreach (pBlock in _party.m.UnitBlocks)		// A pBlock (partyUnitBlock) contains a unitBlock ID and sometimes optional parameter
+				local unitBlock = ::DSF.UnitBlocks.findById(pBlock.ID);
+
+				if (this.getParty().canSpawn(this) && unitBlock.canSpawn(this) && this.getParty().isWithinRatioMax(this, pBlock))
 				{
-					local unitBlock = ::DSF.UnitBlocks.findById(pBlock.ID);
-					if (unitBlock.canSpawn(this) == false) continue;
-					if (_party.isWithinRatioMax(this, pBlock) == false) continue;
-					if (_party.satisfiesRatioMin(this, pBlock) == true) continue;
-
-					unitBlock.spawnUnit(this);
-					ratioSpawn = true;
-					break;
-				}
-				if (ratioSpawn) continue;
-
-				// Weighted-Spawns: Every UnitBlock that doesn't surpass their RatioMax compete against each other for a random spawn
-				foreach (pBlock in _party.m.UnitBlocks)		// A pBlock (partyUnitBlock) contains a unitBlock ID and sometimes optional parameter
-				{
-					local unitBlock = ::DSF.UnitBlocks.findById(pBlock.ID);	// @Darxo
-					// if (unitBlock.IsStatic) continue;	// @Darxo: I don't understand this variables use
-
-					if (unitBlock.canSpawn(this))
+					// Ratio-Spawns: If a UnitBlock doesn't satisfy their RatioMin yet then they will spawn a troop deterministically
+					if (this.getParty().satisfiesRatioMin(this, pBlock) == false)
 					{
-						if (_party.isWithinRatioMax(this, pBlock) == false) continue;
-
-						local totalCount = ::Math.max(this.getTotal() + 1, _party.getHardMin());
-						local weight = _party.getRatioMax(pBlock) - (this.getBlockTotal(pBlock.ID) / totalCount.tofloat());
-						if (weight <= 0)
-						{
-							if (this.getTotal() + 1 > _idealSize * (1.0 + 1.0 - _party.getUpgradeChance())) weight = 0; // TODO: Improve the logic on this line
-							else weight = 0.00000001;
-						}
-						spawnAffordableBlocks.add(pBlock.ID, weight);
+						unitBlock.spawnUnit(this);
+						ratioSpawn = true;
+						break;
 					}
+
+					// Weighted-Spawns: Every UnitBlock that doesn't surpass their RatioMax compete against each other for a random spawn
+					local totalCount = ::Math.max(this.getTotal() + 1, this.getParty().getHardMin());
+					local weight = pBlock.RatioMax - (this.getBlockTotal(pBlock.ID) / totalCount.tofloat());
+					if (weight <= 0)
+					{
+						if (this.getTotal() >= this.getIdealSize() * (1.0 + 1.0 - this.getParty().getUpgradeChance())) weight = 0; // TODO: Improve the logic on this line
+						else weight = 0.00000001;
+					}
+					spawnAffordableBlocks.add(pBlock.ID, weight);
 				}
-			}
 
-			// Weighted-Upgrades: Every UnitBlock that has upgradeable units competes against each other for a random upgrade
-			foreach (pBlock in _party.m.UnitBlocks)		// A pBlock (partyUnitBlock) contains a unitBlock ID and sometimes optional parameter
-			{
-				local unitBlock = ::DSF.UnitBlocks.findById(pBlock.ID);	// @Darxo
-				// if (unitBlock.IsStatic) continue;	// @Darxo: I don't understand this variables use
-
-				if (this.getTotal() >= _idealSize && unitBlock.canUpgrade(this))
+				if (this.getTotal() >= this.getIdealSize() && unitBlock.canUpgrade(this))
 				{
 					local upgradeWeight = unitBlock.getUpgradeWeight(this) ;
 					upgradeAffordableBlocks.add(pBlock.ID, upgradeWeight);	// Weight = maximum amount of times this block can currently upgrade troops (favors blocks with many tiers)
 				}
 			}
+			if (ratioSpawn) continue;
 
-			if (spawnAffordableBlocks.len() == 0 && upgradeAffordableBlocks.len() == 0) break;
+			if (spawnAffordableBlocks.len() == 0 && upgradeAffordableBlocks.len() == 0) break;	// Usually happens after ratioSpawn happened
 
 			if (!::DSF.Const.Benchmark && ::DSF.Const.DetailedLogging )
 			{
@@ -146,7 +149,7 @@ this.spawn_process <- {
 				}
 			}
 
-			if (upgradeAffordableBlocks.len() > 0 && ::MSU.Math.randf( 0.0, 1.0 ) < (_party.getUpgradeChance() * this.getTotal() / _idealSize))
+			if (upgradeAffordableBlocks.len() > 0 && ::MSU.Math.randf( 0.0, 1.0 ) < (this.getParty().getUpgradeChance() * this.getTotal() / this.getIdealSize()))
 			{
 				// ::logWarning("Upgrade: - Resources: " + this.getResources() + " : TotalCount = " + this.getTotal());
 				local blockID = upgradeAffordableBlocks.roll();
@@ -168,22 +171,32 @@ this.spawn_process <- {
 			}
 		}
 
-		if (!::DSF.Const.Benchmark) this.printLog(_party);
+		if (!::DSF.Const.Benchmark) this.printLog();
 
 		ret.extend(this.getUnits());
 
+		// Fix the overwritten Variables to their original values
+		this.getParty().m.HardMin = oldHardMin;
+		this.getParty().m.HardMax = oldHardMax;
+
+		// Spawn SubParties
 		local spawnProcess = ::new(::DSF.Class.SpawnProcess);
 		for (local i = ret.len() - 1; i >= 0; i--)		// Backwards counting as this array is growing during this process
 		{
-			if (ret[i].getParty() != null)
+			if (ret[i].getSubParty() != null)
 			{
-				this.printPartyHeader(ret[i].getParty(), ret[i].getEntityType());
-				ret.extend(spawnProcess.spawn(::DSF.Parties.findById(ret[i].getParty())));
+				this.printPartyHeader(ret[i].getSubParty(), ret[i].getEntityType());
+				ret.extend(spawnProcess.init(::DSF.Parties.findById(ret[i].getSubParty())).spawn());
 			}
 		}
 
 		return ret;
     }
+
+	function getIdealSize()
+	{
+		return this.m.IdealSize;
+	}
 
 	function getResources()
 	{
@@ -245,7 +258,7 @@ this.spawn_process <- {
 				if (unitID == "Total") continue;
 				for (local i = 0; i < count; i++)
 				{
-					units.push(::DSF.UnitBlocks.findById(blockID).getUnit(unitID));
+					units.push(::DSF.Units.findById(unitID));
 				}
 			}
 		}
@@ -266,9 +279,9 @@ this.spawn_process <- {
 		this.m.UnitCount -= _count;
 	}
 
-	function canGenerate( _party )	// "Generate" in this context means either spawn or upgrade which is why this is a very broad check
+	function canGenerate()	// "Generate" in this context means either spawn or upgrade which is why this is a very broad check
 	{
-		if(this.getTotal() < _party.getHardMin()) return true;
+		if(this.getTotal() < this.getParty().getHardMin()) return true;
 		return this.getResources() > 0;
 	}
 
@@ -282,9 +295,9 @@ this.spawn_process <- {
 		::logWarning(text);
 	}
 
-	function printLog( _party )
+	function printLog()
 	{
-		// ::logWarning( this.getTotal() + " total unit were spawned for the party " + _party.getID());
+		// ::logWarning( this.getTotal() + " total unit were spawned for the party " + this.getParty().getID());
 		// ::logWarning("- - - Spawn finished - - -");
 		::logInfo("Resources remaining: " + this.getResources());
 		local printBlock = function( _blockID )
@@ -298,10 +311,22 @@ this.spawn_process <- {
 
 			::logInfo(str.slice(0, -2));
 		}
-		foreach (block in _party.getUnitBlocks())
+		foreach (block in this.getParty().getUnitBlocks())
 		{
 			printBlock(block.ID);
 		}
+
+		// Hardcoded Print for StaticUnits
+		local percentage = (this.getTotal() == 0) ? 0 : (100 * this.getBlockTotal("StaticUnits") / this.getTotal());
+		local staticString = "Static: " + this.getBlockTotal("StaticUnits") + " (" + percentage + "%) - ";
+		foreach (key, value in this.m.SpawnInfo["StaticUnits"])
+		{
+			if(key == "Total") continue;
+			if(value == 0) continue;
+			staticString += key + ": " + value + ", ";
+		}
+		::logInfo(staticString.slice(0, -2));
+
 		::logInfo("Total Units: " + this.getTotal());
 		::logInfo("\n");
 	}

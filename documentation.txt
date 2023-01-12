@@ -4,7 +4,7 @@
 ### How it works
 
 - A Spawn requires _resources and _idealSize. It is IMPORTANT that those two values are carefully chosen depending on each other.
-- If the idealSize is too high you will get a big party with only weak troops. If it is too low then all spawned troops will be max 
+- If the idealSize is too high you will get a big party with only weak troops. If it is too low then all spawned troops will be max
 
 - Until HardMin is reached all Resource Costs are ignored. This will guarantee that a troop alwas has at least a reasonable minimum
 
@@ -28,8 +28,6 @@ _customHardMax: int
     - this unitBlock will only start spawning if the generated party is at least ReqSize big
 
 
-
-
 ### Current Issues
 
 - Barbarian Beastmaster with 4 unit types only rarely upgrade fully compared to the barbarian frontline with 3 unit types.
@@ -43,19 +41,17 @@ _customHardMax: int
 
 ### Discussion Points
 
-- Should we use many parameter with default values or tables to instantiate our classes with? 
-
 - I made a slight change to the weight for which UnitBlock to upgrade (not perfect)
 
 - getAverageCost function for UnitBlocks and Parties. Other functions along that line can help generating a safety net to prevent horrible _idealSize - _resources ratios
 
-- Why are Guards generated in reversed order?
+- I made a weight adjustment about which unit to pick for upgrading.
+- Previously the weight was just equal to the amount of already spawned units of that types
+- Now I added an additional weight ~equal to the number of higher unitTypes in that blocks. So the weakest unitTypes are a bit more likely to be upgraded
+- This is to prevent singular super weak troops that never got chosen for upgrading because their weight was 1. But it's not perfect
 
-- I splitted the main for-loop into three for-loops. At best that's a sidegrade
-
-- Should we write clone() functions for our classes? That way we can easier grant ability to overwrite default parameters of existing data.
-- Currently a Party allows to overwrite PartMin, PartMax and ReqSize of its UnitBlocks by wrapping those variables in an extra table container around those Blocks.
-- This is rather ugly solution
+- At the start of the spawn() function I optionally overwrite the HardMin/HardMax of the party I'm spawning with. This is to streamline how those variables are accessed.
+- At the end of that function I change them back to their original value because I don't want to permanently change those default values
 
 
 ### Improvements?
@@ -68,8 +64,10 @@ _customHardMax: int
 - Introduce a second set of parameters similar to PartMin and PartMax but for spend resources.
 - That way UnitBlocks will guarantee that they get some resource to invest in them every now and then even if they only consist of very few troops
 
-
 - ADd handling for AI Behviours to this framework?
 - It would be one of the possible next things to add support for once the basic dynamic spawn works.
-- But currently: Low Priority 
+- But currently: Low Priority
+
+- Make it so UnitBlocks can only upgrade the lowest X UnitTypes at any given time. That way we prevent singular super weak units ever appearing alongside super strong units
+- Make it so a UnitBlock can only spawn units of the lowest X UnitTypes that already spawned (if any). That way we prevent singular super weak units ever appearing
 

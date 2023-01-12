@@ -17,6 +17,12 @@
 
 	::include("mod_dsf/load.nut");
 
+
+	::logWarning("---------------------------------- Army With Static Units ------------------------------------");
+	local party = ::DSF.Parties.LookupMap["SouthernArmyWithLeader"];
+	local spawnProcess = ::new(::DSF.Class.SpawnProcess);
+	spawnProcess.init(party, 1000, 32).spawn();
+
 	// Testing
 	local party = ::DSF.Parties.LookupMap["Barbarians"];
 	local spawnProcess = ::new(::DSF.Class.SpawnProcess);
@@ -27,7 +33,7 @@
 		// spawnProcess.spawn(party, 400);					// Just spend all resources. Because of no specified idealsize this results in a uber-upgraded small group
 		// spawnProcess.spawn(party, 400, 17);				// Balanced Party because of idealSize 17
 		// spawnProcess.spawn(party, 800, 32);				// Balanced bigger Party medium strength
-		spawnProcess.spawn(party, 1000, 32);				// Balanced bigger Party high strength
+		spawnProcess.init(party, 1000, 32).spawn();				// Balanced bigger Party high strength
 	}
 
 	party = ::DSF.Parties.LookupMap["SouthernArmy"];
@@ -37,7 +43,7 @@
 		// spawnProcess.spawn(party);			// No Resources given so just spawns until HardMin is satisfied
 		// spawnProcess.spawn(party, 250, -1, 12, 12);		// Exact 12 enemies, no more, no less
 		// spawnProcess.spawn(party, 400);					// Just spend all resources. Because of no specified idealsize this results in a uber-upgraded small group
-		spawnProcess.spawn(party, 400, 17);				// Balanced Party because of idealSize 17
+		spawnProcess.init(party, 400, 17).spawn();				// Balanced Party because of idealSize 17
 		// spawnProcess.spawn(party, 800, 32);				// Balanced bigger Party medium strength
 	}
 

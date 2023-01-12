@@ -2,7 +2,7 @@
 local parties = [
     {
         ID = "Barbarians",
-        UpgradeChance = 0.75,
+        UpgradeChance = 1.0,
         HardMin = 6,
         // HardMax = 30,
         UnitBlocks = [
@@ -14,9 +14,28 @@ local parties = [
     },
     {
         ID = "SouthernArmy",
-        UpgradeChance = 0.75,
+        UpgradeChance = 1.0,
         HardMin = 7,
         // HardMax = 40,
+        UnitBlocks = [
+            { ID = "Southern.Frontline", RatioMin = 0.50, RatioMax = 0.9},			// Vanilla: doesn't care about size
+            { ID = "Southern.Backline", RatioMin = 0.1, RatioMax = 0.4 },				// Vanilla: doesn't care about size
+            { ID = "Southern.Ranged", RatioMin = 0.1, RatioMax = 0.3 },		// Vanilla: doesn't care about size
+            { ID = "Southern.Assassin", RatioMin = 0.0, RatioMax = 0.12},		// Vanilla: Start spawning at 8+
+            { ID = "Southern.Officer", RatioMin = 0.07, RatioMax = 0.07},		// Vanilla: Start spawning at 15+
+            { ID = "Southern.Siege", RatioMin = 0.00, RatioMax = 0.07}		// Vanilla: Start spawning at 19+
+        ]
+    },
+    {
+        ID = "SouthernArmyWithLeader",
+        UpgradeChance = 1.0,
+        HardMin = 7,
+        // HardMax = 40,
+        StaticUnits = [
+            "Officer++",
+            "Officer++",
+            "Assassin++"
+        ],
         UnitBlocks = [
             { ID = "Southern.Frontline", RatioMin = 0.50, RatioMax = 0.9 },			// Vanilla: doesn't care about size
             { ID = "Southern.Backline", RatioMin = 0.1, RatioMax = 0.4 },				// Vanilla: doesn't care about size
@@ -28,7 +47,7 @@ local parties = [
     },
 
 
-    // Guards
+    // SubParties
 	{
 		ID = "OneUnhold"
 		HardMin = 1,

@@ -6,19 +6,17 @@ this.unit_block <- {
         LookupMap = {},
         IsStatic = false,
         ReqPartySize = 0,         // This Unit will only be able to spawn if the amount of already spawned troops is greater or equal to ReqPartySize
-		RatioMin = 0.0,		// This UnitBlock is forced to spawn troops until this percentage compared to total troops is satisfied. Rounded down currently
-		RatioMax = 1.0		// If an additional spawned troop would put this unitBlocks percentage over this value compared to total troop, then it returns false
 	}
 
 	function create()
 	{
 	}
 
-    function init( _unitBlock )
+    function init( _unitBlockDef )
 	{
-		this.m.ID = _unitBlock.ID;
+		this.m.ID = _unitBlockDef.ID;
 
-		foreach (key, value in _unitBlock)
+		foreach (key, value in _unitBlockDef)
 		{
 			if (key == "Units")
 			{
@@ -48,19 +46,9 @@ this.unit_block <- {
 		return this.m.Units;
 	}
 
-	function getRatioMin()
-	{
-		return this.m.RatioMin;
-	}
-
 	function getReqPartySize()
 	{
 		return this.m.ReqPartySize;
-	}
-
-	function getRatioMax()
-	{
-		return this.m.RatioMax;
 	}
 
 	function getAverageCost()	// Average cost over all unit types in this block
@@ -183,13 +171,11 @@ this.unit_block <- {
 			local count = _spawnProcess.getUnitCount(id, this.getID());
 			if (count > 0)
 			{
-				for (local j = i + 1; j < this.m.Units.len(); j++)	// @Darxo: Do we even need a for-loop here? By design we sort our list. So we only ever upgrade a unit into the very next type anyways.
+				local j = i + 1;
+				if (this.m.Units[j].canSpawn(_spawnProcess, this.m.Units[i].getCost()))
 				{
-					if (this.m.Units[j].canSpawn(_spawnProcess, this.m.Units[i].getCost()))
-					{
-						ids.add({ID = id, UpgradeID = this.m.Units[j].getID()}, count);
-						break;
-					}
+					local weight = count + (this.m.Units.len() - i) * 3;	// weight higher for weaker troopTypes and those that already spawned a lot
+					ids.add({ID = id, UpgradeID = this.m.Units[j].getID()}, weight);
 				}
 			}
 		}
@@ -199,9 +185,7 @@ this.unit_block <- {
 			local roll = ids.roll();
 			_spawnProcess.decrementUnit(roll.ID, this.getID());
 			_spawnProcess.incrementUnit(roll.UpgradeID, this.getID());
-
-			local consumedResources = this.m.LookupMap[roll.UpgradeID].getCost() - this.m.LookupMap[roll.ID].getCost();
-			_spawnProcess.consumeResources(consumedResources);
+			_spawnProcess.consumeResources(this.m.LookupMap[roll.UpgradeID].getCost() - this.m.LookupMap[roll.ID].getCost());
 			if (!::DSF.Const.Benchmark && ::DSF.Const.DetailedLogging ) ::logInfo("**Upgrading - Block: " + this.getID() + " - Unit: " + this.m.LookupMap[roll.ID].getEntityType() + " (Cost: " + this.m.LookupMap[roll.ID].getCost() + ") to " + this.m.LookupMap[roll.UpgradeID].getEntityType() + " (Cost: " + this.m.LookupMap[roll.UpgradeID].getCost() + ")**\n");
 		}
 	}
