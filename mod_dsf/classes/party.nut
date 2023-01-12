@@ -1,8 +1,8 @@
 this.party <- {
 	m = {
-        ID = null,	
-        UnitBlocks = [],	// Array of Tables that require a 'ID' and optionally 'PartMin', 'PartMax' and 'ReqSize'
-        // IdealSize = 5;	
+        ID = null,
+        UnitBlocks = [],	// Array of Tables that require a 'ID' and optionally 'RatioMin', 'RatioMax' and 'ReqPartySize'
+        // IdealSize = 5;
         // Resources = 0;
         HardMin = 0,		// @Darxo: Smallest army size that is allowed for this troop to even make sense. Ressources are disregarded while trying to satisfy this. Could maybe be set to 1 be default
         HardMax = -1,		// @Darxo: Greatest army size that is allowed for this troop to even make sense. All spawning (not upgrading) is stopped when this is reached
@@ -18,21 +18,16 @@ this.party <- {
 	{
 		this.m.ID = _party.ID;
 
-		if("UpgradeChance" in _party) this.m.UpgradeChance = _party.UpgradeChance;
-		if("HardMin" in _party) this.m.HardMin = _party.HardMin;
-		if("HardMax" in _party) this.m.HardMax = _party.HardMax;
-		if("UnitBlocks" in _party)	this.m.UnitBlocks = _party.UnitBlocks;
-
-		if ("StaticUnits" in _party)	// Haven't changed yet. Dont understand yet
+		foreach (key, value in _party)
 		{
-			this.m.StaticUnits = _party.StaticUnits;
-			local block = {
-				ID = this.m.ID + ".Block.Static",
-				Units = _party.StaticUnits
+			if (typeof value == "function")
+			{
+				this[key] = value;
 			}
-			this.m.UnitBlocks.push(block);
-			::DSF.UnitBlocks.LookupMap[block.ID] <- ::new(::DSF.Class.UnitBlock).init(block);
-			::DSF.UnitBlocks.findById(block.ID).IsStatic = true;
+			else
+			{
+				this.m[key] = value;
+			}
 		}
 		return this;
 	}
@@ -74,48 +69,47 @@ this.party <- {
 	}
 
 	// Checks only against HardMax and HardMin
-	function canSpawn(_currentTotal)
+	function canSpawn( _spawnProcess )
 	{
-		if(_currentTotal < this.getHardMin()) return true;
-		return (this.getHardMax() == -1 || _currentTotal <= this.getHardMax());
+		if (_spawnProcess.getTotal() < this.getHardMin()) return true;
+		return (this.getHardMax() == -1 || _spawnProcess.getTotal() + 1 <= this.getHardMax());
 	}
 
 	// _blockTotal = troop count of this unitBlock; _total = total count of spawned troops; _block = UnitBlock or Table with UnitBlock Id and optional parameter
-	function isWithinPartMax( _blockTotal, _total, _pBlock)		// @Darxo
+	function isWithinRatioMax( _spawnProcess, _pBlock )
 	{
-		local maxAllowed = ((this.getPartMax(_pBlock) * _total) + 0.5).tointeger();		// 0.5 is added to replicate a round() function
-		return (_blockTotal < maxAllowed);
+		local referencedTotal = (_spawnProcess.getTotal() + 1 > this.getHardMin()) ? _spawnProcess.getTotal() + 1 : this.getHardMin();
+		local maxAllowed = ::Math.round(this.getRatioMax(_pBlock) * referencedTotal);
+		return (_spawnProcess.getBlockTotal(_pBlock.ID) < maxAllowed);
 	}
 
 	// _blockTotal = troop count of this unitBlock; _total = total count of spawned troops; _block = UnitBlock or Table with UnitBlock Id and optional parameter
-	function satisfiesPartMin( _blockTotal, _total, _pBlock)		// @Darxo
+	function satisfiesRatioMin( _spawnProcess, _pBlock )
 	{
-		local referencedTotal = (_total > this.getHardMin()) ? _total : this.getHardMin();		// this is just ::Math.max() function which isn't available here
-		local minRequired = (referencedTotal * this.getPartMin(_pBlock)).tointeger();	// tointeger() applies a floor() cut-off. This strictness is good to prevent exotic spawns in low troop sizes.
+		local referencedTotal = (_spawnProcess.getTotal() + 1 > this.getHardMin()) ? _spawnProcess.getTotal() + 1 : this.getHardMin();		// this is just ::Math.max() function which isn't available here
+		local minRequired = ::Math.floor(referencedTotal * this.getRatioMin(_pBlock));	// This floor() strictness is good to prevent exotic spawns in low troop sizes.
 		// In return you will sometimes be 1 troop short of the required minimum
-		
-		// printn("_blockTotal = " + _blockTotal + "; _total = " + _total + "; _partMin = " + _partMin);
-		// printn("Returned: " + (_blockTotal >= minRequired));
-		return (_blockTotal >= minRequired);
+
+		return (_spawnProcess.getBlockTotal(_pBlock.ID) >= minRequired);
 	}
 
 // Getter to retrieve optional parameters out of the unitBlock tables of this Party
-	function getPartMin(_pBlock)
+	function getRatioMin( _pBlock )
 	{
-		if ("PartMin" in _pBlock) return _pBlock.PartMin;
-		return ::DSF.UnitBlocks.findById(_pBlock.ID).getPartMin();
+		if ("RatioMin" in _pBlock) return _pBlock.RatioMin;
+		return ::DSF.UnitBlocks.findById(_pBlock.ID).getRatioMin();
 	}
 
-	function getPartMax(_pBlock)
+	function getRatioMax( _pBlock )
 	{
-		if ("PartMax" in _pBlock) return _pBlock.PartMax;
-		return ::DSF.UnitBlocks.findById(_pBlock.ID).getPartMax();
+		if ("RatioMax" in _pBlock) return _pBlock.RatioMax;
+		return ::DSF.UnitBlocks.findById(_pBlock.ID).getRatioMax();
 	}
 
-	function getReqSize(_pBlock)
+	function getReqPartySize( _pBlock )
 	{
-		if ("ReqSize" in _pBlock) return _pBlock.ReqSize;
-		return ::DSF.UnitBlocks.findById(_pBlock.ID).getReqSize();
+		if ("ReqPartySize" in _pBlock) return _pBlock.ReqPartySize;
+		return ::DSF.UnitBlocks.findById(_pBlock.ID).getReqPartySize();
 	}
 
 };

@@ -3,11 +3,11 @@ this.unit_block <- {
 	m = {
         ID = null,
         Units = [],         // Spawnable units
-        LookupMap = null,
-        IsStatic = null,
-        ReqSize = 0,         // This Unit will only be able to spawn if the amount of already spawned troops is greater or equal to ReqSize
-		PartMin = 0.0,		// This UnitBlock is forced to spawn troops until this percentage compared to total troops is satisfied. Rounded down currently
-		PartMax = 1.0		// If an additional spawned troop would put this unitBlocks percentage over this value compared to total troop, then it returns false
+        LookupMap = {},
+        IsStatic = false,
+        ReqPartySize = 0,         // This Unit will only be able to spawn if the amount of already spawned troops is greater or equal to ReqPartySize
+		RatioMin = 0.0,		// This UnitBlock is forced to spawn troops until this percentage compared to total troops is satisfied. Rounded down currently
+		RatioMax = 1.0		// If an additional spawned troop would put this unitBlocks percentage over this value compared to total troop, then it returns false
 	}
 
 	function create()
@@ -16,14 +16,25 @@ this.unit_block <- {
 
     function init( _unitBlock )
 	{
-		this.m.LookupMap = {};
-		this.m.ID = _unitBlock.ID;		
-		this.m.Units = [];
-		this.m.IsStatic = false;
-		if ("ReqSize" in _unitBlock) this.m.ReqSize = _unitBlock.ReqSize;
-		if ("PartMin" in _unitBlock) this.m.PartMin = _unitBlock.PartMin;
-		if ("PartMax" in _unitBlock) this.m.PartMax = _unitBlock.PartMax;
-		this.addUnits(_unitBlock.Units);		
+		this.m.ID = _unitBlock.ID;
+
+		foreach (key, value in _unitBlock)
+		{
+			if (key == "Units")
+			{
+				this.addUnits(value);
+				continue;
+			}
+
+			if (typeof value == "function")
+			{
+				this[key] = value;
+			}
+			else
+			{
+				this.m[key] = value;
+			}
+		}
 		return this;
 	}
 
@@ -37,29 +48,29 @@ this.unit_block <- {
 		return this.m.Units;
 	}
 
-	function getPartMin()
+	function getRatioMin()
 	{
-		return this.m.PartMin;
+		return this.m.RatioMin;
 	}
 
-	function getReqSize()
+	function getReqPartySize()
 	{
-		return this.m.ReqSize;
+		return this.m.ReqPartySize;
 	}
 
-	function getPartMax()
+	function getRatioMax()
 	{
-		return this.m.PartMax;
+		return this.m.RatioMax;
 	}
 
 	function getAverageCost()	// Average cost over all unit types in this block
 	{
 		local cost = 0.0;
-		foreach(unit in this.getUnits())
+		foreach (unit in this.getUnits())
 		{
 			cost += unit.getCost();
 		}
-		if(this.getUnits().len() == 0) return cost;
+		if (this.getUnits().len() == 0) return cost;
 		return (cost / this.getUnits().len());
 	}
 
@@ -70,7 +81,7 @@ this.unit_block <- {
 		{
 			unit = ::DSF.Units.findById(_unit.ID);
 		}
-		
+
 		this.m.Units.push(unit);
 		this.m.LookupMap[unit.getID()] <- unit;
 	}
@@ -95,23 +106,24 @@ this.unit_block <- {
 		}
 	}
 
-	// Returns amount of units in this block that are stronger than _unit (in terms of cost)
-	function getStrongerUnitCount( _unit )
+	// Returns amount of unitTypes in this block that are stronger than the passed unit (in terms of cost)
+	function getStrongerUnitTypeCount( _unit )
 	{
 		local count = 0
-		foreach(unit in this.getUnits())
+		foreach (unit in this.getUnits())
 		{
 			if(unit.getCost() > _unit.getCost()) count++;
 		}
 		return count;
 	}
 
-	function genUpgradeWeight( _spawnedUnits )
+	// This weight is used to randomly roll which UnitBlock should have one of their troops upgrade during that cycle
+	function getUpgradeWeight( _spawnProcess )
 	{
 		local weight = 0;
-		foreach(unit in _spawnedUnits)
+		foreach (unit in _spawnProcess.getUnits(this.getID()))
 		{
-			weight += this.getStrongerUnitCount(unit);
+			weight += this.getStrongerUnitTypeCount(unit);
 		}
 		return weight;
 	}
@@ -121,11 +133,11 @@ this.unit_block <- {
 		return this.m.LookupMap[_id];
 	}
 
-	function spawnUnit(_spawnProcess, _playerStrength, _availableResources = -1 )
+	function spawnUnit( _spawnProcess )
 	{
 		foreach (unit in this.m.Units)
 		{
-			if (unit.canSpawn(_playerStrength, _availableResources))
+			if (unit.canSpawn(_spawnProcess))
 			{
 				_spawnProcess.incrementUnit(unit.getID(), this.getID());
 				if (!::DSF.Const.Benchmark && ::DSF.Const.DetailedLogging ) ::logInfo("Spawning - Block: " + this.getID() + " - Unit: " + unit.getEntityType() + " (Cost: " + unit.getCost() + ")\n");
@@ -152,7 +164,7 @@ this.unit_block <- {
 
 			consumedResources = this.m.LookupMap[despawnID].getCost();
 			_spawnProcess.decrementUnit(despawnID, this.getID());
- 
+
 			::logInfo("--> Despawning - Block: " + this.getID() + " - Unit: " + ::DSF.Units.findById(despawnID).getEntityType() + " (Cost: " + this.LookupMap[roll.ID].Cost + ") <--\n");
 		}
 
@@ -160,7 +172,7 @@ this.unit_block <- {
 	}
 */
 
-	function upgradeUnit( _spawnProcess, _playerStrength, _availableResources = -1 )
+	function upgradeUnit( _spawnProcess )
 	{
 		local ids = ::MSU.Class.WeightedContainer();
 
@@ -171,15 +183,15 @@ this.unit_block <- {
 			local count = _spawnProcess.getUnitCount(id, this.getID());
 			if (count > 0)
 			{
-				for (local j = i + 1; j < this.m.Units.len(); j++)
+				for (local j = i + 1; j < this.m.Units.len(); j++)	// @Darxo: Do we even need a for-loop here? By design we sort our list. So we only ever upgrade a unit into the very next type anyways.
 				{
-					if (this.m.Units[j].canSpawn(_playerStrength, _availableResources + this.m.Units[i].getCost()))
+					if (this.m.Units[j].canSpawn(_spawnProcess, this.m.Units[i].getCost()))
 					{
 						ids.add({ID = id, UpgradeID = this.m.Units[j].getID()}, count);
 						break;
 					}
 				}
-			}			
+			}
 		}
 
 		if (ids.len() > 0)
@@ -194,7 +206,7 @@ this.unit_block <- {
 		}
 	}
 
-	function downgradeUnit( _party )
+	function downgradeUnit( _spawnProcess )
 	{
 		local ids = ::MSU.Class.WeightedContainer();
 
@@ -202,26 +214,25 @@ this.unit_block <- {
 		for (local i = this.m.Units.len() - 1; i > 0; i--)
 		{
 			local id = this.m.Units[i].getID();
-			local count = _party.getSpawnInfo().getUnitCount(id, this.getID());
+			local count = _spawnProcess.getUnitCount(id, this.getID());
 			if (count > 0)
 			{
 				for (local j = i; j >= 0; j--)
 				{
-					if (this.m.Units[j].canSpawn(_party)) ids.add({ID = id, DowngradeID = this.m.Units[i-1].getID()}, count);
+					if (this.m.Units[j].canSpawn(_spawnProcess)) ids.add({ID = id, DowngradeID = this.m.Units[i-1].getID()}, count);
 				}
-				
-			} 
+			}
 		}
 
 		if (ids.len() > 0)
 		{
 			local roll = ids.roll();
 
-			_party.getSpawnInfo().addResources(this.m.LookupMap[roll.ID].Cost);
-			_party.getSpawnInfo().decrementUnit(roll.ID, this.getID());
+			_spawnProcess.addResources(this.m.LookupMap[roll.ID].Cost);
+			_spawnProcess.decrementUnit(roll.ID, this.getID());
 
-			_party.getSpawnInfo().incrementUnit(roll.DowngradeID, this.getID());
-			_party.getSpawnInfo().consumeResources(this.m.LookupMap[roll.DowngradeID].Cost);
+			_spawnProcess.incrementUnit(roll.DowngradeID, this.getID());
+			_spawnProcess.consumeResources(this.m.LookupMap[roll.DowngradeID].Cost);
 
 			::logInfo("!! Downgrading - Block: " + this.getID() + " - Unit: " + roll.ID + " (Cost: " + this.m.LookupMap[roll.ID].Cost + ") to " + roll.DowngradeID + " (Cost: " + this.m.LookupMap[roll.DowngradeID].Cost + ") !!\n");
 
@@ -231,29 +242,28 @@ this.unit_block <- {
 		return false;
 	}
 
-	function canSpawn( _totalSpawned, _playerStrength, _availableResources = -1 )
+	function canSpawn( _spawnProcess )
 	{
-		if (_totalSpawned < this.m.ReqSize) return false;
+		if (_spawnProcess.getTotal() < this.getReqPartySize()) return false;
 
 		foreach (unit in this.m.Units)
 		{
-			if (unit.canSpawn( _playerStrength, _availableResources )) return true;
+			if (unit.canSpawn( _spawnProcess )) return true;
 		}
 
 		return false;
 	}
 
 	// _spawnInfo is Array of Arrays which counts the spawned troops in this spawnprocess
-	function canUpgrade( _spawnInfo, _playerStrength, _availableResources = -1)
+	function canUpgrade( _spawnProcess )
 	{
 		for (local i = 0; i < this.m.Units.len() - 1; i++)
 		{
-			local resources = (_availableResources == -1) ? -1 : _availableResources + this.m.Units[i].getCost();
-			if (_spawnInfo[this.getID()][this.m.Units[i].getID()] > 0)
+			if (_spawnProcess.getUnitCount(this.m.Units[i].getID(), this.getID()) > 0)
 			{
 				for (local j = i + 1; j < this.m.Units.len(); j++)	// This requires the unit list to be sorted by cost
 				{
-					if (this.m.Units[j].canSpawn(_playerStrength, resources)) return true;
+					if (this.m.Units[j].canSpawn(_spawnProcess, this.m.Units[i].getCost())) return true;
 				}
 			}
 		}
@@ -273,7 +283,7 @@ this.unit_block <- {
 	}
 
 	function onPartySpawnEnd()
-	{		
+	{
 	}
 
 };

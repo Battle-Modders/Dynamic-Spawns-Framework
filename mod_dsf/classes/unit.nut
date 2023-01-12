@@ -15,12 +15,18 @@ this.unit <- {
     function init( _unit )
 	{
 		this.m.ID = _unit.ID;
-		this.m.EntityType = _unit.EntityType;
-		this.m.Cost = _unit.Cost;
 
-		if("StrengthMin" in _unit) this.m.StrengthMin = _unit.StrengthMin;
-		if("StrengthMax" in _unit) this.m.StrengthMax = _unit.StrengthMax;
-		if("Party" in _unit) this.m.Party = _unit.Party;
+		foreach (key, value in _unit)
+		{
+			if (typeof value == "function")
+			{
+				this[key] = value;
+			}
+			else
+			{
+				this.m[key] = value;
+			}
+		}
 		return this;
 	}
 
@@ -54,18 +60,12 @@ this.unit <- {
 		return this.m.StrengthMax;
 	}
 
-	function getGuards()
+	function canSpawn( _spawnProcess, _bonusResources = 0 )		// _bonusResources are used if you want to upgrade unit-A into unit-B. In those cases you have the resources from unit-A available in addition
 	{
-		return this.m.Guards;
-	}
+		if (!_spawnProcess.isIgnoringCost() && (_spawnProcess.getResources() + _bonusResources) < this.getCost()) return false;
 
-	function canSpawn( _playerStrength, _availableResources = -1)
-	{
-		// -1 means that the resource cost doesn't matter
-		if(_availableResources != -1 && _availableResources < this.getCost()) return false;
-
-		if(_playerStrength < this.getStrengthMin()) return false;
-		if(this.getStrengthMax() != -1 && _playerStrength > this.getStrengthMax()) return false;
+		if (_spawnProcess.getPlayerStrength()  < this.getStrengthMin()) return false;
+		if (this.getStrengthMax() != -1 && _spawnProcess.getPlayerStrength() > this.getStrengthMax()) return false;
 
 		return true;
 	}

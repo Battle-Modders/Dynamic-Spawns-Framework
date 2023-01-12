@@ -21,7 +21,7 @@
 	local party = ::DSF.Parties.LookupMap["Barbarians"];
 	local spawnProcess = ::new(::DSF.Class.SpawnProcess);
 	for (local i = 0; i < ::DSF.Const.Iterations; i++)
-	{	
+	{
 		::logWarning("---------------------------------- ROUND " + (i + 1) + " ------------------------------------");
 		// spawnProcess.spawn(party, 250, -1, 12, 12);		// Exact 12 enemies, no more, no less
 		// spawnProcess.spawn(party, 400);					// Just spend all resources. Because of no specified idealsize this results in a uber-upgraded small group
@@ -32,7 +32,7 @@
 
 	party = ::DSF.Parties.LookupMap["SouthernArmy"];
 	for (local i = 0; i < ::DSF.Const.Iterations; i++)
-	{	
+	{
 		::logWarning("---------------------------------- ROUND " + (i + 1) + " ------------------------------------");
 		// spawnProcess.spawn(party);			// No Resources given so just spawns until HardMin is satisfied
 		// spawnProcess.spawn(party, 250, -1, 12, 12);		// Exact 12 enemies, no more, no less
@@ -40,5 +40,5 @@
 		spawnProcess.spawn(party, 400, 17);				// Balanced Party because of idealSize 17
 		// spawnProcess.spawn(party, 800, 32);				// Balanced bigger Party medium strength
 	}
-	
+
 });
