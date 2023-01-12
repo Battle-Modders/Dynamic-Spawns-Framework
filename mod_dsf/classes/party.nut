@@ -31,8 +31,8 @@ this.party <- {
 				Units = _party.StaticUnits
 			}
 			this.m.UnitBlocks.push(block);
-			::DSS.UnitBlocks.LookupMap[block.ID] <- ::new(::DSS.Class.UnitBlock).init(block);
-			::DSS.UnitBlocks.findById(block.ID).IsStatic = true;
+			::DSF.UnitBlocks.LookupMap[block.ID] <- ::new(::DSF.Class.UnitBlock).init(block);
+			::DSF.UnitBlocks.findById(block.ID).IsStatic = true;
 		}
 		return this;
 	}
@@ -69,7 +69,7 @@ this.party <- {
 
 	function getStaticUnitBlock()
 	{
-		if (this.m.StaticUnits != null) return ::DSS.UnitBlocks.findById(this.ID + ".Block.Static");
+		if (this.m.StaticUnits != null) return ::DSF.UnitBlocks.findById(this.ID + ".Block.Static");
 		return null;
 	}
 
@@ -103,19 +103,20 @@ this.party <- {
 	function getPartMin(_pBlock)
 	{
 		if ("PartMin" in _pBlock) return _pBlock.PartMin;
-		return ::DSS.UnitBlocks.findById(_pBlock.ID).getPartMin();
+		return ::DSF.UnitBlocks.findById(_pBlock.ID).getPartMin();
 	}
 
 	function getPartMax(_pBlock)
 	{
 		if ("PartMax" in _pBlock) return _pBlock.PartMax;
-		return ::DSS.UnitBlocks.findById(_pBlock.ID).getPartMax();
+		return ::DSF.UnitBlocks.findById(_pBlock.ID).getPartMax();
 	}
 
 	function getReqSize(_pBlock)
 	{
 		if ("ReqSize" in _pBlock) return _pBlock.ReqSize;
-		return ::DSS.UnitBlocks.findById(_pBlock.ID).getReqSize();
+		return ::DSF.UnitBlocks.findById(_pBlock.ID).getReqSize();
 	}
 
 };
+

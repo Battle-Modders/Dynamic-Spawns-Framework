@@ -1,4 +1,4 @@
-::DSS.Data.UnitDefs <- [
+::DSF.Data.UnitDefs <- [
 
 // Barbarians
 	{
@@ -125,9 +125,9 @@
     }
 ]
 
-foreach (unit in ::DSS.Data.UnitDefs)
+foreach (unit in ::DSF.Data.UnitDefs)
 {
-    local unitObj = ::new(::DSS.Class.Unit).init(unit);
-	::DSS.Units.LookupMap[unitObj.m.ID] <- unitObj;
+    local unitObj = ::new(::DSF.Class.Unit).init(unit);
+	::DSF.Units.LookupMap[unitObj.m.ID] <- unitObj;
 	// ::logWarning("Added the unit: '" + unitObj.m.ID + "'");
 }

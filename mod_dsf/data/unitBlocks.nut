@@ -1,4 +1,4 @@
-::DSS.Data.UnitBlocks <- [
+::DSF.Data.UnitBlocks <- [
     // Barbarians
 	{
 		ID = "Barbarian.Frontline",
@@ -61,8 +61,8 @@
 	}
 ]
 
-foreach (block in ::DSS.Data.UnitBlocks)
+foreach (block in ::DSF.Data.UnitBlocks)
 {
-    local unitBlockObj = ::new(::DSS.Class.UnitBlock).init(block);
-	::DSS.UnitBlocks.LookupMap[unitBlockObj.m.ID] <- unitBlockObj;
+    local unitBlockObj = ::new(::DSF.Class.UnitBlock).init(block);
+	::DSF.UnitBlocks.LookupMap[unitBlockObj.m.ID] <- unitBlockObj;
 }

@@ -67,3 +67,9 @@ _customHardMax: int
 
 - Introduce a second set of parameters similar to PartMin and PartMax but for spend resources.
 - That way UnitBlocks will guarantee that they get some resource to invest in them every now and then even if they only consist of very few troops
+
+
+- ADd handling for AI Behviours to this framework?
+- It would be one of the possible next things to add support for once the basic dynamic spawn works.
+- But currently: Low Priority 
+

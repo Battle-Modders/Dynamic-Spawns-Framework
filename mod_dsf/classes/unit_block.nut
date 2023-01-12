@@ -68,7 +68,7 @@ this.unit_block <- {
 		local unit;
 		if ("ID" in _unit)
 		{
-			unit = ::DSS.Units.findById(_unit.ID);
+			unit = ::DSF.Units.findById(_unit.ID);
 		}
 		
 		this.m.Units.push(unit);
@@ -128,7 +128,7 @@ this.unit_block <- {
 			if (unit.canSpawn(_playerStrength, _availableResources))
 			{
 				_spawnProcess.incrementUnit(unit.getID(), this.getID());
-				if (!::DSS.Const.Benchmark && ::DSS.Const.DetailedLogging ) ::logInfo("Spawning - Block: " + this.getID() + " - Unit: " + unit.getEntityType() + " (Cost: " + unit.getCost() + ")\n");
+				if (!::DSF.Const.Benchmark && ::DSF.Const.DetailedLogging ) ::logInfo("Spawning - Block: " + this.getID() + " - Unit: " + unit.getEntityType() + " (Cost: " + unit.getCost() + ")\n");
 				_spawnProcess.consumeResources(unit.getCost());
 				break;
 			}
@@ -153,7 +153,7 @@ this.unit_block <- {
 			consumedResources = this.m.LookupMap[despawnID].getCost();
 			_spawnProcess.decrementUnit(despawnID, this.getID());
  
-			::logInfo("--> Despawning - Block: " + this.getID() + " - Unit: " + ::DSS.Units.findById(despawnID).getEntityType() + " (Cost: " + this.LookupMap[roll.ID].Cost + ") <--\n");
+			::logInfo("--> Despawning - Block: " + this.getID() + " - Unit: " + ::DSF.Units.findById(despawnID).getEntityType() + " (Cost: " + this.LookupMap[roll.ID].Cost + ") <--\n");
 		}
 
 		return consumedResources;
@@ -190,7 +190,7 @@ this.unit_block <- {
 
 			local consumedResources = this.m.LookupMap[roll.UpgradeID].getCost() - this.m.LookupMap[roll.ID].getCost();
 			_spawnProcess.consumeResources(consumedResources);
-			if (!::DSS.Const.Benchmark && ::DSS.Const.DetailedLogging ) ::logInfo("**Upgrading - Block: " + this.getID() + " - Unit: " + this.m.LookupMap[roll.ID].getEntityType() + " (Cost: " + this.m.LookupMap[roll.ID].getCost() + ") to " + this.m.LookupMap[roll.UpgradeID].getEntityType() + " (Cost: " + this.m.LookupMap[roll.UpgradeID].getCost() + ")**\n");
+			if (!::DSF.Const.Benchmark && ::DSF.Const.DetailedLogging ) ::logInfo("**Upgrading - Block: " + this.getID() + " - Unit: " + this.m.LookupMap[roll.ID].getEntityType() + " (Cost: " + this.m.LookupMap[roll.ID].getCost() + ") to " + this.m.LookupMap[roll.UpgradeID].getEntityType() + " (Cost: " + this.m.LookupMap[roll.UpgradeID].getCost() + ")**\n");
 		}
 	}
 

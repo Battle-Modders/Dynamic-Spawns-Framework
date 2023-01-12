@@ -1,9 +1,10 @@
 // "Class" that manages the dynamic spawning given a Party-Class and additional variables
 this.spawn_process <- {
 	m = {
-        SpawnInfo = {},     // Array of Arrays. For each UnitBlock and for each spawned troop from that Block
+        SpawnInfo = {},     // Array of Arrays. For each UnitBlock and for each spawned units from that Block
         UnitCount = 0,      // Amount of units spawned during this process. This does not include Guards
-		Resources = 0		// Available resources during this run
+		Resources = 0,		// Available resources during this run
+		Party = null		// Reference to the party that is currently used for spawning
 	}
 
     function create()
@@ -22,7 +23,7 @@ this.spawn_process <- {
 				Maxxed = 0
 			};
 
-			foreach (unit in ::DSS.UnitBlocks.findById(block.ID).getUnits())
+			foreach (unit in ::DSF.UnitBlocks.findById(block.ID).getUnits())
 			{
 				this.m.SpawnInfo[block.ID][unit.getID()] <- 0;
 			}
@@ -40,12 +41,12 @@ this.spawn_process <- {
         local playerStrength = 100;     // Placeholder. This needs to be passed as argument or taken from global variable/function
 		foreach (block in _party.m.UnitBlocks)
 		{
-			::DSS.UnitBlocks.findById(block.ID).onPartySpawnStart();
+			::DSF.UnitBlocks.findById(block.ID).onPartySpawnStart();
 		}
 
 		local ret = [];
 
-        // Spawn static troops
+        // Spawn static units
 		local budget = this.getResources();
 		/*if (_party.m.StaticUnits != null)
 		{
@@ -75,7 +76,7 @@ this.spawn_process <- {
 				local ratioSpawn = false;			
 				foreach (pBlock in _party.m.UnitBlocks)		// A pBlock (partyUnitBlock) contains a unitBlock ID and sometimes optional parameter
 				{
-					local unitBlock = ::DSS.UnitBlocks.findById(pBlock.ID);
+					local unitBlock = ::DSF.UnitBlocks.findById(pBlock.ID);
 					if (unitBlock.canSpawn(this.getTotal(), playerStrength, budget) == false) continue;
 					if (_party.isWithinPartMax(this.getBlockTotal(pBlock.ID), this.getTotal() + 1, pBlock) == false) continue;
 					if (_party.satisfiesPartMin(this.getBlockTotal(pBlock.ID), this.getTotal() + 1, pBlock) == true) continue;
@@ -89,7 +90,7 @@ this.spawn_process <- {
 				// Weighted-Spawns: Every UnitBlock that doesn't surpass their PartMax compete against each other for a random spawn
 				foreach (pBlock in _party.m.UnitBlocks)		// A pBlock (partyUnitBlock) contains a unitBlock ID and sometimes optional parameter
 				{
-					local unitBlock = ::DSS.UnitBlocks.findById(pBlock.ID);	// @Darxo
+					local unitBlock = ::DSF.UnitBlocks.findById(pBlock.ID);	// @Darxo
 					// if (unitBlock.IsStatic) continue;	// @Darxo: I don't understand this variables use
 	
 					if (unitBlock.canSpawn(this.getTotal(), playerStrength, budget))
@@ -111,7 +112,7 @@ this.spawn_process <- {
 			// Weighted-Upgrades: Every UnitBlock that has upgradeable units competes against each other for a random upgrade
 			foreach (pBlock in _party.m.UnitBlocks)		// A pBlock (partyUnitBlock) contains a unitBlock ID and sometimes optional parameter
 			{
-				local unitBlock = ::DSS.UnitBlocks.findById(pBlock.ID);	// @Darxo
+				local unitBlock = ::DSF.UnitBlocks.findById(pBlock.ID);	// @Darxo
 				// if (unitBlock.IsStatic) continue;	// @Darxo: I don't understand this variables use
 		
 				if (this.getTotal() >= _idealSize && unitBlock.canUpgrade(this.m.SpawnInfo, playerStrength, budget))
@@ -123,7 +124,7 @@ this.spawn_process <- {
 
 			if (spawnAffordableBlocks.len() == 0 && upgradeAffordableBlocks.len() == 0) break;
 
-			if (!::DSS.Const.Benchmark && ::DSS.Const.DetailedLogging )
+			if (!::DSF.Const.Benchmark && ::DSF.Const.DetailedLogging )
 			{
 				if (spawnAffordableBlocks.len() > 0)
 				{
@@ -145,14 +146,14 @@ this.spawn_process <- {
 					::logWarning(str.slice(0, -2) + "\n");
 				}
 			}
-
-			if (upgradeAffordableBlocks.len() > 0 && ::DSS.Const.randfloat(1.0) < (_party.getUpgradeChance() * this.getTotal() / _idealSize))
+			
+			if (upgradeAffordableBlocks.len() > 0 && ::MSU.Math.randf( 0.0, 1.0 ) < (_party.getUpgradeChance() * this.getTotal() / _idealSize))
 			{
 				// ::logWarning("Upgrade: - Resources: " + this.getResources() + " : TotalCount = " + this.getTotal());
 				local blockID = upgradeAffordableBlocks.roll();				
 				if (blockID != null) 
 				{
-					::DSS.UnitBlocks.findById(blockID).upgradeUnit( this, playerStrength, budget );
+					::DSF.UnitBlocks.findById(blockID).upgradeUnit( this, playerStrength, budget );
 				}
 				else if (spawnAffordableBlocks.len() == 0) break;
 			}
@@ -162,23 +163,23 @@ this.spawn_process <- {
 				local blockID = spawnAffordableBlocks.roll();				
 				if (blockID != null) 
 				{
-					::DSS.UnitBlocks.findById(blockID).spawnUnit(this, playerStrength, budget);
+					::DSF.UnitBlocks.findById(blockID).spawnUnit(this, playerStrength, budget);
 				}
 				else if (upgradeAffordableBlocks.len() == 0) break;
 			}
 		}
 
-		if (!::DSS.Const.Benchmark) this.printLog(_party);
+		if (!::DSF.Const.Benchmark) this.printLog(_party);
 
 		ret.extend(this.getUnits());
 
-		local spawnProcess = ::new(::DSS.Class.SpawnProcess);
-		for (local i = ret.len() - 1; i >= 0; i--)		// Weird that you count backwards here. Parties are now spawned in reverse order to how they their masters are listed. - Darxo
+		local spawnProcess = ::new(::DSF.Class.SpawnProcess);
+		for (local i = ret.len() - 1; i >= 0; i--)		// Backwards counting as this array is growing during this process
 		{
 			if (ret[i].getParty() != null)
 			{
 				this.printPartyHeader(ret[i].getParty(), ret[i].getEntityType());
-				ret.extend(spawnProcess.spawn(::DSS.Parties.findById(ret[i].getParty())));	
+				ret.extend(spawnProcess.spawn(::DSF.Parties.findById(ret[i].getParty())));	
 			}
 		}
 
@@ -229,7 +230,7 @@ this.spawn_process <- {
 				if (unitID == "Total") continue;
 				for (local i = 0; i < count; i++)
 				{
-					units.push(::DSS.UnitBlocks.findById(blockID).getUnit(unitID));
+					units.push(::DSF.UnitBlocks.findById(blockID).getUnit(unitID));
 				}
 			}
 		}
@@ -259,7 +260,7 @@ this.spawn_process <- {
 	// Logging
 	function printPartyHeader( _partyName, _vip = "" )
 	{
-		if (::DSS.Const.Benchmark) return;
+		if (::DSF.Const.Benchmark) return;
 		local text = "====== Spawning the Party '" + _partyName + "'";
 		if(_vip != "") text += " for '" + _vip + "'";
 		text += " ======";
@@ -274,7 +275,7 @@ this.spawn_process <- {
 		local printBlock = function( _blockID )
 		{
 			local str = (_blockID.find("Static") != null ? "Static" : _blockID) + ": " + this.m.SpawnInfo[_blockID].Total + " (" + (100 * this.m.SpawnInfo[_blockID].Total / this.getTotal()) + "%) - ";			
-			foreach (unit in ::DSS.UnitBlocks.findById(_blockID).getUnits())
+			foreach (unit in ::DSF.UnitBlocks.findById(_blockID).getUnits())
 			{
 				str += unit.getEntityType() + ": " + this.m.SpawnInfo[_blockID][unit.getID()] + ", ";				
 			}

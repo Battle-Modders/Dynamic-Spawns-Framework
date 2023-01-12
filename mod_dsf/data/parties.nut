@@ -73,7 +73,7 @@ local parties = [
 
 foreach(party in parties)
 {
-    local partyObj = ::new(::DSS.Class.Party).init(party);
-    ::DSS.Parties.LookupMap[partyObj.m.ID] <- partyObj;	
+    local partyObj = ::new(::DSF.Class.Party).init(party);
+    ::DSF.Parties.LookupMap[partyObj.m.ID] <- partyObj;	
 }
 
