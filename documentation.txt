@@ -1,0 +1,69 @@
+
+
+
+### How it works
+
+- A Spawn requires _resources and _idealSize. It is IMPORTANT that those two values are carefully chosen depending on each other.
+- If the idealSize is too high you will get a big party with only weak troops. If it is too low then all spawned troops will be max 
+
+- Until HardMin is reached all Resource Costs are ignored. This will guarantee that a troop alwas has at least a reasonable minimum
+
+- PlayerStrength can optionally influence when certain Units will appear or no longer appear (not used by me atm)
+- If the spawned troops reach HardMax then no more troops can spawn. Unlike _idealSize which only makes that unlikely
+
+_idealSize: int
+    - Algorithm only starts upgrading troops once it has spawned troops up to _idealSize
+_availableResources: int
+    - Algorithm never spends more resources for their next buy than available. Only exception is to reach HardMin
+_customHardMin: int
+    - overwrites the HardMin given by the Party
+_customHardMax: int
+    - overwrites the HardMax given by the Party
+
+- PartMin: float
+    - states what percentage of the generated party should consist of this UnitBlocks
+- PartMax: float
+    - states what percentage of the generated party can at most be from this UnitBlocks
+- ReqSize: int
+    - this unitBlock will only start spawning if the generated party is at least ReqSize big
+
+
+
+
+### Current Issues
+
+- Barbarian Beastmaster with 4 unit types only rarely upgrade fully compared to the barbarian frontline with 3 unit types.
+    - Given high resources the frontline always ends up being only Chosen while the beastmaster rarely get one to highest level
+    - BeastMaster should be upgraded way earlier and more consistent alongside the rest of the group just like in vanilla
+    - Mabye a new custom variable for UnitBlocks? e.g. UpgradeChance Bonus
+
+- When giving custom PartMin and PartMax values then I currently overwrite the original values with those custom onces.
+- And since I'm working on references here I tarnish the original data in case other spawns also use them.
+
+
+### Discussion Points
+
+- Should we use many parameter with default values or tables to instantiate our classes with? 
+
+- I made a slight change to the weight for which UnitBlock to upgrade (not perfect)
+
+- getAverageCost function for UnitBlocks and Parties. Other functions along that line can help generating a safety net to prevent horrible _idealSize - _resources ratios
+
+- Why are Guards generated in reversed order?
+
+- I splitted the main for-loop into three for-loops. At best that's a sidegrade
+
+- Should we write clone() functions for our classes? That way we can easier grant ability to overwrite default parameters of existing data.
+- Currently a Party allows to overwrite PartMin, PartMax and ReqSize of its UnitBlocks by wrapping those variables in an extra table container around those Blocks.
+- This is rather ugly solution
+
+
+### Improvements?
+
+- Mabye we define a new spawn/upgrade behavior for certain UnitBlocks that can be toggled
+- This would make their spawning and traversing through their tiers much more linear and predictable.
+- It could "overcharge" weights that they give out about themselves when they realize that they are behind the curve
+- And instead of randomly upgrading troops they upgrade the lowest troops always
+
+- Introduce a second set of parameters similar to PartMin and PartMax but for spend resources.
+- That way UnitBlocks will guarantee that they get some resource to invest in them every now and then even if they only consist of very few troops
