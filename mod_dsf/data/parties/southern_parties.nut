@@ -8,7 +8,7 @@ local parties = [
         DefaultFigure = "figure_southern_01",
         MovementSpeedMult = 1.0,
         VisibilityMult = 1.0,
-        VisionMult = 1.0
+        VisionMult = 1.0,
         UnitBlocks = [
             { ID = "Southern.Frontline",    RatioMin = 0.50, RatioMax = 0.90, DeterminesFigure = true},			// Vanilla: doesn't care about size
             { ID = "Southern.Backline",     RatioMin = 0.10, RatioMax = 0.40 },				// Vanilla: doesn't care about size

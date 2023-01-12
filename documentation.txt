@@ -37,6 +37,9 @@ _customHardMax: int
 
 - HardMin allows a party to purchase an expensive troop even if it doesnt have the resources for that. E.G. Barbarians in Early game buying BeastMaster and going into -50 resources
 
+- A UnitBlock like Nomad.Elite consists of 3 unit types that all cost the same but are completely different. Ideally that Block would pick one of those at random.
+But the current algorithm will always pick the first one of them to spawn. A way to have interchangable unit types, or just more customizability for party layouts.
+
 ### Discussion Points
 
 - I made a slight change to the weight for which UnitBlock to upgrade (not perfect)
