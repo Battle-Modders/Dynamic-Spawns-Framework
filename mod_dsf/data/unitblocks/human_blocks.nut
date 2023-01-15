@@ -9,6 +9,7 @@
 	},
 	{
 		ID = "Mercenary.Elite",
+		IsRandom = true,
 		Units = [{ ID = "Human.MasterArcher" }, { ID = "Human.HedgeKnight" }, { ID = "Human.Swordmaster" }]
 	},
 	{

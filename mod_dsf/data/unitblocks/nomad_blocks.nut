@@ -13,6 +13,7 @@
 	},
 	{
 		ID = "Nomad.Elite",
+		IsRandom = true,
 		Units = [{ ID = "Nomad.Executioner" }, { ID = "Nomad.DesertStalker" }, { ID = "Nomad.DesertDevil" }]
 	}
 ]

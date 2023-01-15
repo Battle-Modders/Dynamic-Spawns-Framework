@@ -25,6 +25,7 @@
 	},
 	{
 		ID = "Noble.Elite",
+		IsRandom = true,
 		Units = [{ ID = "Noble.Zweihander" }, { ID = "Noble.Knight" }]
 	},
 

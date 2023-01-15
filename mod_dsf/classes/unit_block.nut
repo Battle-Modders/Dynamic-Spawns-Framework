@@ -4,7 +4,7 @@ this.unit_block <- {
         ID = null,
         Units = [],         // Spawnable units
         LookupMap = {},
-        IsStatic = false,
+        IsRandom = false,	// A random block will not upgrade between its troops and instead pick a random one each time
         ReqPartySize = 0,         // This Unit will only be able to spawn if the amount of already spawned troops is greater or equal to ReqPartySize
 	}
 
@@ -123,16 +123,33 @@ this.unit_block <- {
 
 	function spawnUnit( _spawnProcess )
 	{
-		foreach (unit in this.m.Units)
+		local chosenUnit = null;
+		if (this.m.IsRandom)	// Currently this is implemented non-weighted and purely random
 		{
-			if (unit.canSpawn(_spawnProcess))
+			local possibleSpawns = [];
+			foreach(unit in this.m.Units)
 			{
-				_spawnProcess.incrementUnit(unit.getID(), this.getID());
-				if (!::DSF.Const.Benchmark && ::DSF.Const.DetailedLogging ) ::logInfo("Spawning - Block: " + this.getID() + " - Unit: " + unit.getEntityType() + " (Cost: " + unit.getCost() + ")\n");
-				_spawnProcess.consumeResources(unit.getCost());
-				break;
+				if (unit.canSpawn(_spawnProcess)) possibleSpawns.push(unit);
+			}
+			if (possibleSpawns.len() != 0) chosenUnit = possibleSpawns[::Math.rand(0, possibleSpawns.len() - 1)];
+		}
+		else	// Weakest affordable unit is spawned
+		{
+			foreach (unit in this.m.Units)
+			{
+				if (unit.canSpawn(_spawnProcess))
+				{
+					chosenUnit = unit;
+					break;
+				}
 			}
 		}
+
+		if (chosenUnit == null) return;		// This should not happen
+
+		_spawnProcess.incrementUnit(chosenUnit.getID(), this.getID());
+		if (!::DSF.Const.Benchmark && ::DSF.Const.DetailedLogging ) ::logInfo("Spawning - Block: " + this.getID() + " - Unit: " + chosenUnit.getEntityType() + " (Cost: " + chosenUnit.getCost() + ")\n");
+		_spawnProcess.consumeResources(chosenUnit.getCost());
 	}
 /*
 	function despawnUnit( _spawnProcess )
@@ -162,6 +179,8 @@ this.unit_block <- {
 
 	function upgradeUnit( _spawnProcess )
 	{
+		if (this.m.IsRandom) return;	// This should never happen because the canUpgrade check already returns false in these cases
+
 		local ids = ::MSU.Class.WeightedContainer();
 
 		// Ignore the highest tier
@@ -244,6 +263,8 @@ this.unit_block <- {
 	// _spawnInfo is Array of Arrays which counts the spawned troops in this spawnprocess
 	function canUpgrade( _spawnProcess )
 	{
+		if (this.m.IsRandom == true) return false;		// A UnitBlock that is purely random does not support an upgrade system
+
 		for (local i = 0; i < this.m.Units.len() - 1; i++)
 		{
 			if (_spawnProcess.getUnitCount(this.m.Units[i].getID(), this.getID()) > 0)
