@@ -25,7 +25,7 @@ this.spawn_process <- {
 
 		this.m.Party = _party.weakref();
 		this.m.Resources = _availableResources;
-		this.m.IdealSize = _party.generateIdealSize(this, _opposingParty);
+		this.m.IdealSize = _party.generateIdealSize();
 		this.m.CustomHardMin = _customHardMin;
 		this.m.CustomHardMax = _customHardMax;
 

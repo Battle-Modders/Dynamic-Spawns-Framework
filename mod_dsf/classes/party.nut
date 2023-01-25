@@ -108,11 +108,20 @@ this.party <- {
 	}
 
 	// Returns an unsigned integer. This can be random as this function is called only once during a SpawnProcess
-	// _opposingParty: Party that this party is expected to fight
-	function generateIdealSize( _spawnProcess, _opposingPartySize = null )
+	function generateIdealSize()
 	{
-		if (_opposingPartySize == null) _opposingPartySize = 10;
-		return _opposingPartySize * 1.5;
+		local referencedBrothersAmount = this.getReferencedBrotherAmount();
+		referencedBrothersAmount += (::Math.max(2, ::Math.floor(referencedBrothersAmount * 0.3)));
+		referencedBrothersAmount + ::Math.rand(-1, 2);	// A little bit of random variance
+		return referencedBrothersAmount;
+	}
+
+	function getReferencedBrotherAmount()
+	{
+		local referencedAmount = ::World.getPlayerRoster().getAll().len();
+		referencedAmount = ::Math.min(referencedAmount, ::World.Assets.getBrothersScaleMax());
+		referencedAmount = ::Math.max(referencedAmount, ::World.Assets.getBrothersScaleMin());
+		return referencedAmount;
 	}
 
 	function getHardMin()
