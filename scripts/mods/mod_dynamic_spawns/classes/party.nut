@@ -1,4 +1,4 @@
-this.party <- {
+this.party <- inherit(::MSU.BBClass.Empty, {
 	m = {
         ID = null,
         UnitBlocks = [],	// Array of Tables that require a 'ID', 'RatioMin', 'RatioMax' and optionally 'DeterminesFigure'
@@ -169,5 +169,5 @@ this.party <- {
 		return (_spawnProcess.getBlockTotal(_pBlock.ID) >= minRequired);
 	}
 
-};
+});
 

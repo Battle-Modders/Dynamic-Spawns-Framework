@@ -1,4 +1,4 @@
-this.unit <- {
+this.unit <- inherit(::MSU.BBClass.Empty, {
 	m = {
 		ID = null,
 		EntityType = null,		// String-IDs referencing entities from ::Const.World.Spawn.Troops table
@@ -80,4 +80,4 @@ this.unit <- {
 	}
 
 
-};
+});

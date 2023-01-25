@@ -1,5 +1,5 @@
 // A group of similar units that upgrade into one another
-this.unit_block <- {
+this.unit_block <- inherit(::MSU.BBClass.Empty, {
 	m = {
         ID = null,
         Units = [],         // Spawnable units
@@ -294,4 +294,4 @@ this.unit_block <- {
 	{
 	}
 
-};
+});

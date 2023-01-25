@@ -1,5 +1,5 @@
 // "Class" that manages the dynamic spawning given a Party-Class and additional variables
-this.spawn_process <- {
+this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 	m = {
         SpawnInfo = {},     // Table of Tables. For each UnitBlock and for each spawned units from that Block
         UnitCount = 0,      // Amount of units spawned during this process. This does not include SubParties
@@ -331,4 +331,4 @@ this.spawn_process <- {
 		::logInfo("Total Units: " + this.getTotal());
 		::logInfo("\n");
 	}
-};
+});
