@@ -33,7 +33,7 @@ this.party <- {
 			{
 				foreach (unitID in value)
 				{
-					this.m.StaticUnits.push(::DSF.Units.findById(unitID));
+					this.m.StaticUnits.push(::DynamicSpawns.Units.findById(unitID));
 				}
 				continue;
 			}
@@ -74,7 +74,7 @@ this.party <- {
 		{
 			if (pBlock.DeterminesFigure == false) continue;
 
-			local unitBlock = ::DSF.UnitBlocks.findById(pBlock.ID);
+			local unitBlock = ::DynamicSpawns.UnitBlocks.findById(pBlock.ID);
 			foreach (unit in unitBlock.getUnits())
 			{
 				if (unit.getFigure() == "") continue;
@@ -102,7 +102,7 @@ this.party <- {
 	function spawn( _resources, _opposingParty = null, _customHardMin = -1, _customHardMax = -1 )
 	{
 		// ::logWarning("Spawning the party '" + this.m.ID + "' with '" + _resources + "' Resources");
-		local spawnProcess = ::new(::DSF.Class.SpawnProcess);
+		local spawnProcess = ::new(::DynamicSpawns.Class.SpawnProcess);
 		spawnProcess.init(this, _resources, _opposingParty, _customHardMin, _customHardMax);
 		return spawnProcess.spawn();
 	}
@@ -111,7 +111,6 @@ this.party <- {
 	// _opposingParty: Party that this party is expected to fight
 	function generateIdealSize( _spawnProcess, _opposingPartySize = null )
 	{
-//		if (_opposingPartySize == null) _opposingPartySize = ::Math.max(::World.Roster.getAll().len(), (::DSF.Static.getExpectedNPCWorldSize() * ::World.Roster.getAll().len() / 2));
 		if (_opposingPartySize == null) _opposingPartySize = 10;
 		return _opposingPartySize * 1.5;
 	}

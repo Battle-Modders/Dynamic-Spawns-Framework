@@ -1,15 +1,15 @@
-::DSF <- {
+::DynamicSpawns <- {
 	Version = "0.1.0",
-	ID = "mod_dsf",
-	Name = "Dynamic Spawn Framework (DSF)",
+	ID = "mod_dynamic_spawns",
+	Name = "Dynamic Spawns",
 };
 
-::mods_registerMod(::DSF.ID, ::DSF.Version, ::DSF.Name);
-::mods_queue(::DSF.ID, "mod_msu", function() {
+::mods_registerMod(::DynamicSpawns.ID, ::DynamicSpawns.Version, ::DynamicSpawns.Name);
+::mods_queue(::DynamicSpawns.ID, "mod_msu", function() {
 
-	::DSF.Mod <- ::MSU.Class.Mod(::DSF.ID, ::DSF.Version, ::DSF.Name);
+	::DynamicSpawns.Mod <- ::MSU.Class.Mod(::DynamicSpawns.ID, ::DynamicSpawns.Version, ::DynamicSpawns.Name);
 
-	::DSF.Const <- {
+	::DynamicSpawns.Const <- {
 		DetailedLogging = false,
 		Iterations = 3,
 		Benchmark = false
@@ -23,14 +23,14 @@
 function testing()
 {
 	::logWarning("---------------------------------- Army With Static Units ------------------------------------");
-	local party = ::DSF.Parties.LookupMap["SouthernArmyWithLeader"];
-	local spawnProcess = ::new(::DSF.Class.SpawnProcess);
+	local party = ::DynamicSpawns.Parties.LookupMap["SouthernArmyWithLeader"];
+	local spawnProcess = ::new(::DynamicSpawns.Class.SpawnProcess);
 	spawnProcess.init(party, 1000, 32).spawn();
 
 	// Testing
-	local party = ::DSF.Parties.LookupMap["Barbarians"];
-	local spawnProcess = ::new(::DSF.Class.SpawnProcess);
-	for (local i = 0; i < ::DSF.Const.Iterations; i++)
+	local party = ::DynamicSpawns.Parties.LookupMap["Barbarians"];
+	local spawnProcess = ::new(::DynamicSpawns.Class.SpawnProcess);
+	for (local i = 0; i < ::DynamicSpawns.Const.Iterations; i++)
 	{
 		::logWarning("---------------------------------- ROUND " + (i + 1) + " ------------------------------------");
 		// spawnProcess.spawn(party, 250, -1, 12, 12);		// Exact 12 enemies, no more, no less
@@ -40,8 +40,8 @@ function testing()
 		spawnProcess.init(party, 1000, 32).spawn();				// Balanced bigger Party high strength
 	}
 
-	party = ::DSF.Parties.LookupMap["Noble"];
-	for (local i = 0; i < ::DSF.Const.Iterations; i++)
+	party = ::DynamicSpawns.Parties.LookupMap["Noble"];
+	for (local i = 0; i < ::DynamicSpawns.Const.Iterations; i++)
 	{
 		::logWarning("---------------------------------- ROUND " + (i + 1) + " ------------------------------------");
 		// spawnProcess.spawn(party);			// No Resources given so just spawns until HardMin is satisfied

@@ -1,4 +1,4 @@
-::DSF.Data.UnitBlocks <- [
+::DynamicSpawns.Data.UnitBlocks <- [
 	{
 		ID = "Nomad.Frontline",
 		Units = [{ ID = "Nomad.Cutthroat" }, { ID = "Nomad.Outlaw" }]
@@ -18,8 +18,8 @@
 	}
 ]
 
-foreach (block in ::DSF.Data.UnitBlocks)
+foreach (block in ::DynamicSpawns.Data.UnitBlocks)
 {
-    local unitBlockObj = ::new(::DSF.Class.UnitBlock).init(block);
-	::DSF.UnitBlocks.LookupMap[unitBlockObj.m.ID] <- unitBlockObj;
+    local unitBlockObj = ::new(::DynamicSpawns.Class.UnitBlock).init(block);
+	::DynamicSpawns.UnitBlocks.LookupMap[unitBlockObj.m.ID] <- unitBlockObj;
 }

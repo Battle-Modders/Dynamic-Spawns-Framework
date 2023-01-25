@@ -3,7 +3,7 @@
     local oldCreateDefenders = o.createDefenders;
 	o.createDefenders = function()
 	{
-        if (::DSF.Static.isDynamicParty(this.m.DefenderSpawnList))    // check whether _partyList is a dynamic list or rather do we have already defined dynamic behavior for that?
+        if (::DynamicSpawns.Static.isDynamicParty(this.m.DefenderSpawnList))    // check whether _partyList is a dynamic list or rather do we have already defined dynamic behavior for that?
         {
             // This is 1 to 1 copy of vanilla resource scaling
             local resources = this.m.Resources;
@@ -34,7 +34,7 @@
 				this.m.DefenderSpawnDay = ::World.getTime().Days;
 			}
 
-            return ::DSF.Static.addTroops(this, this.m.DefenderSpawnList, resources);
+            return ::DynamicSpawns.Static.addTroops(this, this.m.DefenderSpawnList, resources);
         }
 
         return oldCreateDefenders();

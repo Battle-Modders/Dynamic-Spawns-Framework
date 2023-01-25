@@ -1,29 +1,29 @@
 
-::DSF.UnitBlocks <- {
+::DynamicSpawns.UnitBlocks <- {
 	LookupMap = {},
 	function findById( _id )
 	{
 		return this.LookupMap[_id];
 	}
 }
-::DSF.Parties <- {
+::DynamicSpawns.Parties <- {
 	LookupMap = {},
 	function findById( _id )
 	{
 		return this.LookupMap[_id];
 	}
 }
-::DSF.Units <- {
+::DynamicSpawns.Units <- {
 	LookupMap = {},
 	function findById( _id )
 	{
 		return this.LookupMap[_id];
-	}	
+	}
 }
 
-::DSF.Data <- {};
+::DynamicSpawns.Data <- {};
 
-::DSF.Class <- {
+::DynamicSpawns.Class <- {
 	Unit = "mod_dsf/classes/unit",
 	UnitBlock = "mod_dsf/classes/unit_block",
 	SpawnProcess = "mod_dsf/classes/spawn_process",

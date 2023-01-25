@@ -1,8 +1,8 @@
-::DSF.Static <- {};
-::DSF.Static.assignTroops <- function( _worldParty, _party, _resources, _opposingParty = null, _customHardMin = -1, _customHardMax = -1 )
+::DynamicSpawns.Static <- {};
+::DynamicSpawns.Static.assignTroops <- function( _worldParty, _party, _resources, _opposingParty = null, _customHardMin = -1, _customHardMax = -1 )
 {
 	// ::logWarning("Spawning the party '" + this.m.ID + "' with '" + _resources + "' Resources");
-	local spawnProcess = ::new(::DSF.Class.SpawnProcess);
+	local spawnProcess = ::new(::DynamicSpawns.Class.SpawnProcess);
 	spawnProcess.init(_party, _resources, _opposingParty, _customHardMin, _customHardMax);
 	local spawnedUnits = spawnProcess.spawn();
 
@@ -22,10 +22,10 @@
 
 // Similar to assignTroops but doesn't apply the parties properties
 // In Vanilla this function is part of the contract.nut
-::DSF.Static.addTroops <- function( _worldParty, _party, _resources, _opposingParty = null, _customHardMin = -1, _customHardMax = -1 )
+::DynamicSpawns.Static.addTroops <- function( _worldParty, _party, _resources, _opposingParty = null, _customHardMin = -1, _customHardMax = -1 )
 {
 	// ::logWarning("Spawning the party '" + this.m.ID + "' with '" + _resources + "' Resources");
-	local spawnProcess = ::new(::DSF.Class.SpawnProcess);
+	local spawnProcess = ::new(::DynamicSpawns.Class.SpawnProcess);
 	spawnProcess.init(_party, _resources, _opposingParty, _customHardMin, _customHardMax);
 	local spawnedUnits = spawnProcess.spawn();
 
@@ -36,12 +36,12 @@
 	_worldParty.updateStrength();
 }
 
-::DSF.Static.isDynamicParty <- function( _party )
+::DynamicSpawns.Static.isDynamicParty <- function( _party )
 {
 	return ((typeof _party == "table") && ("spawn" in _party));
 }
 
-::DSF.Static.getExpectedNPCWorldSize <- function( _party )
+::DynamicSpawns.Static.getExpectedNPCWorldSize <- function( _party )
 {
     return 15;
 }

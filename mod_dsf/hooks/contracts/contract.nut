@@ -8,10 +8,10 @@
     local oldAddUnitsToEntity = o.addUnitsToEntity;
     o.addUnitsToEntity = function( _worldParty, _party, _resources )
     {
-        if (::DSF.Static.isDynamicParty(_party))    // check whether _partyList is a dynamic list or rather do we have already defined dynamic behavior for that?
+        if (::DynamicSpawns.Static.isDynamicParty(_party))    // check whether _partyList is a dynamic list or rather do we have already defined dynamic behavior for that?
         {
             // ::logWarning("Sucessful redirect to custom assignTroops");
-            return ::DSF.Static.addTroops(_worldParty, _party, _resources);
+            return ::DynamicSpawns.Static.addTroops(_worldParty, _party, _resources);
         }
         return oldAddUnitsToEntity(_worldParty, _party, _resources);
     }

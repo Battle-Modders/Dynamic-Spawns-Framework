@@ -43,7 +43,7 @@ this.spawn_process <- {
 				Total = 0
 			};
 
-			foreach (unit in ::DSF.UnitBlocks.findById(block.ID).getUnits())
+			foreach (unit in ::DynamicSpawns.UnitBlocks.findById(block.ID).getUnits())
 			{
 				this.m.SpawnInfo[block.ID][unit.getID()] <- 0;
 			}
@@ -65,7 +65,7 @@ this.spawn_process <- {
         this.m.PlayerStrength = 100;     // Placeholder. This needs to be passed as argument or taken from global variable/function
 		foreach (block in this.getParty().m.UnitBlocks)
 		{
-			::DSF.UnitBlocks.findById(block.ID).onPartySpawnStart();
+			::DynamicSpawns.UnitBlocks.findById(block.ID).onPartySpawnStart();
 		}
 
 		local ret = [];
@@ -92,7 +92,7 @@ this.spawn_process <- {
 			local ratioSpawn = false;
 			foreach (pBlock in this.getParty().m.UnitBlocks)		// A pBlock (partyUnitBlock) contains a unitBlock ID and sometimes optional parameter
 			{
-				local unitBlock = ::DSF.UnitBlocks.findById(pBlock.ID);
+				local unitBlock = ::DynamicSpawns.UnitBlocks.findById(pBlock.ID);
 
 				if (this.getParty().canSpawn(this) && unitBlock.canSpawn(this) && this.getParty().isWithinRatioMax(this, pBlock))
 				{
@@ -125,7 +125,7 @@ this.spawn_process <- {
 
 			if (spawnAffordableBlocks.len() == 0 && upgradeAffordableBlocks.len() == 0) break;	// Usually happens after ratioSpawn happened
 
-			if (!::DSF.Const.Benchmark && ::DSF.Const.DetailedLogging )
+			if (!::DynamicSpawns.Const.Benchmark && ::DynamicSpawns.Const.DetailedLogging )
 			{
 				if (spawnAffordableBlocks.len() > 0)
 				{
@@ -154,7 +154,7 @@ this.spawn_process <- {
 				local blockID = upgradeAffordableBlocks.roll();
 				if (blockID != null)
 				{
-					::DSF.UnitBlocks.findById(blockID).upgradeUnit(this);
+					::DynamicSpawns.UnitBlocks.findById(blockID).upgradeUnit(this);
 				}
 				else if (spawnAffordableBlocks.len() == 0) break;
 			}
@@ -164,13 +164,13 @@ this.spawn_process <- {
 				local blockID = spawnAffordableBlocks.roll();
 				if (blockID != null)
 				{
-					::DSF.UnitBlocks.findById(blockID).spawnUnit(this);
+					::DynamicSpawns.UnitBlocks.findById(blockID).spawnUnit(this);
 				}
 				else if (upgradeAffordableBlocks.len() == 0) break;
 			}
 		}
 
-		if (!::DSF.Const.Benchmark) this.printLog();
+		if (!::DynamicSpawns.Const.Benchmark) this.printLog();
 
 		ret.extend(this.getUnits());
 
@@ -179,13 +179,13 @@ this.spawn_process <- {
 		this.getParty().m.HardMax = oldHardMax;
 
 		// Spawn SubParties
-		local spawnProcess = ::new(::DSF.Class.SpawnProcess);
+		local spawnProcess = ::new(::DynamicSpawns.Class.SpawnProcess);
 		for (local i = ret.len() - 1; i >= 0; i--)		// Backwards counting as this array is growing during this process
 		{
 			if (ret[i].getSubParty() != null)
 			{
 				this.printPartyHeader(ret[i].getSubParty(), ret[i].getEntityType());
-				ret.extend(spawnProcess.init(::DSF.Parties.findById(ret[i].getSubParty())).spawn());
+				ret.extend(spawnProcess.init(::DynamicSpawns.Parties.findById(ret[i].getSubParty())).spawn());
 			}
 		}
 		this.getParty().updateFigure(this);
@@ -256,7 +256,7 @@ this.spawn_process <- {
 				if (unitID == "Total") continue;
 				for (local i = 0; i < count; i++)
 				{
-					units.push(::DSF.Units.findById(unitID));
+					units.push(::DynamicSpawns.Units.findById(unitID));
 				}
 			}
 		}
@@ -286,7 +286,7 @@ this.spawn_process <- {
 	// Logging
 	function printPartyHeader( _partyName, _vip = "" )
 	{
-		if (::DSF.Const.Benchmark) return;
+		if (::DynamicSpawns.Const.Benchmark) return;
 		local text = "====== Spawning the Party '" + _partyName + "'";
 		if (_vip != "") text += " for '" + _vip + "'";
 		text += " ======";
@@ -302,7 +302,7 @@ this.spawn_process <- {
 		{
 			local percentage = (this.getTotal() == 0) ? 0 : (100 * this.m.SpawnInfo[_blockID].Total / this.getTotal());
 			local str = (_blockID.find("Static") != null ? "Static" : _blockID) + ": " + this.m.SpawnInfo[_blockID].Total + " (" + percentage + "%) - ";
-			foreach (unit in ::DSF.UnitBlocks.findById(_blockID).getUnits())
+			foreach (unit in ::DynamicSpawns.UnitBlocks.findById(_blockID).getUnits())
 			{
 				str += unit.getEntityType() + ": " + this.m.SpawnInfo[_blockID][unit.getID()] + ", ";
 			}

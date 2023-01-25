@@ -67,7 +67,7 @@ this.unit_block <- {
 		local unit;
 		if ("ID" in _unit)
 		{
-			unit = ::DSF.Units.findById(_unit.ID);
+			unit = ::DynamicSpawns.Units.findById(_unit.ID);
 		}
 
 		this.m.Units.push(unit);
@@ -148,7 +148,7 @@ this.unit_block <- {
 		if (chosenUnit == null) return;		// This should not happen
 
 		_spawnProcess.incrementUnit(chosenUnit.getID(), this.getID());
-		if (!::DSF.Const.Benchmark && ::DSF.Const.DetailedLogging ) ::logInfo("Spawning - Block: " + this.getID() + " - Unit: " + chosenUnit.getEntityType() + " (Cost: " + chosenUnit.getCost() + ")\n");
+		if (!::DynamicSpawns.Const.Benchmark && ::DynamicSpawns.Const.DetailedLogging ) ::logInfo("Spawning - Block: " + this.getID() + " - Unit: " + chosenUnit.getEntityType() + " (Cost: " + chosenUnit.getCost() + ")\n");
 		_spawnProcess.consumeResources(chosenUnit.getCost());
 	}
 /*
@@ -170,7 +170,7 @@ this.unit_block <- {
 			consumedResources = this.m.LookupMap[despawnID].getCost();
 			_spawnProcess.decrementUnit(despawnID, this.getID());
 
-			::logInfo("--> Despawning - Block: " + this.getID() + " - Unit: " + ::DSF.Units.findById(despawnID).getEntityType() + " (Cost: " + this.LookupMap[roll.ID].Cost + ") <--\n");
+			::logInfo("--> Despawning - Block: " + this.getID() + " - Unit: " + ::DynamicSpawns.Units.findById(despawnID).getEntityType() + " (Cost: " + this.LookupMap[roll.ID].Cost + ") <--\n");
 		}
 
 		return consumedResources;
@@ -208,7 +208,7 @@ this.unit_block <- {
 			_spawnProcess.decrementUnit(roll.ID, this.getID());
 			_spawnProcess.incrementUnit(roll.UpgradeID, this.getID());
 			_spawnProcess.consumeResources(this.m.LookupMap[roll.UpgradeID].getCost() - this.m.LookupMap[roll.ID].getCost());
-			if (!::DSF.Const.Benchmark && ::DSF.Const.DetailedLogging ) ::logInfo("**Upgrading - Block: " + this.getID() + " - Unit: " + this.m.LookupMap[roll.ID].getEntityType() + " (Cost: " + this.m.LookupMap[roll.ID].getCost() + ") to " + this.m.LookupMap[roll.UpgradeID].getEntityType() + " (Cost: " + this.m.LookupMap[roll.UpgradeID].getCost() + ")**\n");
+			if (!::DynamicSpawns.Const.Benchmark && ::DynamicSpawns.Const.DetailedLogging ) ::logInfo("**Upgrading - Block: " + this.getID() + " - Unit: " + this.m.LookupMap[roll.ID].getEntityType() + " (Cost: " + this.m.LookupMap[roll.ID].getCost() + ") to " + this.m.LookupMap[roll.UpgradeID].getEntityType() + " (Cost: " + this.m.LookupMap[roll.UpgradeID].getCost() + ")**\n");
 		}
 	}
 
