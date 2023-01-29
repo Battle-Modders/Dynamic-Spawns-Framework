@@ -9,10 +9,10 @@ local parties = [
         VisibilityMult = 1.0,
         VisionMult = 1.0,
         UnitBlocks = [
-            { ID = "Barbarian.Frontline", 	RatioMin = 0.60, RatioMax = 1.00, DeterminesFigure = true },				// Vanilla: doesn't care about size
-            { ID = "Barbarian.Support", 	RatioMin = 0.05, RatioMax = 0.07 },					// Vanilla: Start spawning in armies of 15+; At 24+ a second drummer spawns
-            { ID = "Barbarian.Dogs", 		RatioMin = 0.00, RatioMax = 0.17 },						// Vanilla: Start spawning in armies of 6+
-            { ID = "Barbarian.Beastmaster", RatioMin = 0.00, RatioMax = 0.11 }		// Vanilla: Start spawning in armies of 7+ (singular case) but more like 9+
+            { ID = "Barbarian.Frontline", 	RatioMin = 0.60, RatioMax = 1.00, DeterminesFigure = true },	// Vanilla: doesn't care about size
+            { ID = "Barbarian.Support", 	RatioMin = 0.05, RatioMax = 0.07, ReqPartySize = 14 },			// Vanilla: Start spawning in armies of 15+; At 24+ a second drummer spawns
+            { ID = "Barbarian.Dogs", 		RatioMin = 0.00, RatioMax = 0.17, ReqPartySize = 5 },		// Vanilla: Start spawning in armies of 6+
+            { ID = "Barbarian.Beastmaster", RatioMin = 0.00, RatioMax = 0.11, ReqPartySize = 7 }		// Vanilla: Start spawning in armies of 7+ (singular case) but more like 9+
         ]
     },
     {
@@ -20,9 +20,9 @@ local parties = [
         UpgradeChance = 1.0,
         HardMin = 5,
         DefaultFigure = "figure_wildman_01",
-        MovementSpeedMult = 1.1,	// In vanilla this is not defined (which means its 1.0)
+        MovementSpeedMult = 1.0,
         VisibilityMult = 1.0,
-        VisionMult = 1.1,			// In vanilla this is not defined (which means its 1.0)
+        VisionMult = 1.0,
         UnitBlocks = [
             { ID = "Barbarian.HunterFrontline", RatioMin = 0.60, RatioMax = 1.0, DeterminesFigure = true },
             { ID = "Barbarian.Dogs", 			RatioMin = 0.20, RatioMax = 0.45 }

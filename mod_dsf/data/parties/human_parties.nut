@@ -72,7 +72,7 @@ local parties = [
         UnitBlocks = [
             { ID = "Mercenary.Frontline", RatioMin = 0.60, RatioMax = 1.00},
             { ID = "Mercenary.Ranged", RatioMin = 0.12, RatioMax = 0.30},
-            { ID = "Mercenary.Elite", RatioMin = 0.07, RatioMax = 0.17},
+            { ID = "Mercenary.Elite", RatioMin = 0.10, RatioMax = 0.25, ReqPartySize = 10 },    // Start spawning at 11+. Only exception is HedgeKnight which appears a in a group of 6 aswell
             { ID = "Human.Wardogs", RatioMin = 0.00, RatioMax = 0.12}
         ]
     },
@@ -87,7 +87,7 @@ local parties = [
         UnitBlocks = [
             { ID = "Human.MilitiaFrontline",    RatioMin = 0.60, RatioMax = 1.00},
             { ID = "Human.MilitiaRanged",       RatioMin = 0.12, RatioMax = 0.35},
-            { ID = "Human.MilitiaCaptain",      RatioMin = 0.09, RatioMax = 0.09}
+            { ID = "Human.MilitiaCaptain",      RatioMin = 0.09, RatioMax = 0.09, ReqPartySize = 12 }   // Vanilla: starts spawning in groups of 13+; Vanilla never spawns more than one
         ]
     },
     {
@@ -102,7 +102,7 @@ local parties = [
             "Human.CaravanDonkey"
         ],
         UnitBlocks = [
-            { ID = "Human.CaravanDonkeys",  RatioMin = 0.17, RatioMax = 0.22},
+            { ID = "Human.CaravanDonkeys",  RatioMin = 0.17, RatioMax = 0.20, ReqPartySize = 6 },      // Vanilla: Second Donkey starts spawning at 7+
             { ID = "Human.CaravanHands",    RatioMin = 0.35, RatioMax = 0.80},
             { ID = "Human.CaravanGuards",   RatioMin = 0.15, RatioMax = 0.55}
         ]
@@ -110,17 +110,18 @@ local parties = [
     {
         ID = "CaravanEscort",   // Caravans spawned for player escort contract
         UpgradeChance = 1.0,
-        HardMin = 3,
+        HardMin = 4,
         DefaultFigure = "cart_02",
 		MovementSpeedMult = 0.5,
 		VisibilityMult = 1.0,
 		VisionMult = 0.25,
         StaticUnits = [
+            "Human.CaravanDonkey",      // In vanilla an escorted caravan can also have only a single Donkey. I chose to force 2 donkey every time instead
             "Human.CaravanDonkey"
         ],
         UnitBlocks = [
-            { ID = "Human.CaravanDonkeys",  RatioMin = 0.35, RatioMax = 0.40},
-            { ID = "Human.CaravanHands",    RatioMin = 0.50, RatioMax = 0.85}
+            { ID = "Human.CaravanDonkeys",  RatioMin = 0.25, RatioMax = 0.30, ReqPartySize = 5 },   // Vanilla: Third donkey spawns at 6+
+            { ID = "Human.CaravanHands",    RatioMin = 0.50, RatioMax = 1.00}
         ]
     }
 ]

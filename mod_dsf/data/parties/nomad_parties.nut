@@ -24,8 +24,8 @@ local parties = [
         UnitBlocks = [
             { ID = "Nomad.Frontline",       RatioMin = 0.25, RatioMax = 1.00, DeterminesFigure = true },
             { ID = "Nomad.Ranged",          RatioMin = 0.00, RatioMax = 0.35, DeterminesFigure = true },
-            { ID = "Nomad.Leader",          RatioMin = 0.07, RatioMax = 0.09, DeterminesFigure = true },  // They spawn as early as with 7 troops in vanilla. But 2 only start spawning in 23+
-            { ID = "Nomad.Elite",           RatioMin = 0.04, RatioMax = 0.11, DeterminesFigure = true }
+            { ID = "Nomad.Leader",          RatioMin = 0.00, RatioMax = 0.10, DeterminesFigure = true, ReqPartySize = 9 },  // They spawn as early as with 7 troops in vanilla. But 2 only start spawning in 23+
+            { ID = "Nomad.Elite",           RatioMin = 0.04, RatioMax = 0.12, DeterminesFigure = true, ReqPartySize = 14 }
         ]
     },
     {
@@ -39,8 +39,8 @@ local parties = [
         UnitBlocks = [
             { ID = "Nomad.Frontline",       RatioMin = 0.25, RatioMax = 1.00, DeterminesFigure = true },
             { ID = "Nomad.Ranged",          RatioMin = 0.00, RatioMax = 0.35, DeterminesFigure = true },
-            { ID = "Nomad.Leader",          RatioMin = 0.07, RatioMax = 0.09, DeterminesFigure = true },
-            { ID = "Nomad.Elite",           RatioMin = 0.04, RatioMax = 0.11, DeterminesFigure = true }
+            { ID = "Nomad.Leader",          RatioMin = 0.00, RatioMax = 0.14, DeterminesFigure = true, ReqPartySize = 6 },    // Vanilla: spawn at 7+
+            { ID = "Nomad.Elite",           RatioMin = 0.04, RatioMax = 0.12, DeterminesFigure = true, ReqPartySize = 14 }
         ]
     }
 ]
