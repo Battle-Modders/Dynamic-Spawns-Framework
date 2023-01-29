@@ -5,7 +5,7 @@ this.unit_block <- inherit(::MSU.BBClass.Empty, {
         Units = [],         // Spawnable units
         LookupMap = {},
         IsRandom = false,	// A random block will not upgrade between its troops and instead pick a random one each time
-        ReqPartySize = 0,         // This Unit will only be able to spawn if the amount of already spawned troops is greater or equal to ReqPartySize
+        ReqPartySize = 0         // This Block will only be able to spawn if the amount of already spawned troops is greater or equal to ReqPartySize
 	}
 
 	function create()

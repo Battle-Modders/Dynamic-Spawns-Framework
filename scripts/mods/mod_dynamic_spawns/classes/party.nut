@@ -3,8 +3,8 @@ this.party <- inherit(::MSU.BBClass.Empty, {
         ID = null,
         UnitBlocks = [],	// Array of Tables that require a 'ID', 'RatioMin', 'RatioMax' and optionally 'DeterminesFigure'
         // Resources = 0;
-        HardMin = 0,		// @Darxo: Smallest army size that is allowed for this troop to even make sense. Ressources are disregarded while trying to satisfy this. Could maybe be set to 1 be default
-        HardMax = -1,		// @Darxo: Greatest army size that is allowed for this troop to even make sense. All spawning (not upgrading) is stopped when this is reached
+        HardMin = 0,		// @Darxo: Smallest army size that is allowed for this unit to even make sense. Ressources are disregarded while trying to satisfy this. Could maybe be set to 1 be default
+        HardMax = -1,		// @Darxo: Greatest army size that is allowed for this unit to even make sense. All spawning (not upgrading) is stopped when this is reached
         UpgradeChance = 1.0,	// Chance that this Party will upgrade a unit instead of spawning a new unit when IdealSize is reached
         StaticUnits = [],	// Array of UnitObjects that are forced to spawn if the Resources allow it. Can have multiples of the same unit
 		DefaultFigure = ""		// This Figure will be used if the spawned units couldnt provide a better fitting one
@@ -144,6 +144,7 @@ this.party <- inherit(::MSU.BBClass.Empty, {
 		return this.m.StaticUnits;
 	}
 
+	// Returns false if there is a reason why this party is not allowed to spawn anymore. This function only checks for a small subset of all possible reasons.
 	// Checks only against HardMax and HardMin
 	function canSpawn( _spawnProcess )
 	{
@@ -151,7 +152,9 @@ this.party <- inherit(::MSU.BBClass.Empty, {
 		return (this.getHardMax() == -1 || _spawnProcess.getTotal() + 1 <= this.getHardMax());
 	}
 
-	// _blockTotal = troop count of this unitBlock; _total = total count of spawned troops; _block = UnitBlock or Table with UnitBlock Id and optional parameter
+	// Returns true if the ratio of this unitblock would still be below its defined RatioMax if it was to spawn the next unit
+	// _spawnProcess = current spawnprocess reference that includes most important variables
+	// _block = UnitBlock or Table with UnitBlock Id and optional parameter
 	function isWithinRatioMax( _spawnProcess, _pBlock )
 	{
 		local referencedTotal = (_spawnProcess.getTotal() + 1 > this.getHardMin()) ? _spawnProcess.getTotal() + 1 : this.getHardMin();
@@ -159,7 +162,9 @@ this.party <- inherit(::MSU.BBClass.Empty, {
 		return (_spawnProcess.getBlockTotal(_pBlock.ID) < maxAllowed);
 	}
 
-	// _blockTotal = troop count of this unitBlock; _total = total count of spawned troops; _block = UnitBlock or Table with UnitBlock Id and optional parameter
+	// Returns true if the ratio of this unitblock would still be above its defined RatioMin if it was to spawn the next unit
+	// _spawnProcess = current spawnprocess reference that includes most important variables
+	// _block = UnitBlock or Table with UnitBlock Id and optional parameter
 	function satisfiesRatioMin( _spawnProcess, _pBlock )
 	{
 		local referencedTotal = (_spawnProcess.getTotal() + 1 > this.getHardMin()) ? _spawnProcess.getTotal() + 1 : this.getHardMin();		// this is just ::Math.max() function which isn't available here

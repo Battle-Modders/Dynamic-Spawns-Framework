@@ -84,27 +84,26 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 		local upgradeAffordableBlocks = ::MSU.Class.WeightedContainer();
 
 		// Every while spawns or upgrades only one unit
-		while (this.canGenerate())	// Is True while Resources are positive and HardMin is respected
+		while (this.canDoAnotherCycle())	// Is True while Resources are positive or HardMin is not yet reached
 		{
 			spawnAffordableBlocks.clear();
 			upgradeAffordableBlocks.clear();
 
-			local ratioSpawn = false;
+			local ratioSpawn = false;	// A ratioSpawn is a forced spawn for a block because its RatioMin is not satisfied anymore
 			foreach (pBlock in this.getParty().m.UnitBlocks)		// A pBlock (partyUnitBlock) contains a unitBlock ID and sometimes optional parameter
 			{
 				local unitBlock = ::DynamicSpawns.UnitBlocks.findById(pBlock.ID);
 
 				if (this.getParty().canSpawn(this) && unitBlock.canSpawn(this) && this.getParty().isWithinRatioMax(this, pBlock))
 				{
-					// Ratio-Spawns: If a UnitBlock doesn't satisfy their RatioMin yet then they will spawn a troop deterministically
-					if (this.getParty().satisfiesRatioMin(this, pBlock) == false)
+					if (this.getParty().satisfiesRatioMin(this, pBlock) == false)	// An unsatisfied RatioMin results into an immediate forced Spawn
 					{
 						unitBlock.spawnUnit(this);
 						ratioSpawn = true;
 						break;
 					}
 
-					// Weighted-Spawns: Every UnitBlock that doesn't surpass their RatioMax compete against each other for a random spawn
+					// Weighted-Spawns: Every UnitBlock that doesn't surpass their RatioMax if they got the next spawn compete against each other for a random spawn
 					local totalCount = ::Math.max(this.getTotal() + 1, this.getParty().getHardMin());
 					local weight = pBlock.RatioMax - (this.getBlockTotal(pBlock.ID) / totalCount.tofloat());
 					if (weight <= 0)
@@ -277,10 +276,11 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 		this.m.UnitCount -= _count;
 	}
 
-	function canGenerate()	// "Generate" in this context means either spawn or upgrade which is why this is a very broad check
+	// Returns 'True' if we should keep doing another spawn/upgrade cycle in this spawn_process
+	function canDoAnotherCycle()
 	{
-		if (this.getTotal() < this.getParty().getHardMin()) return true;
-		return this.getResources() > 0;
+		if (this.getTotal() < this.getParty().getHardMin()) return true;	// If the HardMin is not yet reached we ignore all other conditions
+		return this.getResources() > 0;		// Currently the only real condition here is whether we still have resources to spend
 	}
 
 	// Logging
