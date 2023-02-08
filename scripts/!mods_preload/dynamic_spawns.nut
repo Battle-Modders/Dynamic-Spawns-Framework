@@ -15,7 +15,7 @@
 		Benchmark = false
 	};
 
-	::include("mod_dsf/load.nut");
+	::include("mod_dynamic_spawns/load.nut");
 
 	// testing();
 });

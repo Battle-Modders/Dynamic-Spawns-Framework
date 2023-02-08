@@ -108,22 +108,22 @@ local function randint( _max )
 
 printn("======================================================================")
 
-::DSF <- {};
-::DSF.UnitBlocks <- {
+::DynamicSpawns <- {};
+::DynamicSpawns.UnitBlocks <- {
 	LookupMap = {},
 	function findById( _id )
 	{
 		return this.LookupMap[_id];
 	}
 }
-::DSF.Parties <- {
+::DynamicSpawns.Parties <- {
 	LookupMap = {},
 	function findById( _id )
 	{
 		return this.LookupMap[_id];
 	}
 }
-::DSF.Units <- {
+::DynamicSpawns.Units <- {
 	LookupMap = {},
 	function findById( _id )
 	{
@@ -131,8 +131,8 @@ printn("======================================================================")
 	}	
 }
 
-::DSF.Class <- {};
-::DSF.Class.Party <- class
+::DynamicSpawns.Class <- {};
+::DynamicSpawns.Class.Party <- class
 {
 	ID = null;	
 	UnitBlocks = null;
@@ -159,16 +159,16 @@ printn("======================================================================")
 				local block;
 				if ("ID" in blockDef)
 				{
-					block = ::DSF.UnitBlocks.findById(blockDef.ID);
+					block = ::DynamicSpawns.UnitBlocks.findById(blockDef.ID);
 				}
 				else
 				{
 					blockDef.ID <- this.ID + ".Block." + i;
-					block = ::DSF.Class.UnitBlock(blockDef);
+					block = ::DynamicSpawns.Class.UnitBlock(blockDef);
 				}
 				if ("MinSize" in blockDef) block.MinSize = blockDef.MinSize;
 				this.UnitBlocks.push(blockDef);
-				::DSF.UnitBlocks.LookupMap[blockDef.ID] <- block;
+				::DynamicSpawns.UnitBlocks.LookupMap[blockDef.ID] <- block;
 			}
 		}
 
@@ -180,11 +180,11 @@ printn("======================================================================")
 				Units = _party.StaticUnits
 			}
 			this.UnitBlocks.push(block);
-			::DSF.UnitBlocks.LookupMap[block.ID] <- ::DSF.Class.UnitBlock(block);
-			::DSF.UnitBlocks.findById(block.ID).IsStatic = true;
+			::DynamicSpawns.UnitBlocks.LookupMap[block.ID] <- ::DynamicSpawns.Class.UnitBlock(block);
+			::DynamicSpawns.UnitBlocks.findById(block.ID).IsStatic = true;
 		}
 
-		::DSF.Parties.LookupMap[this.ID] <- this;
+		::DynamicSpawns.Parties.LookupMap[this.ID] <- this;
 	}
 
 	function getUnitBlocks()
@@ -195,7 +195,7 @@ printn("======================================================================")
 	function getResources()
 	{
 		// if (this.Resources != null) return this.Resources + this.AdditionalResources;
-		// return ::Math.rand(this.StrengthMin, this.StrengthMax == null ? ::DSF.getPlayerPartyStrength() + this.AdditionalResources);
+		// return ::Math.rand(this.StrengthMin, this.StrengthMax == null ? ::DynamicSpawns.getPlayerPartyStrength() + this.AdditionalResources);
 		return this.Resources;
 	}
 
@@ -211,17 +211,17 @@ printn("======================================================================")
 
 	function getStaticUnitBlock()
 	{
-		if (this.StaticUnits != null) return ::DSF.UnitBlocks.findById(this.ID + ".Block.Static");
+		if (this.StaticUnits != null) return ::DynamicSpawns.UnitBlocks.findById(this.ID + ".Block.Static");
 	}
 
 	function getSpawn( _additionalResources = 0 )
 	{		
 		foreach (block in this.UnitBlocks)
 		{
-			::DSF.UnitBlocks.findById(block.ID).onPartySpawnStart();
+			::DynamicSpawns.UnitBlocks.findById(block.ID).onPartySpawnStart();
 		}
 		this.AdditionalResources = _additionalResources;
-		this.SpawnInfo = ::DSF.Class.SpawnInfo(this);
+		this.SpawnInfo = ::DynamicSpawns.Class.SpawnInfo(this);
 
 		local ret = [];
 
@@ -250,9 +250,9 @@ printn("======================================================================")
 
 			foreach (block in this.UnitBlocks)
 			{
-				if (::DSF.UnitBlocks.findById(block.ID).IsStatic) continue;
+				if (::DynamicSpawns.UnitBlocks.findById(block.ID).IsStatic) continue;
 
-				if (::DSF.UnitBlocks.findById(block.ID).canAffordSpawn(this))
+				if (::DynamicSpawns.UnitBlocks.findById(block.ID).canAffordSpawn(this))
 				{
 					local weight = block.Max - (this.SpawnInfo.getBlockTotal(block.ID) / this.SpawnInfo.getTotal());
 					if (weight <= 0)
@@ -262,14 +262,14 @@ printn("======================================================================")
 					} 
 					if ((this.SpawnInfo.getBlockTotal(block.ID) == 0 && block.Min != 0) || (this.SpawnInfo.getBlockTotal(block.ID) / this.SpawnInfo.getTotal() < block.Min))
 					{
-						::DSF.UnitBlocks.findById(block.ID).spawnUnit(this);
+						::DynamicSpawns.UnitBlocks.findById(block.ID).spawnUnit(this);
 						forcedSpawn = true;
 						break;
 					}
 					spawnAffordableBlocks.add(block.ID, weight);
 				}
 
-				if (this.SpawnInfo.getTotal() >= this.getIdealSize() && this.SpawnInfo.getBlockTotal(block.ID) > 0 && ::DSF.UnitBlocks.findById(block.ID).canAffordUpgrade(this))
+				if (this.SpawnInfo.getTotal() >= this.getIdealSize() && this.SpawnInfo.getBlockTotal(block.ID) > 0 && ::DynamicSpawns.UnitBlocks.findById(block.ID).canAffordUpgrade(this))
 				{
 					upgradeAffordableBlocks.add(block.ID, this.SpawnInfo.getBlockTotal(block.ID));
 				}
@@ -305,13 +305,13 @@ printn("======================================================================")
 			if (upgradeAffordableBlocks.len() > 0 && randfloat(1.0) < (this.UpgradeChance * this.SpawnInfo.getTotal() / this.IdealSize))
 			{
 				local blockID = upgradeAffordableBlocks.roll();				
-				if (blockID != null) ::DSF.UnitBlocks.findById(blockID).upgradeUnit(this);
+				if (blockID != null) ::DynamicSpawns.UnitBlocks.findById(blockID).upgradeUnit(this);
 				else if (spawnAffordableBlocks.len() == 0) break;
 			}
 			else if (spawnAffordableBlocks.len() > 0)
 			{
 				local blockID = spawnAffordableBlocks.roll();				
-				if (blockID != null) ::DSF.UnitBlocks.findById(blockID).spawnUnit(this);	
+				if (blockID != null) ::DynamicSpawns.UnitBlocks.findById(blockID).spawnUnit(this);	
 				else if (upgradeAffordableBlocks.len() == 0) break;
 			}
 		}
@@ -325,13 +325,13 @@ printn("======================================================================")
 			if (ret[i].getParty() != null)
 			{
 				if (!benchmark) printn("====== Spawning Party for " + ret[i].getEntityType() + " ======")
-				ret.extend(::DSF.Parties.findById(ret[i].getParty()).getSpawn());
+				ret.extend(::DynamicSpawns.Parties.findById(ret[i].getParty()).getSpawn());
 			}
 		}
 
 		foreach (block in this.UnitBlocks)
 		{
-			::DSF.UnitBlocks.findById(block.ID).onPartySpawnEnd();
+			::DynamicSpawns.UnitBlocks.findById(block.ID).onPartySpawnEnd();
 		}
 		
 		this.SpawnInfo = null;
@@ -340,7 +340,7 @@ printn("======================================================================")
 	}
 }
 
-::DSF.Class.SpawnInfo <- class
+::DynamicSpawns.Class.SpawnInfo <- class
 {
 	Info = null;
 	Resources = null;
@@ -359,7 +359,7 @@ printn("======================================================================")
 				Total = 0
 			};
 
-			foreach (unit in ::DSF.UnitBlocks.findById(block.ID).getUnits())
+			foreach (unit in ::DynamicSpawns.UnitBlocks.findById(block.ID).getUnits())
 			{
 				this.Info[block.ID][unit.getID()] <- 0;
 			}
@@ -372,7 +372,7 @@ printn("======================================================================")
 		local printBlock = function( _blockID )
 		{
 			local str = (_blockID.find("Static") != null ? "Static" : _blockID) + ": " + this.Info[_blockID].Total + " (" + (100 * this.Info[_blockID].Total / this.Total) + "%) - ";			
-			foreach (unit in ::DSF.UnitBlocks.findById(_blockID).getUnits())
+			foreach (unit in ::DynamicSpawns.UnitBlocks.findById(_blockID).getUnits())
 			{
 				str += unit.getEntityType() + ": " + this.Info[_blockID][unit.getID()] + ", ";				
 			}
@@ -454,7 +454,7 @@ printn("======================================================================")
 				if (unitID == "Total") continue;
 				for (local i = 0; i < count; i++)
 				{
-					units.push(::DSF.UnitBlocks.findById(blockID).getUnit(unitID));
+					units.push(::DynamicSpawns.UnitBlocks.findById(blockID).getUnit(unitID));
 				}
 			}
 		}
@@ -467,7 +467,7 @@ printn("======================================================================")
 	}
 }
 
-::DSF.Class.UnitBlock <- class
+::DynamicSpawns.Class.UnitBlock <- class
 {
 	ID = null;
 	Units = null;
@@ -501,12 +501,12 @@ printn("======================================================================")
 		local unit;
 		if ("ID" in _unit)
 		{
-			unit = ::DSF.Units.findById(_unit.ID);
+			unit = ::DynamicSpawns.Units.findById(_unit.ID);
 		}
 		else
 		{
 			_unit.ID <- this.ID + ".Unit." + this.Units.len();
-			unit = ::DSF.Class.Unit(_unit);
+			unit = ::DynamicSpawns.Class.Unit(_unit);
 		}
 		
 		this.Units.push(unit);
@@ -569,7 +569,7 @@ printn("======================================================================")
 			_party.getSpawnInfo().addResources(this.LookupMap[despawnID].getCost());
 			_party.getSpawnInfo().decrementUnit(despawnID, this.getID());
  
-			if (!benchmark && detailedLogging) printn("--> Despawning - Block: " + this.getID() + " - Unit: " + ::DSF.Units.findById(despawnID).getEntityType() + " (Cost: " + this.LookupMap[roll.ID].Cost + ") <--\n");
+			if (!benchmark && detailedLogging) printn("--> Despawning - Block: " + this.getID() + " - Unit: " + ::DynamicSpawns.Units.findById(despawnID).getEntityType() + " (Cost: " + this.LookupMap[roll.ID].Cost + ") <--\n");
 
 			return true;
 		}
@@ -699,7 +699,7 @@ printn("======================================================================")
 	}
 }
 
-::DSF.Class.Unit <- class
+::DynamicSpawns.Class.Unit <- class
 {
 	ID = null;	
 	EntityType = null;
@@ -718,7 +718,7 @@ printn("======================================================================")
 		else this.StrengthMin = 0.0;
 		if ("Party" in _unit) this.Party = _unit.Party;
 
-		::DSF.Units.LookupMap[this.ID] <- this;
+		::DynamicSpawns.Units.LookupMap[this.ID] <- this;
 	}
 
 	function getID()
@@ -1081,16 +1081,16 @@ printn("======================================================================")
 
 foreach (unit in unitsDefs)
 {
-	::DSF.Units.LookupMap[unit.ID] <- ::DSF.Class.Unit(unit);
+	::DynamicSpawns.Units.LookupMap[unit.ID] <- ::DynamicSpawns.Class.Unit(unit);
 }
 
 foreach (block in unitBlocks)
 {
-	::DSF.UnitBlocks.LookupMap[block.ID] <- ::DSF.Class.UnitBlock(block);
+	::DynamicSpawns.UnitBlocks.LookupMap[block.ID] <- ::DynamicSpawns.Class.UnitBlock(block);
 }
 
-local party = ::DSF.Class.Party(partyDef);
-local guardParty = ::DSF.Class.Party(guardPartyDef);
+local party = ::DynamicSpawns.Class.Party(partyDef);
+local guardParty = ::DynamicSpawns.Class.Party(guardPartyDef);
 
 if (detailedLogging) iterations = 1;
 if (benchmark) iterations = 1000;
