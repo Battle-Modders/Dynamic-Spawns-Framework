@@ -33,7 +33,8 @@
         {
             ID = "Bandit.Leader",
             EntityType = "BanditLeader",
-            Cost = 25
+            Cost = 25,
+			MinStartingResource = 150		// In vanilla this is 140
         },
         {
             ID = "Bandit.RaiderWolf",

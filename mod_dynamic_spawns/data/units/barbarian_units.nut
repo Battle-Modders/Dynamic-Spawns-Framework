@@ -15,7 +15,8 @@
 		ID = "Barbarian.Chosen",
 		EntityType = "BarbarianChampion",
         Figure = "figure_wildman_03",
-		Cost = 35
+		Cost = 35,
+		MinStartingResource = 170
 	},
 	{
 		ID = "Barbarian.Drummer",

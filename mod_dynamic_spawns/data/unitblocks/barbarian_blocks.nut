@@ -5,7 +5,9 @@
 	},
 	{
 		ID = "Barbarian.Support",
-		Units = [{ ID = "Barbarian.Drummer" }]
+		Units = [{ ID = "Barbarian.Drummer" }],
+		MinStartingResource = 200	// In Vanilla they start appearing in a group of 210 cost alongside 15 thralls
+
 	},
 	{
 		ID = "Barbarian.Dogs",
@@ -13,7 +15,8 @@
 	},
 	{
 		ID = "Barbarian.Beastmaster",
-		Units = [{ ID = "Barbarian.BeastmasterU" }, { ID = "Barbarian.BeastmasterF" }, { ID = "Barbarian.BeastmasterUU" }, { ID = "Barbarian.BeastmasterFF" }]
+		Units = [{ ID = "Barbarian.BeastmasterU" }, { ID = "Barbarian.BeastmasterF" }, { ID = "Barbarian.BeastmasterUU" }, { ID = "Barbarian.BeastmasterFF", MinStartingResource = 150 }],
+		MinStartingResource = 200	// In Vanilla they appear in a group of 195 cost
 	},
 	{
 		ID = "Barbarian.HunterFrontline",

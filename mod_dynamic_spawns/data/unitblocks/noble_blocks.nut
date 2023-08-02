@@ -17,16 +17,19 @@
 	},
 	{
 		ID = "Noble.Support",
-		Units = [{ ID = "Noble.StandardBearer" }]
+		Units = [{ ID = "Noble.StandardBearer" }],
+		MinStartingResource = 240	// In Vanilla they appear in a group of 240 cost
 	},
 	{
 		ID = "Noble.Officer",
-		Units = [{ ID = "Noble.Sergeant" }]
+		Units = [{ ID = "Noble.Sergeant" }],
+		MinStartingResource = 235	// In Vanilla they appear in a group of 235 cost in noble caravans
 	},
 	{
 		ID = "Noble.Elite",
 		IsRandom = true,
-		Units = [{ ID = "Noble.Zweihander" }, { ID = "Noble.Knight" }]
+		Units = [{ ID = "Noble.Zweihander" }, { ID = "Noble.Knight" }],
+		MinStartingResource = 325	// In Vanilla they appear in a group of 235 cost in noble caravans
 	},
 
 // Caravan

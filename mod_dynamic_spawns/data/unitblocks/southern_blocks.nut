@@ -17,7 +17,8 @@
 	{
 		ID = "Southern.Officers",
 		//Units = [{ ID = "Officer" }, { ID = "Officer++" }]
-		Units = [{ ID = "Southern.Officer" }]
+		Units = [{ ID = "Southern.Officer" }],
+		MinStartingResource = 250	// In Vanilla they appear in a group of 250 cost
 	},
 	{
 		ID = "Southern.Ranged",
@@ -26,7 +27,8 @@
 	},
 	{
 		ID = "Southern.Siege",
-		Units = [{ ID = "Southern.Mortar" }]
+		Units = [{ ID = "Southern.Mortar" }],
+		MinStartingResource = 340	// In Vanilla they appear in a group of 340 cost
 	},
 	{
 		ID = "Southern.Engineer",

@@ -9,12 +9,14 @@
 	},
 	{
 		ID = "Nomad.Leader",
-		Units = [{ ID = "Nomad.Leader" }]
+		Units = [{ ID = "Nomad.Leader" }],
+		MinStartingResource = 170	// In Vanilla they appear in a group of 170 cost
 	},
 	{
 		ID = "Nomad.Elite",
 		IsRandom = true,
-		Units = [{ ID = "Nomad.Executioner" }, { ID = "Nomad.DesertStalker" }, { ID = "Nomad.DesertDevil" }]
+		Units = [{ ID = "Nomad.Executioner" }, { ID = "Nomad.DesertStalker" }, { ID = "Nomad.DesertDevil" }],
+		MinStartingResource = 350	// In Vanilla Executioner appear in a group of 350 cost
 	}
 ]
 

@@ -9,7 +9,8 @@
             ID = "Beast.DirewolfHIGH",
             EntityType = "DirewolfHIGH",
             Figure = "figure_werewolf_01",
-            Cost = 25
+            Cost = 25,
+			MinStartingResource = 95		// In Vanilla this is 95
         },
         {
             ID = "Beast.GhoulLOW",
@@ -21,13 +22,15 @@
             ID = "Beast.Ghoul",
             EntityType = "Ghoul",
             Figure = "figure_ghoul_01",
-            Cost = 19
+            Cost = 19,
+			MinStartingResource = 120	// In vanilla this is 120
         },
         {
             ID = "Beast.GhoulHIGH",
             EntityType = "Ghoul",
             Figure = "figure_ghoul_02",     // I don't know if a 'figure_ghoul_03' exists
-            Cost = 30
+            Cost = 30,
+			MinStartingResource = 150	// In vanilla this is 120
         },
         {
             ID = "Beast.Lindwurm",
@@ -86,7 +89,8 @@
             ID = "Beast.HyenaHIGH",
             EntityType = "HyenaHIGH",
             Figure = "figure_hyena_01",
-            Cost = 25
+            Cost = 25,
+			MinStartingResource = 125		// In Vanilla this is 125
         },
         {
             ID = "Beast.Serpent",
@@ -106,7 +110,7 @@
             Figure = "figure_golem_01",
             Cost = 42   // 35 in Vanilla, 3 Small Golems should cost slightly less than 1 Medium Golem because they always spend their first turn action morphing
         },
-        {
+        {	// In Vanilla these never spawn naturally as part of the line-up
             ID = "Beast.SandGolemHIGH",
             EntityType = "SandGolemHIGH",
             Figure = "figure_golem_02",    // I don't know if a 'figure_golem_03' exists

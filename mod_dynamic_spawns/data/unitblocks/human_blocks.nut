@@ -10,7 +10,8 @@
 	{
 		ID = "Mercenary.Elite",
 		IsRandom = true,
-		Units = [{ ID = "Human.MasterArcher" }, { ID = "Human.HedgeKnight" }, { ID = "Human.Swordmaster" }]
+		Units = [{ ID = "Human.MasterArcher" }, { ID = "Human.HedgeKnight" }, { ID = "Human.Swordmaster" }],
+		MinStartingResource = 286	// In Vanilla MasterArcher appear in a group of 286 cost
 	},
 	{
 		ID = "Human.BountyHunter",
@@ -72,7 +73,8 @@
 	},
 	{
 		ID = "Human.MilitiaCaptain",
-		Units = [{ ID = "Human.MilitiaCaptain" }]
+		Units = [{ ID = "Human.MilitiaCaptain" }].
+		MinStartingResource = 144	// In Vanilla they appear in a group of 144 cost
 	}
 ]
 
