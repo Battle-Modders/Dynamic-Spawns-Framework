@@ -1,11 +1,13 @@
 // "Class" that manages the dynamic spawning given a Party-Class and additional variables
 this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 	m = {
+		// Temporary Variables, They only exist and are valid during one spawning process
         SpawnInfo = {},     // Table of Tables. For each UnitBlock and for each spawned units from that Block
         UnitCount = 0,      // Amount of units spawned during this process. This does not include SubParties
 
 		Party = null,		// Weak Reference to the party that is currently used for spawning
 		Resources = 0,		// Available resources during this run
+		StartingResources = 0,		// Resource that this spawnProcess started with
 		IdealSize = -1,
 
 		CustomHardMin = -1,
@@ -25,6 +27,7 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 
 		this.m.Party = _party.weakref();
 		this.m.Resources = _availableResources;
+		this.m.StartingResources = _availableResources;
 		this.m.IdealSize = _party.generateIdealSize();
 		this.m.CustomHardMin = _customHardMin;
 		this.m.CustomHardMax = _customHardMax;
@@ -199,6 +202,11 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 	function getResources()
 	{
 		return this.m.Resources;
+	}
+
+	function getStartingResources()
+	{
+		return this.m.StartingResources;
 	}
 
 	function getParty()
