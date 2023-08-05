@@ -4,7 +4,7 @@ this.party <- inherit(::MSU.BBClass.Empty, {
         UnitBlocks = [],	// Array of Tables that require a 'ID', 'RatioMin', 'RatioMax' and optionally 'DeterminesFigure'
         // Resources = 0;
         HardMin = 0,		// @Darxo: Smallest army size that is allowed for this unit to even make sense. Ressources are disregarded while trying to satisfy this. Could maybe be set to 1 be default
-        HardMax = -1,		// @Darxo: Greatest army size that is allowed for this unit to even make sense. All spawning (not upgrading) is stopped when this is reached
+        HardMax = 9000,		// @Darxo: Greatest army size that is allowed for this unit to even make sense. All spawning (not upgrading) is stopped when this is reached
         UpgradeChance = 1.0,	// Chance that this Party will upgrade a unit instead of spawning a new unit when IdealSize is reached
         StaticUnits = [],	// Array of UnitObjects that are forced to spawn if the Resources allow it. Can have multiples of the same unit
 		DefaultFigure = ""		// This Figure will be used if the spawned units couldnt provide a better fitting one
@@ -148,8 +148,17 @@ this.party <- inherit(::MSU.BBClass.Empty, {
 	// Checks only against HardMax and HardMin
 	function canSpawn( _spawnProcess )
 	{
-		if (_spawnProcess.getTotal() < this.getHardMin()) return true;
-		return (this.getHardMax() == -1 || _spawnProcess.getTotal() + 1 <= this.getHardMax());
+		if (_spawnProcess.getTotal() >= this.getHardMax()) return false;
+
+		// Atleast one of our unitBlocks must be able to spawn units
+		foreach (pBlock in this.getUnitBlocks())
+		{
+			local unitBlock = ::DynamicSpawns.UnitBlocks.findById(pBlock.ID);
+			if (unitBlock.canSpawn(_spawnProcess)) return true;
+		}
+
+		return false;
+
 	}
 
 	// Returns true if the ratio of this unitblock would still be below its defined RatioMax if it was to spawn the next unit
