@@ -3,16 +3,18 @@ this.party <- inherit(::MSU.BBClass.Empty, {
         ID = null,
         UnitBlocks = [],	// Array of Tables that require a 'ID', 'RatioMin', 'RatioMax' and optionally 'DeterminesFigure'
         // Resources = 0;
-        HardMin = 0,		// @Darxo: Smallest army size that is allowed for this unit to even make sense. Ressources are disregarded while trying to satisfy this. Could maybe be set to 1 be default
-        HardMax = 9000,		// @Darxo: Greatest army size that is allowed for this unit to even make sense. All spawning (not upgrading) is stopped when this is reached
         UpgradeChance = 1.0,	// Chance that this Party will upgrade a unit instead of spawning a new unit when IdealSize is reached
         StaticUnits = [],	// Array of UnitObjects that are forced to spawn if the Resources allow it. Can have multiples of the same unit
-		DefaultFigure = ""		// This Figure will be used if the spawned units couldnt provide a better fitting one
 
-		// Vanilla Variables that are required
+		// Guards
+        HardMin = 0,		// @Darxo: Smallest army size that is allowed for this unit to even make sense. Ressources are disregarded while trying to satisfy this. Could maybe be set to 1 be default
+        HardMax = 9000,		// @Darxo: Greatest army size that is allowed for this unit to even make sense. All spawning (not upgrading) is stopped when this is reached
+
+		// Vanilla Properties of a Party
+		DefaultFigure = "",		// This Figure will be used if the spawned units couldnt provide a better fitting one
 		MovementSpeedMult = 1.0,
 		VisibilityMult = 1.0,
-		VisionMult = 1.0,
+		VisionMult = 1.0
 	},
 
 	// Figure that represents this party on the world map. This is always filled at the very end of a spawn-process and uses DefaultFigure by default.

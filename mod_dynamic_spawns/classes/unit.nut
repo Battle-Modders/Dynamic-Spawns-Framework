@@ -3,14 +3,16 @@ this.unit <- inherit(::MSU.BBClass.Empty, {
 		ID = null,
 		EntityType = null,		// String-IDs referencing entities from ::Const.World.Spawn.Troops table
 		Cost = 0,		// Cost of spawning this unit
-		Figure = "",	// A party consisting of this unit as its highest costing unit, will be represented by this figure
-		SubParty = null		// abilty to optionally spawn an additional party. Most commonly body guards or operators
+		SubParty = null,		// abilty to optionally spawn an additional party. Most commonly body guards or operators
 
-		// Private Guards
+		// Guards
 		StrengthMin = 0.0,		// The Playerstrength must be at least this value for this Unit to be able to spawn
-		StrengthMax = -1.0,
-		MinStartingResource = 0.0,		// The initial resource amount that the spawnProcess started with must have been higher than this value
-		MaxStartingResource = 900000,	// The initial resource amount that the spawnProcess started with must have been lower than this value
+		StrengthMax = 900000.0,
+		MinStartingResource = 0,		// The initial resource amount that the spawnProcess started with must have been higher than this value
+		MaxStartingResource = 900000	// The initial resource amount that the spawnProcess started with must have been lower than this value
+
+		// Vanilla Properties of a Party
+		Figure = "",	// A party consisting of this unit as its highest costing unit, will be represented by this figure
 	}
 
 	function create()
@@ -75,13 +77,13 @@ this.unit <- inherit(::MSU.BBClass.Empty, {
 
 	function canSpawn( _spawnProcess, _bonusResources = 0 )		// _bonusResources are used if you want to upgrade unit-A into unit-B. In those cases you have the resources from unit-A available in addition
 	{
-		if (this.m.MinStartingResource > _spawnProcess.getStartingResources()) return false;
-		if (this.m.MaxStartingResource < _spawnProcess.getStartingResources()) return false;
+		if (_spawnProcess.getStartingResources() < this.m.MinStartingResource) return false;
+		if (_spawnProcess.getStartingResources() > this.m.MaxStartingResource) return false;
+		if (_spawnProcess.getPlayerStrength() < this.getStrengthMin()) return false;
+		if (_spawnProcess.getPlayerStrength() > this.getStrengthMax()) return false;
 
 		if (!_spawnProcess.isIgnoringCost() && (_spawnProcess.getResources() + _bonusResources) < this.getCost()) return false;
 
-		if (_spawnProcess.getPlayerStrength()  < this.getStrengthMin()) return false;
-		if (this.getStrengthMax() != -1 && _spawnProcess.getPlayerStrength() > this.getStrengthMax()) return false;
 
 		return true;
 	}

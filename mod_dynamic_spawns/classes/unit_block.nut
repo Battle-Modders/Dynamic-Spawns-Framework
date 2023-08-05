@@ -6,10 +6,10 @@ this.unit_block <- inherit(::MSU.BBClass.Empty, {
         LookupMap = {},
         IsRandom = false,	// A random block will not upgrade between its troops and instead pick a random one each time
 
-		// Private Guards
-        ReqPartySize = 0         // This Block will only be able to spawn if the amount of already spawned troops is greater or equal to ReqPartySize
-		MinStartingResource = 0.0,
-		MaxStartingResource = 900000,
+		// Guards
+        ReqPartySize = 0,         // This Block will only be able to spawn if the amount of already spawned troops is greater or equal to ReqPartySize
+		MinStartingResource = 0,
+		MaxStartingResource = 900000
 	}
 
 	function create()
@@ -254,14 +254,14 @@ this.unit_block <- inherit(::MSU.BBClass.Empty, {
 
 	function canSpawn( _spawnProcess )
 	{
-		if (this.m.MinStartingResource > _spawnProcess.getStartingResources()) return false;
-		if (this.m.MaxStartingResource < _spawnProcess.getStartingResources()) return false;
+		if (_spawnProcess.getStartingResources() < this.m.MinStartingResource) return false;
+		if (_spawnProcess.getStartingResources() > this.m.MaxStartingResource) return false;
 
 		if (_spawnProcess.getTotal() < this.getReqPartySize()) return false;
 
 		foreach (unit in this.m.Units)
 		{
-			if (unit.canSpawn( _spawnProcess )) return true;
+			if (unit.canSpawn(_spawnProcess)) return true;
 		}
 
 		return false;

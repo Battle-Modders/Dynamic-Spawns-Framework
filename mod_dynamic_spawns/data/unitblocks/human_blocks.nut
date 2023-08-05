@@ -73,7 +73,7 @@ local unitBlocks = [
 	},
 	{
 		ID = "Human.MilitiaCaptain",
-		Units = [{ ID = "Human.MilitiaCaptain" }].
+		Units = [{ ID = "Human.MilitiaCaptain" }],
 		MinStartingResource = 144	// In Vanilla they appear in a group of 144 cost
 	}
 ]
