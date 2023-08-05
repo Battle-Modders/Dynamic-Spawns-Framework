@@ -1,4 +1,4 @@
-::DynamicSpawns.Data.UnitBlocks <- [
+local unitBlocks = [
 	{
 		ID = "Noble.Frontline",
 		Units = [{ ID = "Noble.Footman" }]
@@ -39,7 +39,7 @@
 	}
 ]
 
-foreach (block in ::DynamicSpawns.Data.UnitBlocks)
+foreach (block in unitBlocks)
 {
     local unitBlockObj = ::new(::DynamicSpawns.Class.UnitBlock).init(block);
 	::DynamicSpawns.UnitBlocks.LookupMap[unitBlockObj.m.ID] <- unitBlockObj;
