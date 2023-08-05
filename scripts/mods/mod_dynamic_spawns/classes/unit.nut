@@ -13,6 +13,20 @@ this.unit <- inherit(::MSU.BBClass.Empty, {
 		MaxStartingResource = 900000,	// The initial resource amount that the spawnProcess started with must have been lower than this value
 	}
 
+	function getClone( _overwrite = null )		// only used during spawn_process
+	{
+		local ret = ::new(".../unit.nut");
+		ret.m = clone this.m;
+		if (_overwrite != null)
+		{
+			foreach(key, value in _overwrite)
+			{
+				ret.m[key] = value;
+			}
+		}
+		return ret;
+	}
+
 	function create()
 	{
 	}

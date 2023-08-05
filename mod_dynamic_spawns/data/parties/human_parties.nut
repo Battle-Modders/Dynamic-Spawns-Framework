@@ -1,4 +1,118 @@
+
 local parties = [
+
+// Variant 1
+    {
+        ID = "Cultist",
+        UpgradeChance = 1.0,
+        HardMin = 4,
+        DefaultFigure = "figure_civilian_03",
+        MovementSpeedMult = 1.0,
+        VisibilityMult = 1.0,
+        VisionMult = 1.0,
+        Categories = {
+			Melee = {
+				UnitBlocks = [
+					{ ID = "Human.PeasantsArmed", RatioMin = 0.00, RatioMax = 1.00},
+					{ ID = "Human.Peasants", RatioMin = 0.00, RatioMax = 1.00},
+					{ ID = "Human.CultistAmbush", RatioMin = 0.00, RatioMax = 1.00}
+				],
+				RatioMin = 0.0,
+				RatioMax = 1.0
+			}
+		}
+
+
+    },
+
+	// Variant 2 - one categories per UnitBlock
+
+    {
+        ID = "Cultist",
+        UpgradeChance = 1.0,
+        HardMin = 4,
+        DefaultFigure = "figure_civilian_03",
+        MovementSpeedMult = 1.0,
+        VisibilityMult = 1.0,
+        VisionMult = 1.0,
+        UnitBlocks = [
+            {
+				ID = "Human.CultistAmbush",
+				Category = ["Melee"]
+				RatioMin = 0.1,
+				RatioMax = 0.3
+			},
+            {
+				ID = "Human.Peasants",
+				Category = ["Melee"]
+				RatioMin = 0.5,
+				RatioMax = 1.0
+			}
+        ]
+		Categories = [
+			{
+				Name = "Melee",
+				RatioMin = 0.0,
+				RatioMax = 0.7
+			}
+		]
+    },
+
+	// Variant 3 - multiple categories per UnitBlock
+		{
+			ID = "Cultist",
+			UpgradeChance = 1.0,
+			HardMin = 4,
+			DefaultFigure = "figure_civilian_03",
+			MovementSpeedMult = 1.0,
+			VisibilityMult = 1.0,
+			VisionMult = 1.0,
+			UnitBlocks = [
+				{
+					ID = "Human.CultistAmbush",
+					Category = {
+						Melee = {
+							RatioMin = 0.1,
+							RatioMax = 0.3
+						}
+					}
+				},
+				{
+					ID = "Human.Peasants",
+					Category = {
+						Melee = {
+							RatioMin = 0.5,
+							RatioMax = 1.0
+						}
+					}
+				},
+				{
+					ID = "Human.MeleeLeader",
+					Category = {
+						Melee = {
+							RatioMin = 0.0,
+							Ratiomax = 0.1
+						}.
+						Leader = {
+							RatioMin = 0.5,
+							Ratiomax = 1.0
+						}
+					}
+				}
+			],
+			Categories = {
+				Melee = {
+					RatioMin = 0.0,
+					RatioMax = 0.7
+				}
+				Leader = {
+					RatioMin = 0.0,
+					RatioMax = 0.1
+				}
+			}
+		},
+
+
     {
         ID = "Cultist",
         UpgradeChance = 1.0,

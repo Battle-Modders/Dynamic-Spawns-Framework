@@ -119,6 +119,15 @@ local parties = [
             "Beast.Hexe"    // This one has no Bodyguards, which is not perfect because sometimes the only Hexe spawns with bodyguards in vanilla
         ],
         UnitBlocks = [
+            { ID = "Beast.Hexen", RatioMin = 0.08, RatioMax = 0.13 },
+
+            { "Spiders", "Ghouls", "Schrats" },
+            { "Spiders", "Ghouls", "Schrats", "" },
+            { "Spiders", "Ghouls", "Schrats", "" },
+            { "Spiders", "Ghouls", "Schrats", "" },
+
+
+
             { ID = "Beast.HexenWithBodyguards", RatioMin = 0.08, RatioMax = 0.13 },
             { ID = "Beast.Spiders", RatioMin = 0.00, RatioMax = 1.00 },
             { ID = "Beast.Ghouls", RatioMin = 0.00, RatioMax = 1.00 },
