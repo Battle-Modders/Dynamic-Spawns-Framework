@@ -33,15 +33,13 @@
 			ID = "Goblin.Overseer",
 			EntityType = "GoblinOverseer",
 			Figure = "figure_goblin_04",
-			Cost = 35,
-			MinStartingResource = 240		// In vanilla this is 241
+			Cost = 35
 		},
 		{
 			ID = "Goblin.Shaman",
 			EntityType = "GoblinShaman",
 			Figure = "figure_goblin_03",
 			Cost = 35
-			MinStartingResource = 280		// In vanilla this is 281
 		}
 	]
 
