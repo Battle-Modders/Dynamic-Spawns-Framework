@@ -209,27 +209,5 @@ this.party <- inherit(::MSU.BBClass.Empty, {
 
 	}
 
-	// Returns true if the ratio of this unitblock would still be below its defined RatioMax if it was to spawn the next unit
-	// _spawnProcess = current spawnprocess reference that includes most important variables
-	// _block = UnitBlock or Table with UnitBlock Id and optional parameter
-	function isWithinRatioMax( _spawnProcess, _pBlock )
-	{
-		local referencedTotal = (_spawnProcess.getTotal() + 1 > this.getHardMin()) ? _spawnProcess.getTotal() + 1 : this.getHardMin();
-		local maxAllowed = ::Math.round(_pBlock.RatioMax * referencedTotal);
-		return (_spawnProcess.getBlockTotal(_pBlock.ID) < maxAllowed);
-	}
-
-	// Returns true if the ratio of this unitblock would still be above its defined RatioMin if it was to spawn the next unit
-	// _spawnProcess = current spawnprocess reference that includes most important variables
-	// _block = UnitBlock or Table with UnitBlock Id and optional parameter
-	function satisfiesRatioMin( _spawnProcess, _pBlock )
-	{
-		local referencedTotal = (_spawnProcess.getTotal() + 1 > this.getHardMin()) ? _spawnProcess.getTotal() + 1 : this.getHardMin();		// this is just ::Math.max() function which isn't available here
-		local minRequired = ::Math.ceil(referencedTotal * _pBlock.RatioMin);	// Using ceil here will make any non-zero RatioMin always force atleast 1 of its units into the spawned party.
-		// But the alternative is not consequent/good either. The solution is that you should always use the ReqPartySize alongside that to prevent small parties from spawning exotic units.
-
-		return (_spawnProcess.getBlockTotal(_pBlock.ID) >= minRequired);
-	}
-
 });
 

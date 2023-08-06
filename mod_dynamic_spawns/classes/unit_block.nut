@@ -7,6 +7,8 @@ this.unit_block <- inherit(::MSU.BBClass.Empty, {
         IsRandom = false,	// A random block will not upgrade between its troops and instead pick a random one each time
 
 		// Guards
+		RatioMin = 0.00,
+		RatioMax = 1.00,
         ReqPartySize = 0,         // This Block will only be able to spawn if the amount of already spawned troops is greater or equal to ReqPartySize
 		MinStartingResource = 0,
 		MaxStartingResource = 900000,
@@ -156,6 +158,36 @@ this.unit_block <- inherit(::MSU.BBClass.Empty, {
 	function getUnit( _id )
 	{
 		return this.m.LookupMap[_id];
+	}
+
+	// Returns true if the ratio of this unitblock would still be below its defined RatioMax if it was to spawn the next unit
+	// _spawnProcess = current spawnprocess reference that includes most important variables
+	function isWithinRatioMax( _spawnProcess )
+	{
+		local referencedTotal = _spawnProcess.getTotal() + 1;
+		if (_spawnProcess.getTotal() + 1 < _spawnProcess.getParty().getHardMin())
+		{
+			referencedTotal = _spawnProcess.getParty().getHardMin();
+		}
+
+		local maxAllowed = ::Math.round(this.m.RatioMax * referencedTotal);
+		return (_spawnProcess.getBlockTotal(this.getID()) < maxAllowed);
+	}
+
+	// Returns true if the ratio of this unitblock would still be above its defined RatioMin if it was to spawn the next unit
+	// _spawnProcess = current spawnprocess reference that includes most important variables
+	function satisfiesRatioMin( _spawnProcess )
+	{
+		local referencedTotal = _spawnProcess.getTotal() + 1;
+		if (_spawnProcess.getTotal() + 1 < _spawnProcess.getParty().getHardMin())
+		{
+			referencedTotal = _spawnProcess.getParty().getHardMin();
+		}
+
+		local minRequired = ::Math.ceil(referencedTotal * this.m.RatioMin);	// Using ceil here will make any non-zero RatioMin always force atleast 1 of its units into the spawned party.
+		// But the alternative is not consequent/good either. The solution is that you should always use the ReqPartySize or MinStartingResource alongside that to prevent small parties from spawning exotic units.
+
+		return (_spawnProcess.getBlockTotal(this.getID()) >= minRequired);
 	}
 
 	function spawnUnit( _spawnProcess )

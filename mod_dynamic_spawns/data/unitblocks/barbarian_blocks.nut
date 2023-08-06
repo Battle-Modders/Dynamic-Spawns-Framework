@@ -15,7 +15,7 @@ local unitBlocks = [
 	},
 	{
 		ID = "Barbarian.Beastmaster",
-		Units = [{ ID = "Barbarian.BeastmasterU" }, { ID = "Barbarian.BeastmasterF" }, { ID = "Barbarian.BeastmasterUU" }, { ID = "Barbarian.BeastmasterFF", MinStartingResource = 150 }],
+		Units = [{ ID = "Barbarian.BeastmasterU" }, { ID = "Barbarian.BeastmasterF" }, { ID = "Barbarian.BeastmasterUU" }, { ID = "Barbarian.BeastmasterFF" }],
 		MinStartingResource = 200	// In Vanilla they appear in a group of 195 cost
 	},
 	{

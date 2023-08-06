@@ -88,13 +88,11 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 			upgradeAffordableBlocks.clear();
 
 			local ratioSpawn = false;	// A ratioSpawn is a forced spawn for a block because its RatioMin is not satisfied anymore
-			foreach (pBlock in this.getParty().m.UnitBlocks)		// A pBlock (partyUnitBlock) contains a unitBlock ID and sometimes optional parameter
+			foreach (unitBlock in this.getParty().getUnitBlocks())		// A pBlock (partyUnitBlock) contains a unitBlock ID and sometimes optional parameter
 			{
-				local unitBlock = ::DynamicSpawns.UnitBlocks.findById(pBlock.ID);
-
-				if (this.getParty().canSpawn(this) && unitBlock.canSpawn(this) && this.getParty().isWithinRatioMax(this, pBlock))
+				if (this.getParty().canSpawn(this) && unitBlock.canSpawn(this) && unitBlock.isWithinRatioMax(this))
 				{
-					if (this.getParty().satisfiesRatioMin(this, pBlock) == false)	// An unsatisfied RatioMin results into an immediate forced Spawn
+					if (unitBlock.satisfiesRatioMin(this) == false)	// An unsatisfied RatioMin results into an immediate forced Spawn
 					{
 						unitBlock.spawnUnit(this);
 						ratioSpawn = true;
