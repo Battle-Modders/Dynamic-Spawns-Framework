@@ -6,10 +6,10 @@
 	spawnProcess.init(_party, _resources, _customHardMin, _customHardMax);
 	local spawnedUnits = spawnProcess.spawn();
 
-	_worldParty.setMovementSpeed(_party.m.MovementSpeedMult * ::Const.World.MovementSettings.Speed);
-	_worldParty.setVisibilityMult(_party.m.VisibilityMult);
-	_worldParty.setVisionRadius(_party.m.VisionMult * ::Const.World.Settings.Vision);
-	_worldParty.getSprite("body").setBrush(_party.Body);
+	_worldParty.setMovementSpeed(spawnProcess.getParty().m.MovementSpeedMult * ::Const.World.MovementSettings.Speed);
+	_worldParty.setVisibilityMult(spawnProcess.getParty().m.VisibilityMult);
+	_worldParty.setVisionRadius(spawnProcess.getParty().m.VisionMult * ::Const.World.Settings.Vision);
+	_worldParty.getSprite("body").setBrush(spawnProcess.getParty().Body);
 
 	foreach (unit in spawnedUnits)
 	{
@@ -17,7 +17,7 @@
 	}
 	_worldParty.updateStrength();
 
-	return _party;	// We can return whatever as long as it has an entry called 'Body' that has the correct Body-ID
+	return spawnProcess.getParty();	// We can return whatever as long as it has an entry called 'Body' that has the correct Body-ID
 }
 
 // Similar to assignTroops but doesn't apply the parties properties
