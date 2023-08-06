@@ -98,7 +98,7 @@ local parties = [
 		MovementSpeedMult = 0.5,
 		VisibilityMult = 1.0,
 		VisionMult = 0.25,
-        StaticUnits = [
+        StaticUnitIDs = [
             "Human.CaravanDonkey"
         ],
         UnitBlockDefs = [
@@ -115,7 +115,7 @@ local parties = [
 		MovementSpeedMult = 0.5,
 		VisibilityMult = 1.0,
 		VisionMult = 0.25,
-        StaticUnits = [
+        StaticUnitIDs = [
             "Human.CaravanDonkey",      // In vanilla an escorted caravan can also have only a single Donkey. I chose to force 2 donkey every time instead
             "Human.CaravanDonkey"
         ],

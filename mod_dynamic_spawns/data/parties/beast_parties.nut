@@ -115,7 +115,7 @@ local parties = [
 		MovementSpeedMult = 1.0,
 		VisibilityMult = 1.0,
 		VisionMult = 1.0,
-        StaticUnits = [
+        StaticUnitIDs = [
             "Beast.Hexe"    // This one has no Bodyguards, which is not perfect because sometimes the only Hexe spawns with bodyguards in vanilla
         ],
         UnitBlockDefs = [
@@ -138,7 +138,7 @@ local parties = [
 		MovementSpeedMult = 1.0,
 		VisibilityMult = 1.0,
 		VisionMult = 1.0,
-        StaticUnits = [
+        StaticUnitIDs = [
             "Beast.Hexe"    // This one has no Bodyguards, which is not perfect because sometimes the only Hexe spawns with bodyguards in vanilla
         ],
         UnitBlockDefs = [

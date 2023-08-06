@@ -1,48 +1,48 @@
 local unitBlocks = [
 	{
 		ID = "Southern.Frontline",
-		//Units = [{ ID = "Conscript" }, { ID = "Conscript++" }]
-		Units = [{ ID = "Southern.Conscript" }]
+		//UnitDefs = [{ ID = "Conscript" }, { ID = "Conscript++" }]
+		UnitDefs = [{ ID = "Southern.Conscript" }]
 	},
 	{
 		ID = "Southern.Backline",
-		//Units = [{ ID = "Conscript_Polearm" }, { ID = "Conscript_Polearm++" }]
-		Units = [{ ID = "Southern.Conscript_Polearm" }]
+		//UnitDefs = [{ ID = "Conscript_Polearm" }, { ID = "Conscript_Polearm++" }]
+		UnitDefs = [{ ID = "Southern.Conscript_Polearm" }]
 	},
 	{
 		ID = "Southern.Assassins",
-		// Units = [{ ID = "Assassin" }, { ID = "Assassin++" }]
-		Units = [{ ID = "Southern.Assassin" }]
+		// UnitDefs = [{ ID = "Assassin" }, { ID = "Assassin++" }]
+		UnitDefs = [{ ID = "Southern.Assassin" }]
 	},
 	{
 		ID = "Southern.Officers",
-		//Units = [{ ID = "Officer" }, { ID = "Officer++" }]
-		Units = [{ ID = "Southern.Officer" }],
+		//UnitDefs = [{ ID = "Officer" }, { ID = "Officer++" }]
+		UnitDefs = [{ ID = "Southern.Officer" }],
 		MinStartingResource = 250	// In Vanilla they appear in a group of 250 cost
 	},
 	{
 		ID = "Southern.Ranged",
-		//Units = [{ ID = "Gunner" }, { ID = "Gunner++" }]
-		Units = [{ ID = "Southern.Gunner" }]
+		//UnitDefs = [{ ID = "Gunner" }, { ID = "Gunner++" }]
+		UnitDefs = [{ ID = "Southern.Gunner" }]
 	},
 	{
 		ID = "Southern.Siege",
-		Units = [{ ID = "Southern.Mortar" }],
+		UnitDefs = [{ ID = "Southern.Mortar" }],
 		MinStartingResource = 340	// In Vanilla they appear in a group of 340 cost
 	},
 	{
 		ID = "Southern.Engineer",
-		Units = [{ ID = "Southern.Engineer" }]
+		UnitDefs = [{ ID = "Southern.Engineer" }]
 	},
 	{
 		ID = "Southern.Slaves",
-		Units = [{ ID = "Southern.Slave" }]
+		UnitDefs = [{ ID = "Southern.Slave" }]
 	},
 
 // Caravan
 	{
 		ID = "Southern.CaravanDonkeys",
-		Units = [{ ID = "Southern.CaravanDonkey" }]
+		UnitDefs = [{ ID = "Southern.CaravanDonkey" }]
 	}
 ]
 

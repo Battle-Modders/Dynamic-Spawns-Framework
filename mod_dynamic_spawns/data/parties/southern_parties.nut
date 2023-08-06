@@ -26,7 +26,7 @@ local parties = [
 		MovementSpeedMult = 0.5,
 		VisibilityMult = 1.0,
 		VisionMult = 0.25,
-        StaticUnits = [
+        StaticUnitIDs = [
             "Southern.CaravanDonkey"
         ],
         UnitBlockDefs = [
@@ -46,7 +46,7 @@ local parties = [
 		MovementSpeedMult = 0.5,
 		VisibilityMult = 1.0,
 		VisionMult = 0.25,
-        StaticUnits = [
+        StaticUnitIDs = [
             "Southern.CaravanDonkey"
         ],
         UnitBlockDefs = [

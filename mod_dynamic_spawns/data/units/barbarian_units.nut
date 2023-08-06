@@ -50,25 +50,25 @@
 		ID = "Barbarian.BeastmasterU",
 		EntityType = "BarbarianBeastmaster",	// Usually it's 1 Beastmaster for 1-2 Unholds. In one case vanilla spawns 3 Unholds for one Beastmaster. And in one case Vanilla spawns 3 Beastmaster for 4 Unholds. I would disregard these.
 		Cost = 15 + 55,
-		SubParty = "OneUnhold"
+		SubPartyDef = "OneUnhold"
 	},
 	{
 		ID = "Barbarian.BeastmasterUU",
 		EntityType = "BarbarianBeastmaster",	// Usually it's 1 Beastmaster for 1-2 Unholds. In one case vanilla spawns 3 Unholds for one Beastmaster. And in one case Vanilla spawns 3 Beastmaster for 4 Unholds. I would disregard these.
 		Cost = 15 + 55 + 55,
-		SubParty = "TwoUnhold"
+		SubPartyDef = "TwoUnhold"
 	},
 	{
 		ID = "Barbarian.BeastmasterF",
 		EntityType = "BarbarianBeastmaster",	// Usually it's 1 Beastmaster for 1-2 Unholds. In one case vanilla spawns 3 Unholds for one Beastmaster. And in one case Vanilla spawns 3 Beastmaster for 4 Unholds. I would disregard these.
 		Cost = 15 + 75,
-		SubParty = "OneFrostUnhold"
+		SubPartyDef = "OneFrostUnhold"
 	},
 	{
 		ID = "Barbarian.BeastmasterFF",
 		EntityType = "BarbarianBeastmaster",	// Usually it's 1 Beastmaster for 1-2 Unholds. In one case vanilla spawns 3 Unholds for one Beastmaster. And in one case Vanilla spawns 3 Beastmaster for 4 Unholds. I would disregard these.
 		Cost = 15 + 75 + 75,
-		SubParty = "TwoFrostUnhold"
+		SubPartyDef = "TwoFrostUnhold"
 	}
 ]
 

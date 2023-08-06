@@ -25,7 +25,7 @@ local parties = [
 		MovementSpeedMult = 0.5,
 		VisibilityMult = 1.0,
 		VisionMult = 0.25,
-        StaticUnits = [
+        StaticUnitIDs = [
             "Human.CaravanDonkey"       // Makes it much easier to get a good ratio
         ],
         UnitBlockDefs = [
