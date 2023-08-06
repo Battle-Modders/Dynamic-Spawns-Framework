@@ -15,7 +15,7 @@ this.unit <- inherit(::MSU.BBClass.Empty, {
 		MinStartingResource = 0,		// ... the StartingResources of the current SpawnProcess is at least this value
 		MaxStartingResource = 900000,	// ... the StartingResources of the current SpawnProcess is at most this value
 		MinDays = 0,					// ... ::World.getTime().Days is at least this value
-		MaxDays = 900000				// ... ::World.getTime().Days is at most this value
+		MaxDays = 900000,				// ... ::World.getTime().Days is at most this value
 
 		// Vanilla Properties of a Party
 		Figure = "",	// A party consisting of this unit as its highest costing unit, will be represented by this figure

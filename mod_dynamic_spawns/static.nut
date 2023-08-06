@@ -3,7 +3,7 @@
 {
 	// ::logWarning("Spawning the party '" + this.m.ID + "' with '" + _resources + "' Resources");
 	local spawnProcess = ::new(::DynamicSpawns.Class.SpawnProcess);
-	spawnProcess.init(_party, _resources, _customHardMin, _customHardMax);
+	spawnProcess.init({ID = _party.getID()}, _resources, _customHardMin, _customHardMax);
 	local spawnedUnits = spawnProcess.spawn();
 
 	_worldParty.setMovementSpeed(spawnProcess.getParty().m.MovementSpeedMult * ::Const.World.MovementSettings.Speed);
@@ -26,7 +26,7 @@
 {
 	// ::logWarning("Spawning the party '" + this.m.ID + "' with '" + _resources + "' Resources");
 	local spawnProcess = ::new(::DynamicSpawns.Class.SpawnProcess);
-	spawnProcess.init(_party, _resources, _worldParty.isLocation(), _customHardMin, _customHardMax);
+	spawnProcess.init({ID = _party.getID()}, _resources, _worldParty.isLocation(), _customHardMin, _customHardMax);
 	local spawnedUnits = spawnProcess.spawn();
 
 	foreach (unit in spawnedUnits)

@@ -138,7 +138,7 @@ this.party <- inherit(::MSU.BBClass.Empty, {
 	{
 		// ::logWarning("Spawning the party '" + this.m.ID + "' with '" + _resources + "' Resources");
 		local spawnProcess = ::new(::DynamicSpawns.Class.SpawnProcess);
-		spawnProcess.init(this, _resources, _customHardMin, _customHardMax);
+		spawnProcess.init({ID = this.getID()}, _resources, _customHardMin, _customHardMax);
 		return spawnProcess.spawn();
 	}
 

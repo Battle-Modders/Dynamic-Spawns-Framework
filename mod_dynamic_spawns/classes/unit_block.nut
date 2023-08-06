@@ -146,7 +146,6 @@ this.unit_block <- inherit(::MSU.BBClass.Empty, {
 	// _spawnProcess = current spawnprocess reference that includes most important variables
 	function canSpawn( _spawnProcess )
 	{
-		// ::logWarning("canSpawn for: " + this.getID());
 		if (_spawnProcess.getStartingResources() < this.m.MinStartingResource) return false;
 		if (_spawnProcess.getStartingResources() > this.m.MaxStartingResource) return false;
 		if (_spawnProcess.getWorldDays() < this.m.MinDays) return false;
@@ -154,7 +153,7 @@ this.unit_block <- inherit(::MSU.BBClass.Empty, {
 		if (_spawnProcess.getTotal() < this.m.ReqPartySize) return false;
 
 		// RatioMax is ignored if we do not satisfy the RatioMin yet
-		if (unitBlock.satisfiesRatioMin(this) && !this.isWithinRatioMax(_spawnProcess)) return false;
+		if (this.satisfiesRatioMin(_spawnProcess) && !this.isWithinRatioMax(_spawnProcess)) return false;
 
 		// Atleast one of our referenced units is able to spawn
 		foreach (unit in this.m.Units)

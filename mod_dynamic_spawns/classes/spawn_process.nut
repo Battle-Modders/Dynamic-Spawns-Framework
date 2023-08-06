@@ -15,13 +15,14 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 	{
 	}
 
-	function init( _party, _availableResources = -1, _isLocation = false, _customHardMin = null, _customHardMax = null )
+	function init( _partyDef, _availableResources = -1, _isLocation = false, _customHardMin = null, _customHardMax = null )
 	{
 		this.m.SpawnInfo = {};
 		this.m.UnitCount = 0;
 
-		this.m.Party = _party.getClone();
-		_party = this.getParty();	//
+		local originalParty = ::DynamicSpawns.Parties.LookupMap[_partyDef.ID];	// Only the original Party can create clones because clones do not have BlockDefs
+		this.m.Party = originalParty.getClone(_partyDef);	// SubParties might call .init with custom parameters
+
 		if (_customHardMin != null) this.m.Party.m.HardMin = _customHardMin;
 		if (_customHardMax != null) this.m.Party.m.HardMax = _customHardMax;
 
@@ -59,7 +60,7 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 	{
 		foreach (unitBlock in this.getParty().getUnitBlocks())
 		{
-			::DynamicSpawns.UnitBlocks.findById(unitBlock.getID()).onPartySpawnStart();
+			unitBlock.onPartySpawnStart();
 		}
 
 		local ret = [];
@@ -170,13 +171,12 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 		// Spawn SubParties
 		for (local i = ret.len() - 1; i >= 0; i--)		// Backwards counting as this array is growing during this process
 		{
-			if (ret[i].getSubPartyDef().len() == 0) continue;
+			if (ret[i].getSubPartyDef().len() == 0) continue;	// skip all units that don't have a subparty
 
 			this.printPartyHeader(ret[i].getSubPartyDef().ID, ret[i].getEntityType());
-			local spawnProcess = ::new(::DynamicSpawns.Class.SpawnProcess);
 
-			local originalParty = ::DynamicSpawns.Parties.LookupMap[ret[i].getSubPartyDef().ID];	// Only the original Party can create clones because clones do not have Defs
-			ret.extend(spawnProcess.init(originalParty).spawn());
+			local spawnProcess = ::new(::DynamicSpawns.Class.SpawnProcess);
+			ret.extend(spawnProcess.init(ret[i].getSubPartyDef()).spawn());
 		}
 
 		this.getParty().updateFigure(this);
@@ -299,14 +299,14 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 	{
 		// ::logWarning( this.getTotal() + " total unit were spawned for the party " + this.getParty().getID());
 		// ::logWarning("- - - Spawn finished - - -");
-		::logInfo("Resources remaining: " + this.getResources());
-		local printBlock = function( _blockID )
+		::logInfo("Party-Name: " + this.getParty().getID() + "; Resources remaining: " + this.getResources());
+		local printBlock = function( _block )
 		{
-			local percentage = (this.getTotal() == 0) ? 0 : (100 * this.m.SpawnInfo[_blockID].Total / this.getTotal());
-			local str = (_blockID.find("Static") != null ? "Static" : _blockID) + ": " + this.m.SpawnInfo[_blockID].Total + " (" + percentage + "%) - ";
-			foreach (unit in ::DynamicSpawns.UnitBlocks.findById(_blockID).getUnits())
+			local percentage = (this.getTotal() == 0) ? 0 : (100 * this.m.SpawnInfo[_block.getID()].Total / this.getTotal());
+			local str = (_block.getID().find("Static") != null ? "Static" : _block.getID()) + ": " + this.m.SpawnInfo[_block.getID()].Total + " (" + percentage + "%) - ";
+			foreach (unit in _block.getUnits())
 			{
-				str += unit.getEntityType() + ": " + this.m.SpawnInfo[_blockID][unit.getID()] + ", ";
+				str += unit.getEntityType() + ": " + this.m.SpawnInfo[_block.getID()][unit.getID()] + ", ";
 			}
 
 			::logInfo(str.slice(0, -2));
@@ -314,7 +314,7 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 
 		foreach (unitBlock in this.getParty().getUnitBlocks())
 		{
-			printBlock(unitBlock.getID());
+			printBlock(unitBlock);
 		}
 
 		// Hardcoded Print for StaticUnits
