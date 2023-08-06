@@ -151,6 +151,20 @@
 		Figure = "figure_skeleton_04",
 		Cost = 40
 	},
+	{
+		ID = "Undead.SkeletonPriestH",
+		EntityType = "Necromancer",
+		Figure = "figure_skeleton_04",
+		Cost = 30 + 12,
+		SubPartyDef = {ID = "SubPartyYeoman"}
+	},
+	{
+		ID = "Undead.SkeletonPriestHH",
+		EntityType = "Necromancer",
+		Figure = "figure_skeleton_04",
+		Cost = 30 + 24,
+		SubPartyDef = {ID = "SubPartyKnight"}
+	},
 
 // Bodyguards for Priests
 	{
