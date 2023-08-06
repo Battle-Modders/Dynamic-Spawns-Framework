@@ -3,6 +3,7 @@
 		{
 			ID = "Bandit.Thug",
 			EntityType = "BanditThug",
+			Figure = "figure_bandit_02",
 			Cost = 9
 		},
 		{
@@ -23,18 +24,20 @@
 		{
 			ID = "Bandit.RaiderLOW",
 			EntityType = "BanditRaiderLOW",
+			Figure = "figure_bandit_03",
 			Cost = 16
 		},
 		{
 			ID = "Bandit.Raider",
 			EntityType = "BanditRaider",
+			Figure = "figure_bandit_03",
 			Cost = 20
 		},
 		{
 			ID = "Bandit.Leader",
 			EntityType = "BanditLeader",
-			Cost = 25,
-			MinStartingResource = 150		// In vanilla this is 140
+			Figure = "figure_bandit_04",
+			Cost = 25
 		},
 		{
 			ID = "Bandit.RaiderWolf",
