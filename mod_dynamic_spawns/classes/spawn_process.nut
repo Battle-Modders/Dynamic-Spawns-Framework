@@ -17,7 +17,7 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
     {
     }
 
-    function init( _party, _availableResources = 0, _opposingParty = null, _customHardMin = null, _customHardMax = null )
+    function init( _party, _availableResources = 0, _customHardMin = null, _customHardMax = null )
     {
 		this.m.SpawnInfo = {};
 		this.m.UnitCount = 0;

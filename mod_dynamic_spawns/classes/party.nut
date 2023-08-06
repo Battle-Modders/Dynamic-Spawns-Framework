@@ -133,11 +133,11 @@ this.party <- inherit(::MSU.BBClass.Empty, {
 		return this.m.UnitBlockDefs;
 	}
 
-	function spawn( _resources, _opposingParty = null, _customHardMin = -1, _customHardMax = -1 )
+	function spawn( _resources, _customHardMin = -1, _customHardMax = -1 )
 	{
 		// ::logWarning("Spawning the party '" + this.m.ID + "' with '" + _resources + "' Resources");
 		local spawnProcess = ::new(::DynamicSpawns.Class.SpawnProcess);
-		spawnProcess.init(this, _resources, _opposingParty, _customHardMin, _customHardMax);
+		spawnProcess.init(this, _resources, _customHardMin, _customHardMax);
 		return spawnProcess.spawn();
 	}
 

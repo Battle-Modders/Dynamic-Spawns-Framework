@@ -1,9 +1,9 @@
 ::DynamicSpawns.Static <- {};
-::DynamicSpawns.Static.assignTroops <- function( _worldParty, _party, _resources, _opposingParty = null, _customHardMin = -1, _customHardMax = -1 )
+::DynamicSpawns.Static.assignTroops <- function( _worldParty, _party, _resources, _customHardMin = -1, _customHardMax = -1 )
 {
 	// ::logWarning("Spawning the party '" + this.m.ID + "' with '" + _resources + "' Resources");
 	local spawnProcess = ::new(::DynamicSpawns.Class.SpawnProcess);
-	spawnProcess.init(_party, _resources, _opposingParty, _customHardMin, _customHardMax);
+	spawnProcess.init(_party, _resources, _customHardMin, _customHardMax);
 	local spawnedUnits = spawnProcess.spawn();
 
 	_worldParty.setMovementSpeed(_party.m.MovementSpeedMult * ::Const.World.MovementSettings.Speed);
@@ -22,11 +22,11 @@
 
 // Similar to assignTroops but doesn't apply the parties properties
 // In Vanilla this function is part of the contract.nut
-::DynamicSpawns.Static.addTroops <- function( _worldParty, _party, _resources, _opposingParty = null, _customHardMin = -1, _customHardMax = -1 )
+::DynamicSpawns.Static.addTroops <- function( _worldParty, _party, _resources, _customHardMin = -1, _customHardMax = -1 )
 {
 	// ::logWarning("Spawning the party '" + this.m.ID + "' with '" + _resources + "' Resources");
 	local spawnProcess = ::new(::DynamicSpawns.Class.SpawnProcess);
-	spawnProcess.init(_party, _resources, _opposingParty, _customHardMin, _customHardMax);
+	spawnProcess.init(_party, _resources, _customHardMin, _customHardMax);
 	local spawnedUnits = spawnProcess.spawn();
 
 	foreach (unit in spawnedUnits)
