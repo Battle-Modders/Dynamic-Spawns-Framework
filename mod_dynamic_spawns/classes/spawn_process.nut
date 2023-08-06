@@ -33,11 +33,11 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 		if (this.getIdealSize() <= 0) this.m.IdealSize = 1;	// To prevent division by zero later on. But realistically you should never have such a low idealSize here
 
 		// Initialize SpawnInfo
+		this.m.SpawnInfo["StaticUnits"] <- {	// HardCoded entry just for static units
+			Total = 0
+		};
 		foreach (staticUnit in this.getParty().getStaticUnits())
 		{
-			this.m.SpawnInfo["StaticUnits"] <- {	// HardCoded entry just for static units
-				Total = 0
-			};
 			this.m.SpawnInfo["StaticUnits"][staticUnit.getID()] <- 0;
 		}
 

@@ -94,7 +94,6 @@ local parties = [
 	{
 		ID = "SubPartyYeoman",
 		HardMin = 1,
-		HardMax = 1,
 		StaticUnitIDs = [
 			"Undead.YeomanBodyguard"
 		]
@@ -102,7 +101,6 @@ local parties = [
 	{
 		ID = "SubPartyKnight",
 		HardMin = 1,
-		HardMax = 1,
 		StaticUnitIDs = [
 			"Undead.FallenHeroBodyguard"
 		]
@@ -110,16 +108,14 @@ local parties = [
 	{
 		ID = "SubPartyYeomanKnight",
 		HardMin = 2,
-		HardMax = 2,
 		StaticUnitIDs = [
-			"Undead.FallenHeroBodyguard",
-			"Undead.YeomanBodyguard"
+			"Undead.YeomanBodyguard",
+			"Undead.FallenHeroBodyguard"
 		]
 	},
 	{
 		ID = "SubPartyKnightKnight",
 		HardMin = 2,
-		HardMax = 2,
 		StaticUnitIDs = [
 			"Undead.FallenHeroBodyguard",
 			"Undead.FallenHeroBodyguard"
