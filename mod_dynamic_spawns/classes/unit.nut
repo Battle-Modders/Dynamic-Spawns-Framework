@@ -1,19 +1,24 @@
 this.unit <- inherit(::MSU.BBClass.Empty, {
 	m = {
+	// Required Parameter
 		ID = null,
 		EntityType = null,		// String-IDs referencing entities from ::Const.World.Spawn.Troops table
 		Cost = 0,		// Cost of spawning this unit
+
+	// Optional Parameter
+		// SubParty
 		SubPartyDef = {},		// abilty to optionally spawn an additional party. Most commonly body guards or operators
 
 		// Guards
 		StrengthMin = 0.0,		// The Playerstrength must be at least this value for this Unit to be able to spawn
 		StrengthMax = 900000.0,
 		MinStartingResource = 0,		// The initial resource amount that the spawnProcess started with must have been higher than this value
-		MaxStartingResource = 900000	// The initial resource amount that the spawnProcess started with must have been lower than this value
+		MaxStartingResource = 900000,	// The initial resource amount that the spawnProcess started with must have been lower than this value
 
 		// Vanilla Properties of a Party
 		Figure = "",	// A party consisting of this unit as its highest costing unit, will be represented by this figure
 
+	// Private
 		// During Spawnprocess only
 		SubParty = null		// Cloned Party-Object. Is only filled during a spawning process
 	}
@@ -77,7 +82,7 @@ this.unit <- inherit(::MSU.BBClass.Empty, {
 		// Continue with the SubParty if it exists. Just gotta be careful to not cause an infinite recursion here
 		if (this.m.SubPartyDef.len() != 0)
 		{
-			this.m.SubParty = ::DynamicSpawns.Parties.findById(this.m.SubPartyDef.ID).getClone(this.m.SubPartyDef);
+			this.m.SubParty = ::DynamicSpawns.Parties.findById(this.m.SubPartyDef).getClone();
 		}
 
 		return clonedUnit;

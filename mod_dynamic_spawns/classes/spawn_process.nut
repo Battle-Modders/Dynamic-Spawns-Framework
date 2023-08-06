@@ -29,10 +29,10 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 		this.m.StartingResources = _availableResources;
 		this.m.Resources = _availableResources;
 
-		this.m.IdealSize = _party.generateIdealSize();
+		this.m.IdealSize = this.m.Party.generateIdealSize();
 
 		// Initialize SpawnInfo
-		foreach (staticUnit in _party.getStaticUnits())
+		foreach (staticUnit in this.m.Party.getStaticUnits())
 		{
 			this.m.SpawnInfo["StaticUnits"] <- {	// HardCoded entry just for static units
 				Total = 0
@@ -40,7 +40,7 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 			this.m.SpawnInfo["StaticUnits"][staticUnit.getID()] <- 0;
 		}
 
-		foreach (unitBlock in _party.getUnitBlocks())
+		foreach (unitBlock in this.m.Party.getUnitBlocks())
 		{
 			this.m.SpawnInfo[unitBlock.getID()] <- {
 				Total = 0
@@ -61,9 +61,9 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 		if (this.getIdealSize() == 0) this.m.IdealSize = 1;	// To prevent division by zero later on. But realistically you should never have such a low idealSize here
 
         this.m.PlayerStrength = 100;     // Placeholder. This needs to be passed as argument or taken from global variable/function
-		foreach (block in this.getParty().m.UnitBlocks)
+		foreach (unitBlock in this.getParty().getUnitBlocks())
 		{
-			::DynamicSpawns.UnitBlocks.findById(block.ID).onPartySpawnStart();
+			::DynamicSpawns.UnitBlocks.findById(unitBlock.getID()).onPartySpawnStart();
 		}
 
 		local ret = [];
@@ -90,10 +90,12 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 			local ratioSpawn = false;	// A ratioSpawn is a forced spawn for a block because its RatioMin is not satisfied anymore
 			foreach (unitBlock in this.getParty().getUnitBlocks())
 			{
-				if (this.getParty().canSpawn(this) && unitBlock.canSpawn(this) && unitBlock.isWithinRatioMax(this))
+				if (this.getParty().canSpawn(this) && unitBlock.canSpawn(this))
 				{
+					// ::logWarning("The Block " + unitBlock.getID() + " is able to spawn!");
 					if (unitBlock.satisfiesRatioMin(this) == false)	// An unsatisfied RatioMin results into an immediate forced Spawn
 					{
+						// ::logWarning("Force Spawn!");
 						unitBlock.spawnUnit(this);
 						ratioSpawn = true;
 						break;
@@ -306,9 +308,10 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 
 			::logInfo(str.slice(0, -2));
 		}
-		foreach (block in this.getParty().getUnitBlocks())
+
+		foreach (unitBlock in this.getParty().getUnitBlocks())
 		{
-			printBlock(block.ID);
+			printBlock(unitBlock.getID());
 		}
 
 		// Hardcoded Print for StaticUnits

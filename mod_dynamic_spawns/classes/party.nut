@@ -1,15 +1,16 @@
 this.party <- inherit(::MSU.BBClass.Empty, {
 	m = {
+	// Required Parameter
         ID = null,
         UnitBlockDefs = [],	// Array of Tables that require atleast 'ID' of the used UnitBlocks. Other parameter will overwrite those in the referenced UnitBLock
-        // Resources = 0;
 
+	// Optional Parameter
         UpgradeChance = 1.0,	// Chance that this Party will upgrade a unit instead of spawning a new unit when IdealSize is reached
-        StaticUnits = [],	// Array of UnitObjects that are forced to spawn if the Resources allow it. Can have multiples of the same unit
+        StaticUnitIDs = [],	// Array of UnitObjects that are forced to spawn if the Resources allow it. Can have multiples of the same unit.
 
 		// Guards
-        HardMin = 0,		// @Darxo: Smallest army size that is allowed for this unit to even make sense. Ressources are disregarded while trying to satisfy this. Could maybe be set to 1 be default
-        HardMax = 9000,		// @Darxo: Greatest army size that is allowed for this unit to even make sense. All spawning (not upgrading) is stopped when this is reached
+        HardMin = 0,		// Smallest army size that is allowed for this party to even make sense. Ressources are disregarded while trying to satisfy this. Could maybe be set to 1 be default
+        HardMax = 9000,		// Greatest army size that is allowed for this party to even make sense. All spawning (not upgrading) is stopped when this is reached
 
 		// Vanilla Properties of a Party
 		DefaultFigure = "",		// This Figure will be used if the spawned units couldnt provide a better fitting one
@@ -17,8 +18,10 @@ this.party <- inherit(::MSU.BBClass.Empty, {
 		VisibilityMult = 1.0,
 		VisionMult = 1.0,
 
+	// Private
 		// During Spawnprocess only
-		UnitBlocks = []		// Array of cloned UnitBlock classes. Is only filled during a spawning process
+		UnitBlocks = [],		// Array of cloned UnitBlock classes. Is only filled during a spawning process
+		StaticUnits = []		// Array of cloned Unit classes that are forced to spawn if the Resources allow it. Can have multiples of the same unit.
 	},
 
 	// Figure that represents this party on the world map. This is always filled at the very end of a spawn-process and uses DefaultFigure by default.
@@ -35,15 +38,6 @@ this.party <- inherit(::MSU.BBClass.Empty, {
 
 		foreach (key, value in _partyDef)
 		{
-			if (key == "StaticUnits")	// StaticUnits are passed by their IDs
-			{
-				foreach (unitID in value)
-				{
-					this.m.StaticUnits.push(::DynamicSpawns.Units.findById(unitID));
-				}
-				continue;
-			}
-
 			if (typeof value == "function")
 			{
 				this[key] = value;
@@ -59,7 +53,7 @@ this.party <- inherit(::MSU.BBClass.Empty, {
 		return this;
 	}
 
-	// Returns a copy of this party (except that arrays)
+	// Returns a copy of this party except Def-Arrays. Those must be provided by _partyDef is required
 	function getClone( _partyDef = null )
 	{
 		local clonedParty = ::new(::DynamicSpawns.Class.Party);
@@ -73,24 +67,23 @@ this.party <- inherit(::MSU.BBClass.Empty, {
 			clonedParty.m[key] = value;
 		}
 
-		// Manually copy static unit ids over
-		foreach ( staticUnit in this.m.StaticUnits)
-		{
-			clonedParty.m.StaticUnits.push(staticUnit.getClone());
-		}
-
 		// Copy all data provided by the _partyDef (e.g. custom HardMin/HardMax) into the clone
-		if (_unitBlockDef != null) clonedParty.init(_partyDef);
+		if (_partyDef != null) clonedParty.init(_partyDef);
 
 		// Create clones of all UnitBlocks needed for this
 		this.m.UnitBlocks = [];
 		foreach (unitBlockDef in this.m.UnitBlockDefs)
 		{
 			local unitBlock = ::DynamicSpawns.UnitBlocks.findById(unitBlockDef.ID).getClone(unitBlockDef);
-			this.m.UnitBlocks.push(unitBlock);
+			clonedParty.m.UnitBlocks.push(unitBlock);
 		}
 
-		// Create clones of all StaticUnits
+		// Create clones of all Static units needed for this
+		foreach ( staticUnitID in this.m.StaticUnitIDs)
+		{
+			local staticUnit = ::DynamicSpawns.Units.findById(staticUnitID).getClone();
+			clonedParty.m.StaticUnits.push(staticUnit.getClone());
+		}
 
 		return clonedParty;
 	}
@@ -159,6 +152,7 @@ this.party <- inherit(::MSU.BBClass.Empty, {
 
 	function getReferencedBrotherAmount()
 	{
+		return 8;
 		local referencedAmount = ::World.getPlayerRoster().getAll().len();
 		referencedAmount = ::Math.min(referencedAmount, ::World.Assets.getBrothersScaleMax());
 		referencedAmount = ::Math.max(referencedAmount, ::World.Assets.getBrothersScaleMin());
@@ -196,7 +190,6 @@ this.party <- inherit(::MSU.BBClass.Empty, {
 		{
 			if (unitBlock.canSpawn(_spawnProcess)) return true;
 		}
-
 		return false;
 
 	}
