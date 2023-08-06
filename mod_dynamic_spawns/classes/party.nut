@@ -7,6 +7,7 @@ this.party <- inherit(::MSU.BBClass.Empty, {
 	// Optional Parameter
         UpgradeChance = 0.5,	// Chance that this Party will upgrade a unit instead of spawning a new unit when IdealSize is reached
         StaticUnitIDs = [],		// Array of UnitIDs that are forced to spawn if the Resources allow it. Can have multiples of the same unit.
+		DefaultResources = 0,	// If the SpawnProcess is started without ResourceAmount it will use the value defined here. E.g. when spawning SubParties
 
 		// Guards
         HardMin = 0,		// Smallest army size that is allowed for this party to even make sense. Ressources are disregarded while trying to satisfy this. Could maybe be set to 1 be default

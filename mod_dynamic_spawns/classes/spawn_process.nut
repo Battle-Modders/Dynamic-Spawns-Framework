@@ -17,7 +17,7 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
     {
     }
 
-    function init( _party, _availableResources = 0, _isLocation = false, _customHardMin = null, _customHardMax = null )
+    function init( _party, _availableResources = -1, _isLocation = false, _customHardMin = null, _customHardMax = null )
     {
 		this.m.SpawnInfo = {};
 		this.m.UnitCount = 0;
@@ -27,10 +27,10 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 		if (_customHardMin != null) this.m.Party.m.HardMin = _customHardMin;
 		if (_customHardMax != null) this.m.Party.m.HardMax = _customHardMax;
 
-		this.m.StartingResources = _availableResources;
-		this.m.Resources = _availableResources;
+		this.m.StartingResources = (_availableResources == -1) ? this.getParty().m.DefaultResources : _availableResources;
+		this.m.Resources = this.m.StartingResources;
 
-		this.m.IdealSize = this.getParty().generateIdealSize(this, _isLocation);
+		this.m.IdealSize = this.getParty().generateIdealSize(this, _isLocation);	// Locations currently have a 50% higher IdealSize compared to roaming parties
 		if (this.getIdealSize() <= 0) this.m.IdealSize = 1;	// To prevent division by zero later on. But realistically you should never have such a low idealSize here
 
 		// Initialize SpawnInfo

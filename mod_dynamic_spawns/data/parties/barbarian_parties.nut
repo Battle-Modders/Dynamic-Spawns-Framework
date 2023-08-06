@@ -32,7 +32,7 @@ local parties = [
 		StaticUnitIDs = [
 			"Barbarian.King"
 		]
-    }
+    },
 
     // SubParties
 	{
