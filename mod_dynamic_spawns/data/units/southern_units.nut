@@ -30,7 +30,7 @@
         ID = "Southern.Mortar",
         EntityType = "Mortar",
         Cost = 20,
-        SubPartyDef = "MortarEngineers"
+        SubPartyDef = {ID = "MortarEngineers"}
     },
     {
         ID = "Southern.Assassin",

@@ -173,12 +173,12 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 		// Spawn SubParties
 		for (local i = ret.len() - 1; i >= 0; i--)		// Backwards counting as this array is growing during this process
 		{
-			if (ret[i].getSubPartyDef() == "") continue;
+			if (ret[i].getSubPartyDef().len() == 0) continue;
 
-			this.printPartyHeader(ret[i].getSubPartyDef(), ret[i].getEntityType());
+			this.printPartyHeader(ret[i].getSubPartyDef().ID, ret[i].getEntityType());
 			local spawnProcess = ::new(::DynamicSpawns.Class.SpawnProcess);
 
-			local originalParty = ::DynamicSpawns.Parties.LookupMap[ret[i].getSubPartyDef()];	// Only the original Party can create clones because clones do not have Defs
+			local originalParty = ::DynamicSpawns.Parties.LookupMap[ret[i].getSubPartyDef().ID];	// Only the original Party can create clones because clones do not have Defs
 			ret.extend(spawnProcess.init(originalParty).spawn());
 		}
 
