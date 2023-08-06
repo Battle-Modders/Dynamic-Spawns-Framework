@@ -5,13 +5,10 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
         SpawnInfo = {},     // Table of Tables. For each UnitBlock and for each spawned units from that Block
         UnitCount = 0,      // Amount of units spawned during this process. This does not include SubParties
 
-		Party = null,		// Weak Reference to the party that is currently used for spawning
+		Party = null,		// Cloned Party object, that is used for spawning
 		Resources = 0,		// Available resources during this run
 		StartingResources = 0,		// Resource that this spawnProcess started with
 		IdealSize = -1,
-
-		CustomHardMin = -1,
-		CustomHardMax = -1,
 
 		PlayerStrength = 0		// Strength of the Playerparty
 	}
@@ -20,18 +17,21 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
     {
     }
 
-    function init( _party, _availableResources = 0, _opposingParty = null, _customHardMin = -1, _customHardMax = -1 )
+    function init( _party, _availableResources = 0, _opposingParty = null, _customHardMin = null, _customHardMax = null )
     {
 		this.m.SpawnInfo = {};
 		this.m.UnitCount = 0;
 
-		this.m.Party = _party.weakref();
-		this.m.Resources = _availableResources;
-		this.m.StartingResources = _availableResources;
-		this.m.IdealSize = _party.generateIdealSize();
-		this.m.CustomHardMin = _customHardMin;
-		this.m.CustomHardMax = _customHardMax;
+		this.m.Party = _party.getClone();
+		if (_customHardMin != null) this.m.Party.m.HardMin = _customHardMin;
+		if (_customHardMax != null) this.m.Party.m.HardMax = _customHardMax;
 
+		this.m.StartingResources = _availableResources;
+		this.m.Resources = _availableResources;
+
+		this.m.IdealSize = _party.generateIdealSize();
+
+		// Initialize SpawnInfo
 		foreach (staticUnit in _party.getStaticUnits())
 		{
 			this.m.SpawnInfo["StaticUnits"] <- {	// HardCoded entry just for static units
@@ -40,28 +40,23 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 			this.m.SpawnInfo["StaticUnits"][staticUnit.getID()] <- 0;
 		}
 
-		foreach (block in _party.getUnitBlocks())
+		foreach (unitBlock in _party.getUnitBlocks())
 		{
-			this.m.SpawnInfo[block.ID] <- {
+			this.m.SpawnInfo[unitBlock.getID()] <- {
 				Total = 0
 			};
 
-			foreach (unit in ::DynamicSpawns.UnitBlocks.findById(block.ID).getUnits())
+			foreach (unit in unitBlock.getUnits())
 			{
-				this.m.SpawnInfo[block.ID][unit.getID()] <- 0;
+				this.m.SpawnInfo[unitBlock.getID()][unit.getID()] <- 0;
 			}
 		}
+
 		return this;
     }
 
     function spawn()
     {
-		// Temporary overwrite Party Variables; Proof of Concept. We cant just overwrite the HardMins of our Data sets with these tempory onces. Otherwise we change other spawns in the game
-		local oldHardMin = this.getParty().getHardMin();
-		if (this.m.CustomHardMin != -1) this.getParty().m.HardMin = this.m.CustomHardMin;
-		local oldHardMax = this.getParty().getHardMax();
-		if (this.m.CustomHardMax != -1) this.getParty().m.HardMin = this.m.CustomHardMax;
-
 		if (this.getIdealSize() == -1) this.m.IdealSize = ::Math.max(this.getParty().getHardMin(), this.getParty().getHardMax());
 		if (this.getIdealSize() == 0) this.m.IdealSize = 1;	// To prevent division by zero later on. But realistically you should never have such a low idealSize here
 
@@ -175,10 +170,6 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 		if (!::DynamicSpawns.Const.Benchmark) this.printLog();
 
 		ret.extend(this.getUnits());
-
-		// Fix the overwritten Variables to their original values
-		this.getParty().m.HardMin = oldHardMin;
-		this.getParty().m.HardMax = oldHardMax;
 
 		// Spawn SubParties
 		local spawnProcess = ::new(::DynamicSpawns.Class.SpawnProcess);
