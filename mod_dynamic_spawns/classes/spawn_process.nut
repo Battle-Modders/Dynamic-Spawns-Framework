@@ -8,9 +8,7 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 		Party = null,		// Cloned Party object, that is used for spawning
 		Resources = 0,		// Available resources during this run
 		StartingResources = 0,		// Resource that this spawnProcess started with
-		IdealSize = 6,
-
-		PlayerStrength = 0,		// Strength of the Playerparty
+		IdealSize = 6
 	}
 
     function create()
@@ -59,7 +57,6 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 
     function spawn()
     {
-        this.m.PlayerStrength = 100;     // Placeholder. This needs to be passed as argument or taken from global variable/function
 		foreach (unitBlock in this.getParty().getUnitBlocks())
 		{
 			::DynamicSpawns.UnitBlocks.findById(unitBlock.getID()).onPartySpawnStart();
@@ -208,7 +205,7 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 
 	function getPlayerStrength()
 	{
-		return this.m.PlayerStrength;
+		return ::World.State.getPlayer().getStrength();		// This is cleaner but may be a bit inefficient compared to reading this value out once and saving it in a variable
 	}
 
 	function getWorldDays()
