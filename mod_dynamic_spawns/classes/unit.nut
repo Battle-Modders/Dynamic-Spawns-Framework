@@ -7,7 +7,7 @@ this.unit <- inherit(::MSU.BBClass.Empty, {
 
 	// Optional Parameter
 		// SubParty
-		SubPartyDef = {},				// abilty to optionally spawn an additional party. Most commonly body guards or operators
+		SubPartyDef = "",				// abilty to optionally spawn an additional party. Most commonly body guards or operators
 
 		// Guards
 		StrengthMin = 0.0,				// This Unit is only able to spawn if the Playerstrength is higher than this value
@@ -80,9 +80,9 @@ this.unit <- inherit(::MSU.BBClass.Empty, {
 		}
 
 		// Continue with the SubParty if it exists. Just gotta be careful to not cause an infinite recursion here
-		if (this.m.SubPartyDef.len() != 0)
+		if (clonedUnit.m.SubPartyDef != "")
 		{
-			this.m.SubParty = ::DynamicSpawns.Parties.findById(this.m.SubPartyDef).getClone();
+			clonedUnit.m.SubParty = ::DynamicSpawns.Parties.findById(clonedUnit.m.SubPartyDef).getClone();
 		}
 
 		return clonedUnit;
@@ -96,6 +96,11 @@ this.unit <- inherit(::MSU.BBClass.Empty, {
 	function getSubParty()
 	{
 		return this.m.SubParty;
+	}
+
+	function getSubPartyDef()
+	{
+		return this.m.SubPartyDef;
 	}
 
 	function getEntityType()
@@ -131,7 +136,15 @@ this.unit <- inherit(::MSU.BBClass.Empty, {
 		if (_spawnProcess.getPlayerStrength() < this.getStrengthMin()) return false;
 		if (_spawnProcess.getPlayerStrength() > this.getStrengthMax()) return false;
 
-		if (!_spawnProcess.isIgnoringCost() && (_spawnProcess.getResources() + _bonusResources) < this.getCost()) return false;
+		if (_bonusResources == 0)	// We only allow ignoring of Cost if for considering new units to spawn
+		{
+			if (!_spawnProcess.isIgnoringCost() && (_spawnProcess.getResources()) < this.getCost()) return false;
+		}
+		else	// Upgrading of units
+		{
+			if ((_spawnProcess.getResources() + _bonusResources) < this.getCost()) return false;
+		}
+
 
 
 		return true;

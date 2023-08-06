@@ -33,12 +33,6 @@ this.unit_block <- inherit(::MSU.BBClass.Empty, {
 
 		foreach (key, value in _unitBlockDef)
 		{
-			if (key == "Units")
-			{
-				this.addUnits(value);
-				continue;
-			}
-
 			if (typeof value == "function")
 			{
 				this[key] = value;
@@ -78,6 +72,9 @@ this.unit_block <- inherit(::MSU.BBClass.Empty, {
 			clonedBlock.m.Units.push(unit);
 		}
 
+		// Add cloned units to the cloned objects LookupMap
+		clonedBlock.addUnits(clonedBlock.getUnits());
+
 		return clonedBlock;
 	}
 
@@ -112,35 +109,11 @@ this.unit_block <- inherit(::MSU.BBClass.Empty, {
 		return (cost / this.getUnits().len());
 	}
 
-	function addUnit( _unit )
-	{
-		local unit;
-		if ("ID" in _unit)
-		{
-			unit = ::DynamicSpawns.Units.findById(_unit.ID);
-		}
-
-		this.m.Units.push(unit);
-		this.m.LookupMap[unit.getID()] <- unit;
-	}
-
 	function addUnits( _units )
 	{
 		foreach (unit in _units)
 		{
-			this.addUnit(unit);
-		}
-	}
-
-	function removeUnit( _id )
-	{
-		foreach (i, unit in this.m.Units)
-		{
-			if (unit.ID == _id)
-			{
-				delete this.m.LookupMap[_id];
-				return this.m.Units.remove(i);
-			}
+			this.m.LookupMap[unit.getID()] <- unit;
 		}
 	}
 
@@ -222,7 +195,7 @@ this.unit_block <- inherit(::MSU.BBClass.Empty, {
 		if (this.m.IsRandom)	// Currently this is implemented non-weighted and purely random
 		{
 			local possibleSpawns = [];
-			foreach(unit in this.m.Units)
+			foreach(unit in this.getUnits())
 			{
 				if (unit.canSpawn(_spawnProcess)) possibleSpawns.push(unit);
 			}
@@ -230,7 +203,7 @@ this.unit_block <- inherit(::MSU.BBClass.Empty, {
 		}
 		else	// Weakest affordable unit is spawned
 		{
-			foreach (unit in this.m.Units)
+			foreach (unit in this.getUnits())
 			{
 				if (unit.canSpawn(_spawnProcess))
 				{

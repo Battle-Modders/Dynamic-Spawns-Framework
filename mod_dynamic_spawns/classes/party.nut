@@ -142,9 +142,11 @@ this.party <- inherit(::MSU.BBClass.Empty, {
 	}
 
 	// Returns an unsigned integer that will be used during this spawnProcess as IdealSize
-	function generateIdealSize( _spawnProcess )
+	function generateIdealSize( _spawnProcess, _isLocation )
 	{
-		return this.getReferencedBrotherAmount();
+		local idealSize = this.getReferencedBrotherAmount();
+		if (_isLocation) idealSize *= 1.5;
+		return ::Math.ceil(idealSize);
 	}
 
 	function getReferencedBrotherAmount()
@@ -152,8 +154,8 @@ this.party <- inherit(::MSU.BBClass.Empty, {
 		if (("Assets" in ::World) == false) return 12;	// fix for when we test this framework in the main menu
 
 		local referencedAmount = ::World.getPlayerRoster().getAll().len();
-		referencedAmount = ::Math.min(referencedAmount, ::World.Assets.getBrothersScaleMax());
-		referencedAmount = ::Math.max(referencedAmount, ::World.Assets.getBrothersScaleMin());
+		referencedAmount = ::Math.min(referencedAmount, ::World.Assets.getBrothersMaxInCombat());
+		referencedAmount = ::Math.max(referencedAmount, 6);
 		return referencedAmount;
 	}
 

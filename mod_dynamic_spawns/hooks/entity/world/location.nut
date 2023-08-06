@@ -1,5 +1,4 @@
 ::mods_hookExactClass("entity/world/location", function(o) {
-    ::logWarning("mods_hookExactClass location");
     local oldCreateDefenders = o.createDefenders;
 	o.createDefenders = function()
 	{

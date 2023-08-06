@@ -8,28 +8,30 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 		Party = null,		// Cloned Party object, that is used for spawning
 		Resources = 0,		// Available resources during this run
 		StartingResources = 0,		// Resource that this spawnProcess started with
-		IdealSize = -1,
+		IdealSize = 6,
 
-		PlayerStrength = 0		// Strength of the Playerparty
+		PlayerStrength = 0,		// Strength of the Playerparty
 	}
 
     function create()
     {
     }
 
-    function init( _party, _availableResources = 0, _customHardMin = null, _customHardMax = null )
+    function init( _party, _availableResources = 0, _isLocation = false, _customHardMin = null, _customHardMax = null )
     {
 		this.m.SpawnInfo = {};
 		this.m.UnitCount = 0;
 
 		this.m.Party = _party.getClone();
+		_party = this.getParty();	//
 		if (_customHardMin != null) this.m.Party.m.HardMin = _customHardMin;
 		if (_customHardMax != null) this.m.Party.m.HardMax = _customHardMax;
 
 		this.m.StartingResources = _availableResources;
 		this.m.Resources = _availableResources;
 
-		this.m.IdealSize = this.getParty().generateIdealSize(this);
+		this.m.IdealSize = this.getParty().generateIdealSize(this, _isLocation);
+		if (this.getIdealSize() <= 0) this.m.IdealSize = 1;	// To prevent division by zero later on. But realistically you should never have such a low idealSize here
 
 		// Initialize SpawnInfo
 		foreach (staticUnit in this.getParty().getStaticUnits())
@@ -57,9 +59,6 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 
     function spawn()
     {
-		if (this.getIdealSize() == -1) this.m.IdealSize = ::Math.max(this.getParty().getHardMin(), this.getParty().getHardMax());
-		if (this.getIdealSize() == 0) this.m.IdealSize = 1;	// To prevent division by zero later on. But realistically you should never have such a low idealSize here
-
         this.m.PlayerStrength = 100;     // Placeholder. This needs to be passed as argument or taken from global variable/function
 		foreach (unitBlock in this.getParty().getUnitBlocks())
 		{
@@ -172,15 +171,17 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 		ret.extend(this.getUnits());
 
 		// Spawn SubParties
-		local spawnProcess = ::new(::DynamicSpawns.Class.SpawnProcess);
 		for (local i = ret.len() - 1; i >= 0; i--)		// Backwards counting as this array is growing during this process
 		{
-			if (ret[i].getSubParty() != null)
-			{
-				this.printPartyHeader(ret[i].getSubParty(), ret[i].getEntityType());
-				ret.extend(spawnProcess.init(ret[i].getSubParty()).spawn());
-			}
+			if (ret[i].getSubPartyDef() == "") continue;
+
+			this.printPartyHeader(ret[i].getSubPartyDef(), ret[i].getEntityType());
+			local spawnProcess = ::new(::DynamicSpawns.Class.SpawnProcess);
+
+			local originalParty = ::DynamicSpawns.Parties.LookupMap[ret[i].getSubPartyDef()];	// Only the original Party can create clones because clones do not have Defs
+			ret.extend(spawnProcess.init(originalParty).spawn());
 		}
+
 		this.getParty().updateFigure(this);
 		return ret;
     }

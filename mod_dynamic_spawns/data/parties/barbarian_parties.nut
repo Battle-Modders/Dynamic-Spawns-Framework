@@ -36,7 +36,7 @@ local parties = [
 
     // SubParties
 	{
-		ID = "OneUnhold"
+		ID = "OneUnhold",
 		HardMin = 1,
 		HardMax = 1,
 		UnitBlockDefs = [
@@ -44,7 +44,7 @@ local parties = [
 		]
 	},
 	{
-		ID = "TwoUnhold"
+		ID = "TwoUnhold",
 		HardMin = 2,
 		HardMax = 2,
 		UnitBlockDefs = [
@@ -52,7 +52,7 @@ local parties = [
 		]
 	},
 	{
-		ID = "OneFrostUnhold"
+		ID = "OneFrostUnhold",
 		HardMin = 1,
 		HardMax = 1,
 		UnitBlockDefs = [
@@ -60,7 +60,7 @@ local parties = [
 		]
 	},
 	{
-		ID = "TwoFrostUnhold"
+		ID = "TwoFrostUnhold",
 		HardMin = 2,
 		HardMax = 2,
 		UnitBlockDefs = [
