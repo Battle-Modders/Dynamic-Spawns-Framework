@@ -153,7 +153,8 @@ this.unit_block <- inherit(::MSU.BBClass.Empty, {
 		if (_spawnProcess.getWorldDays() > this.m.MaxDays) return false;
 		if (_spawnProcess.getTotal() < this.m.ReqPartySize) return false;
 
-		if (this.isWithinRatioMax(_spawnProcess) == false) return false;
+		// RatioMax is ignored if we do not satisfy the RatioMin yet
+		if (unitBlock.satisfiesRatioMin(this) && !this.isWithinRatioMax(_spawnProcess)) return false;
 
 		// Atleast one of our referenced units is able to spawn
 		foreach (unit in this.m.Units)
