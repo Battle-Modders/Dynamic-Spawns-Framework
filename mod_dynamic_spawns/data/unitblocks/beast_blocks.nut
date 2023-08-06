@@ -5,6 +5,10 @@ local unitBlocks = [
 		UnitDefs = [{ ID = "Beast.Direwolf" }, { ID = "Beast.DirewolfHIGH" }]
 	},
 	{
+		ID = "Beast.GhoulLowOnly",
+		UnitDefs = [{ ID = "Beast.GhoulLOW" }]
+	},
+	{
 		ID = "Beast.Ghouls",
 		UnitDefs = [{ ID = "Beast.GhoulLOW" }, { ID = "Beast.Ghoul" }, { ID = "Beast.GhoulHIGH" }]
 	},

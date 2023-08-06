@@ -33,6 +33,59 @@
 		Cost = 30
 	},
 
+// Necromancer with Bodyguards
+	{
+		ID = "Undead.NecromancerY",
+		EntityType = "Necromancer",
+		Figure = ["figure_necromancer_01", "figure_necromancer_02"],
+		Cost = 30 + 12,
+		SubPartyDef = {ID = "SubPartyYeoman"}
+	},
+	{
+		ID = "Undead.NecromancerK",
+		EntityType = "Necromancer",
+		Figure = ["figure_necromancer_01", "figure_necromancer_02"],
+		Cost = 30 + 24,
+		SubPartyDef = {ID = "SubPartyKnight"}
+	},
+	{
+		ID = "Undead.NecromancerYK",
+		EntityType = "Necromancer",
+		Figure = ["figure_necromancer_01", "figure_necromancer_02"],
+		Cost = 30 + 12 + 24,
+		SubPartyDef = {ID = "SubPartyYeomanKnight"}
+	},
+	{
+		ID = "Undead.NecromancerKK",
+		EntityType = "Necromancer",
+		Figure = ["figure_necromancer_01", "figure_necromancer_02"],
+		Cost = 30 + 24 + 24,
+		SubPartyDef = {ID = "SubPartyKnightKnight"}
+	},
+
+// Necromancer with Nomad Bodyguards
+	{
+		ID = "Undead.NecromancerN",
+		EntityType = "Necromancer",
+		Figure = ["figure_necromancer_01", "figure_necromancer_02"],
+		Cost = 30 + 12,
+		SubPartyDef = { ID = "SubPartyNomad", HardMin = 1, HardMax = 1 }
+	},
+	{
+		ID = "Undead.NecromancerNN",
+		EntityType = "Necromancer",
+		Figure = ["figure_necromancer_01", "figure_necromancer_02"],
+		Cost = 30 + 12 + 12,
+		SubPartyDef = { ID = "SubPartyNomad", HardMin = 2, HardMax = 2 }
+	},
+	{
+		ID = "Undead.NecromancerNNN",
+		EntityType = "Necromancer",
+		Figure = ["figure_necromancer_01", "figure_necromancer_02"],
+		Cost = 30 + 12 + 12 + 12,
+		SubPartyDef = { ID = "SubPartyNomad", HardMin = 3, HardMax = 3 }
+	}
+
 // Bodyguards for Necromancer
 	{
 		ID = "Undead.YeomanBodyguard",
