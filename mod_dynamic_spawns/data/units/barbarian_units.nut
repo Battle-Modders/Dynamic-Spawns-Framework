@@ -2,19 +2,19 @@
 	{
 		ID = "Barbarian.Thrall",
 		EntityType = "BarbarianThrall",
-        Figure = "figure_wildman_01",
+		Figure = "figure_wildman_01",
 		Cost = 12
 	},
 	{
 		ID = "Barbarian.Marauder",
 		EntityType = "BarbarianMarauder",
-        Figure = "figure_wildman_02",
+		Figure = "figure_wildman_02",
 		Cost = 25
 	},
 	{
 		ID = "Barbarian.Chosen",
 		EntityType = "BarbarianChampion",
-        Figure = "figure_wildman_03",
+		Figure = "figure_wildman_03",
 		Cost = 35,
 		MinStartingResource = 170
 	},
@@ -26,7 +26,7 @@
 	{
 		ID = "Barbarian.King",
 		EntityType = "BarbarianChosen",		// Weird Vanilla Naming Scheme
-        Figure = "figure_wildman_06",
+		Figure = "figure_wildman_06",
 		Cost = 45
 	},
 	{
@@ -38,13 +38,13 @@
 		ID = "Barbarian.Unhold",
 		EntityType = "BarbarianUnhold",
 		Cost = 55,
-        Figure = "figure_unhold_01"     // Not really needed as barbarian unholds never determin their Figure in Vanilla
+		Figure = "figure_unhold_01"     // Not really needed as barbarian unholds never determin their Figure in Vanilla
 	},
 	{
 		ID = "Barbarian.UnholdFrost",
 		EntityType = "BarbarianUnholdFrost",
 		Cost = 75,
-        Figure = "figure_unhold_02"     // Not really needed as barbarian unholds never determin their Figure in Vanilla
+		Figure = "figure_unhold_02"     // Not really needed as barbarian unholds never determin their Figure in Vanilla
 	},
 	{
 		ID = "Barbarian.BeastmasterU",
@@ -74,7 +74,7 @@
 
 foreach (unit in ::DynamicSpawns.Data.UnitDefs)
 {
-    local unitObj = ::new(::DynamicSpawns.Class.Unit).init(unit);
+	local unitObj = ::new(::DynamicSpawns.Class.Unit).init(unit);
 	::DynamicSpawns.Units.LookupMap[unitObj.m.ID] <- unitObj;
 	// ::logWarning("Added the unit: '" + unitObj.m.ID + "'");
 }

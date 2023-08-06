@@ -40,8 +40,3 @@
 {
 	return ((typeof _party == "table") && ("spawn" in _party));
 }
-
-::DynamicSpawns.Static.getExpectedNPCWorldSize <- function( _party )
-{
-    return 15;
-}

@@ -2,8 +2,8 @@
 this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 	m = {
 		// Temporary Variables, They only exist and are valid during one spawning process
-        SpawnInfo = {},     // Table of Tables. For each UnitBlock and for each spawned units from that Block
-        UnitCount = 0,      // Amount of units spawned during this process. This does not include SubParties
+		SpawnInfo = {},     // Table of Tables. For each UnitBlock and for each spawned units from that Block
+		UnitCount = 0,      // Amount of units spawned during this process. This does not include SubParties
 
 		Party = null,		// Cloned Party object, that is used for spawning
 		Resources = 0,		// Available resources during this run
@@ -11,12 +11,12 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 		IdealSize = 6
 	}
 
-    function create()
-    {
-    }
+	function create()
+	{
+	}
 
-    function init( _party, _availableResources = -1, _isLocation = false, _customHardMin = null, _customHardMax = null )
-    {
+	function init( _party, _availableResources = -1, _isLocation = false, _customHardMin = null, _customHardMax = null )
+	{
 		this.m.SpawnInfo = {};
 		this.m.UnitCount = 0;
 
@@ -53,10 +53,10 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 		}
 
 		return this;
-    }
+	}
 
-    function spawn()
-    {
+	function spawn()
+	{
 		foreach (unitBlock in this.getParty().getUnitBlocks())
 		{
 			::DynamicSpawns.UnitBlocks.findById(unitBlock.getID()).onPartySpawnStart();
@@ -64,7 +64,7 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 
 		local ret = [];
 
-        // Spawn static units
+		// Spawn static units
 		foreach (unit in this.getParty().getStaticUnits())
 		{
 			if (unit.canSpawn(this))
@@ -181,7 +181,7 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 
 		this.getParty().updateFigure(this);
 		return ret;
-    }
+	}
 
 	function getIdealSize()
 	{

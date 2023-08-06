@@ -1,5 +1,5 @@
 local unitBlocks = [
-    // Purebred Beasts
+	// Purebred Beasts
 	{
 		ID = "Beast.Direwolves",
 		UnitDefs = [{ ID = "Beast.Direwolf" }, { ID = "Beast.DirewolfHIGH" }]
@@ -36,7 +36,7 @@ local unitBlocks = [
 		ID = "Beast.Schrats",
 		UnitDefs = [{ ID = "Beast.Schrat" }]
 	},
-    // Vanilla Kraken skipped at this point
+	// Vanilla Kraken skipped at this point
 	{
 		ID = "Beast.Hyenas",
 		UnitDefs = [{ ID = "Beast.Hyena" }, { ID = "Beast.HyenaHIGH" }]
@@ -75,6 +75,6 @@ local unitBlocks = [
 
 foreach (block in unitBlocks)
 {
-    local unitBlockObj = ::new(::DynamicSpawns.Class.UnitBlock).init(block);
+	local unitBlockObj = ::new(::DynamicSpawns.Class.UnitBlock).init(block);
 	::DynamicSpawns.UnitBlocks.LookupMap[unitBlockObj.m.ID] <- unitBlockObj;
 }

@@ -1,17 +1,17 @@
 this.party <- inherit(::MSU.BBClass.Empty, {
 	m = {
 	// Required Parameter
-        ID = null,
-        UnitBlockDefs = [],	// Array of Tables that require atleast 'ID' of the used UnitBlocks. Other parameter will overwrite those in the referenced UnitBLock
+		ID = null,
+		UnitBlockDefs = [],	// Array of Tables that require atleast 'ID' of the used UnitBlocks. Other parameter will overwrite those in the referenced UnitBLock
 
 	// Optional Parameter
-        UpgradeChance = 0.5,	// Chance that this Party will upgrade a unit instead of spawning a new unit when IdealSize is reached
-        StaticUnitIDs = [],		// Array of UnitIDs that are forced to spawn if the Resources allow it. Can have multiples of the same unit.
+		UpgradeChance = 0.5,	// Chance that this Party will upgrade a unit instead of spawning a new unit when IdealSize is reached
+		StaticUnitIDs = [],		// Array of UnitIDs that are forced to spawn if the Resources allow it. Can have multiples of the same unit.
 		DefaultResources = 0,	// If the SpawnProcess is started without ResourceAmount it will use the value defined here. E.g. when spawning SubParties
 
 		// Guards
-        HardMin = 0,		// Smallest army size that is allowed for this party to even make sense. Ressources are disregarded while trying to satisfy this. Could maybe be set to 1 be default
-        HardMax = 9000,		// Greatest army size that is allowed for this party to even make sense. All spawning (not upgrading) is stopped when this is reached
+		HardMin = 0,		// Smallest army size that is allowed for this party to even make sense. Ressources are disregarded while trying to satisfy this. Could maybe be set to 1 be default
+		HardMax = 9000,		// Greatest army size that is allowed for this party to even make sense. All spawning (not upgrading) is stopped when this is reached
 
 		// Vanilla Properties of a Party
 		DefaultFigure = "",			// This Figure will be used if the spawned units couldnt provide a better fitting one
@@ -32,7 +32,7 @@ this.party <- inherit(::MSU.BBClass.Empty, {
 	{
 	}
 
-    function init( _partyDef )
+	function init( _partyDef )
 	{
 		this.m.ID = _partyDef.ID;
 		// this.m.DefaultFigure = _partyDef.DefaultFigure;

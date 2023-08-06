@@ -41,6 +41,6 @@ local unitBlocks = [
 
 foreach (block in unitBlocks)
 {
-    local unitBlockObj = ::new(::DynamicSpawns.Class.UnitBlock).init(block);
+	local unitBlockObj = ::new(::DynamicSpawns.Class.UnitBlock).init(block);
 	::DynamicSpawns.UnitBlocks.LookupMap[unitBlockObj.m.ID] <- unitBlockObj;
 }

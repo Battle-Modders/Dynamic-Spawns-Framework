@@ -29,7 +29,7 @@ this.unit <- inherit(::MSU.BBClass.Empty, {
 	{
 	}
 
-    function init( _unitDef )
+	function init( _unitDef )
 	{
 		this.m.ID = _unitDef.ID;
 		this.m.Cost = _unitDef.Cost;
@@ -139,10 +139,7 @@ this.unit <- inherit(::MSU.BBClass.Empty, {
 			if ((_spawnProcess.getResources() + _bonusResources) < this.getCost()) return false;
 		}
 
-
-
 		return true;
 	}
-
 
 });

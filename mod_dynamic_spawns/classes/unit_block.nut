@@ -2,15 +2,15 @@
 this.unit_block <- inherit(::MSU.BBClass.Empty, {
 	m = {
 	// Required Parameter
-        ID = null,
-        UnitDefs = [],		// Array of Tables that require atleast 'ID' of the used Units. Other parameter will overwrite those in the referenced Units
+		ID = null,
+		UnitDefs = [],		// Array of Tables that require atleast 'ID' of the used Units. Other parameter will overwrite those in the referenced Units
 
 	// Optional Parameter
-        IsRandom = false,			// A random Block will not upgrade between its troops and instead pick a random one each time
+		IsRandom = false,			// A random Block will not upgrade between its troops and instead pick a random one each time
 		DeterminesFigure = false,	// If true then the spawned troops from this Block are in the race for the final Figure of the spawned party
 
 		// Guards						// This Unit is only able to spawn if ...
-        ReqPartySize = 0,         		// ... the amount of already spawned troops in the current SpawnProcess is at least this value
+		ReqPartySize = 0,         		// ... the amount of already spawned troops in the current SpawnProcess is at least this value
 		MinStartingResource = 0,		// ... the StartingResources of the current SpawnProcess is at least this value
 		MaxStartingResource = 900000,	// ... the StartingResources of the current SpawnProcess is at most this value
 		MinDays = 0,					// ... ::World.getTime().Days is at least this value
@@ -30,7 +30,7 @@ this.unit_block <- inherit(::MSU.BBClass.Empty, {
 	{
 	}
 
-    function init( _unitBlockDef )
+	function init( _unitBlockDef )
 	{
 		this.m.ID = _unitBlockDef.ID;
 
