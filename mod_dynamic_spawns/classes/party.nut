@@ -54,13 +54,6 @@ this.party <- inherit(::MSU.BBClass.Empty, {
 			}
 		}
 
-		foreach (unitBlock in this.m.UnitBlockDefs)	// Make sure there are default values for these Variables
-		{
-			if (!("RatioMin" in unitBlock)) unitBlock.RatioMin <- 0.0;
-			if (!("RatioMax" in unitBlock)) unitBlock.RatioMax <- 1.0;
-			if (!("DeterminesFigure" in unitBlock)) unitBlock.DeterminesFigure <- false;
-		}
-
 		this.Body <- this.m.DefaultFigure;	// Because Vanilla expects a Table with this entry
 
 		return this;
@@ -112,16 +105,15 @@ this.party <- inherit(::MSU.BBClass.Empty, {
 		local priciestFigure = this.m.DefaultFigure;
 		if (typeof this.m.DefaultFigure == "array") priciestFigure = this.m.DefaultFigure[::Math.rand(0, this.m.DefaultFigure.len() - 1)];
 		local figurePrice = -9000;
-		foreach (pBlock in this.getUnitBlocks())
+		foreach (unitBlock in this.getUnitBlocks())
 		{
-			if (pBlock.DeterminesFigure == false) continue;
+			if (unitBlock.m.DeterminesFigure == false) continue;
 
-			local unitBlock = ::DynamicSpawns.UnitBlocks.findById(pBlock.ID);
 			foreach (unit in unitBlock.getUnits())
 			{
 				if (unit.getFigure() == "") continue;
 				if (unit.getCost() <= figurePrice) continue;
-				if (_spawnProcess.getUnitCount(unit.getID(), pBlock.ID) == 0) continue;
+				if (_spawnProcess.getUnitCount(unit.getID(), unitBlock.getID()) == 0) continue;
 
 				priciestFigure = unit.getFigure();
 				figurePrice = unit.getCost();

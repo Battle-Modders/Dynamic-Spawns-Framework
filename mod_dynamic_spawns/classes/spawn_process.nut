@@ -88,7 +88,7 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 			upgradeAffordableBlocks.clear();
 
 			local ratioSpawn = false;	// A ratioSpawn is a forced spawn for a block because its RatioMin is not satisfied anymore
-			foreach (unitBlock in this.getParty().getUnitBlocks())		// A pBlock (partyUnitBlock) contains a unitBlock ID and sometimes optional parameter
+			foreach (unitBlock in this.getParty().getUnitBlocks())
 			{
 				if (this.getParty().canSpawn(this) && unitBlock.canSpawn(this) && unitBlock.isWithinRatioMax(this))
 				{
@@ -101,19 +101,19 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 
 					// Weighted-Spawns: Every UnitBlock that doesn't surpass their RatioMax if they got the next spawn compete against each other for a random spawn
 					local totalCount = ::Math.max(this.getTotal() + 1, this.getParty().getHardMin());
-					local weight = pBlock.RatioMax - (this.getBlockTotal(pBlock.ID) / totalCount.tofloat());
+					local weight = unitBlock.m.RatioMax - (this.getBlockTotal(unitBlock.getID()) / totalCount.tofloat());
 					if (weight <= 0)
 					{
 						if (this.getTotal() >= this.getIdealSize() * (1.0 + 1.0 - this.getParty().getUpgradeChance())) weight = 0; // TODO: Improve the logic on this line
 						else weight = 0.00000001;
 					}
-					spawnAffordableBlocks.add(pBlock.ID, weight);
+					spawnAffordableBlocks.add(unitBlock, weight);
 				}
 
 				if (this.getTotal() >= this.getIdealSize() && unitBlock.canUpgrade(this))
 				{
 					local upgradeWeight = unitBlock.getUpgradeWeight(this) ;
-					upgradeAffordableBlocks.add(pBlock.ID, upgradeWeight);	// Weight = maximum amount of times this block can currently upgrade troops (favors blocks with many tiers)
+					upgradeAffordableBlocks.add(unitBlock, upgradeWeight);	// Weight = maximum amount of times this block can currently upgrade troops (favors blocks with many tiers)
 				}
 			}
 			if (ratioSpawn) continue;
@@ -125,8 +125,8 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 				if (spawnAffordableBlocks.len() > 0)
 				{
 					local str = "spawnAffordableBlocks: ";
-					spawnAffordableBlocks.apply(function(_id, _weight) {
-						str += _id + " (" + _weight + "), ";
+					spawnAffordableBlocks.apply(function(_unitBlock, _weight) {
+						str += _unitBlock.getID() + " (" + _weight + "), ";
 						return _weight;
 					});
 					::logWarning(str.slice(0, -2));
@@ -135,8 +135,8 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 				if (upgradeAffordableBlocks.len() > 0)
 				{
 					local str = "upgradeAffordableBlocks: ";
-					upgradeAffordableBlocks.apply(function(_id, _weight) {
-						str += _id + " (" + _weight + "), ";
+					upgradeAffordableBlocks.apply(function(_unitBlock, _weight) {
+						str += _unitBlock.getID() + " (" + _weight + "), ";
 						return _weight;
 					});
 					::logWarning(str.slice(0, -2) + "\n");
@@ -146,20 +146,20 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 			if (upgradeAffordableBlocks.len() > 0 && ::MSU.Math.randf( 0.0, 1.0 ) < (this.getParty().getUpgradeChance() * this.getTotal() / this.getIdealSize()))
 			{
 				// ::logWarning("Upgrade: - Resources: " + this.getResources() + " : TotalCount = " + this.getTotal());
-				local blockID = upgradeAffordableBlocks.roll();
-				if (blockID != null)
+				local unitBlock = upgradeAffordableBlocks.roll();
+				if (unitBlock != null)
 				{
-					::DynamicSpawns.UnitBlocks.findById(blockID).upgradeUnit(this);
+					unitBlock.upgradeUnit(this);
 				}
 				else if (spawnAffordableBlocks.len() == 0) break;
 			}
 			else if (spawnAffordableBlocks.len() > 0)
 			{
 				// ::logWarning("Spawn: - Resources: " + this.getResources() + " : TotalCount = " + this.getTotal());
-				local blockID = spawnAffordableBlocks.roll();
-				if (blockID != null)
+				local unitBlock = spawnAffordableBlocks.roll();
+				if (unitBlock != null)
 				{
-					::DynamicSpawns.UnitBlocks.findById(blockID).spawnUnit(this);
+					unitBlock.spawnUnit(this);
 				}
 				else if (upgradeAffordableBlocks.len() == 0) break;
 			}
@@ -176,7 +176,7 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 			if (ret[i].getSubParty() != null)
 			{
 				this.printPartyHeader(ret[i].getSubParty(), ret[i].getEntityType());
-				ret.extend(spawnProcess.init(::DynamicSpawns.Parties.findById(ret[i].getSubParty())).spawn());
+				ret.extend(spawnProcess.init(ret[i].getSubParty()).spawn());
 			}
 		}
 		this.getParty().updateFigure(this);

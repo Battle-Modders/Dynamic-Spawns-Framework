@@ -5,6 +5,7 @@ this.unit_block <- inherit(::MSU.BBClass.Empty, {
         UnitDefs = [],		// Array of Tables that require atleast 'ID' of the used Units. Other parameter will overwrite those in the referenced Units
         LookupMap = {},
         IsRandom = false,	// A random block will not upgrade between its troops and instead pick a random one each time
+		DeterminesFigure = false,	// If true then the spawned troops from this block are in the race for the final Figure of the spawned party
 
 		// Guards
 		RatioMin = 0.00,
