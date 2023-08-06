@@ -211,6 +211,11 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 		return this.m.PlayerStrength;
 	}
 
+	function getWorldDays()
+	{
+		return ::World.getTime().Days;
+	}
+
 	function consumeResources( _amount )
 	{
 		this.m.Resources -= _amount;

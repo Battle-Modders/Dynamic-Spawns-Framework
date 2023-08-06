@@ -9,12 +9,15 @@ this.unit_block <- inherit(::MSU.BBClass.Empty, {
         IsRandom = false,			// A random Block will not upgrade between its troops and instead pick a random one each time
 		DeterminesFigure = false,	// If true then the spawned troops from this Block are in the race for the final Figure of the spawned party
 
-		// Guards
-		RatioMin = 0.00,		// If the ratio of already spawned units of this Block is below this value then the SpawnProcess will issue a ForceSpawn
-		RatioMax = 1.00,		// This Block can't spawn another unit if that would make the ratio of already spawned units of this Block exceed this value
-        ReqPartySize = 0,         		// This Block is only able to spawn if the amount of already spawned troops in the current SpawnProcess is greater or equal this value
-		MinStartingResource = 0,		// This Block is only able to spawn if the StartingResources of the current SpawnProcess is higher than this value
-		MaxStartingResource = 900000,	// This Block is only able to spawn if the StartingResources of the current SpawnProcess is lower than this value
+		// Guards						// This Unit is only able to spawn if ...
+        ReqPartySize = 0,         		// ... the amount of already spawned troops in the current SpawnProcess is at least this value
+		MinStartingResource = 0,		// ... the StartingResources of the current SpawnProcess is at least this value
+		MaxStartingResource = 900000,	// ... the StartingResources of the current SpawnProcess is at most this value
+		MinDays = 0,					// ... ::World.getTime().Days is at least this value
+		MaxDays = 900000				// ... ::World.getTime().Days is at most this value
+
+		RatioMin = 0.00,				// If the ratio of already spawned units of this Block is below this value then the SpawnProcess will issue a ForceSpawn
+		RatioMax = 1.00,				// This Block can't spawn another unit if that would make the ratio of already spawned units of this Block exceed this value
 
 	// Private
 		LookupMap = {},
@@ -93,11 +96,6 @@ this.unit_block <- inherit(::MSU.BBClass.Empty, {
 		return this.m.UnitDefs;
 	}
 
-	function getReqPartySize()
-	{
-		return this.m.ReqPartySize;
-	}
-
 	function getAverageCost()	// Average cost over all unit types in this block
 	{
 		local cost = 0.0;
@@ -151,7 +149,9 @@ this.unit_block <- inherit(::MSU.BBClass.Empty, {
 		// ::logWarning("canSpawn for: " + this.getID());
 		if (_spawnProcess.getStartingResources() < this.m.MinStartingResource) return false;
 		if (_spawnProcess.getStartingResources() > this.m.MaxStartingResource) return false;
-		if (_spawnProcess.getTotal() < this.getReqPartySize()) return false;
+		if (_spawnProcess.getWorldDays() < this.m.MinDays) return false;
+		if (_spawnProcess.getWorldDays() > this.m.MaxDays) return false;
+		if (_spawnProcess.getTotal() < this.m.ReqPartySize) return false;
 
 		if (this.isWithinRatioMax(_spawnProcess) == false) return false;
 

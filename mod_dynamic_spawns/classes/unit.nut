@@ -9,11 +9,13 @@ this.unit <- inherit(::MSU.BBClass.Empty, {
 		// SubParty
 		SubPartyDef = {},				// abilty to optionally spawn an additional party. Most commonly body guards or operators
 
-		// Guards
-		StrengthMin = 0.0,				// This Unit is only able to spawn if the Playerstrength is higher than this value
-		StrengthMax = 900000.0,			// This Unit is only able to spawn if the Playerstrength is lower than this value
-		MinStartingResource = 0,		// This Unit is only able to spawn if the StartingResources of the current SpawnProcess is higher than this value
-		MaxStartingResource = 900000,	// This Unit is only able to spawn if the StartingResources of the current SpawnProcess is lower than this value
+		// Guards						// This Unit is only able to spawn if ...
+		MinStrength = 0.0,				// ... the Playerstrength is at least this value
+		MaxStrength = 900000.0,			// ... the Playerstrength is at most this value
+		MinStartingResource = 0,		// ... the StartingResources of the current SpawnProcess is at least this value
+		MaxStartingResource = 900000,	// ... the StartingResources of the current SpawnProcess is at most this value
+		MinDays = 0,					// ... ::World.getTime().Days is at least this value
+		MaxDays = 900000				// ... ::World.getTime().Days is at most this value
 
 		// Vanilla Properties of a Party
 		Figure = "",	// A party consisting of this unit as its highest costing unit, will be represented by this figure
@@ -119,22 +121,14 @@ this.unit <- inherit(::MSU.BBClass.Empty, {
 		return this.m.Figure[::Math.rand(0, this.m.Figure.len() - 1)];
 	}
 
-	function getStrengthMin()
-	{
-		return this.m.StrengthMin;
-	}
-
-	function getStrengthMax()
-	{
-		return this.m.StrengthMax;
-	}
-
 	function canSpawn( _spawnProcess, _bonusResources = 0 )		// _bonusResources are used if you want to upgrade unit-A into unit-B. In those cases you have the resources from unit-A available in addition
 	{
+		if (_spawnProcess.getPlayerStrength() < this.m.MinStrength) return false;
+		if (_spawnProcess.getPlayerStrength() > this.m.MaxStrength) return false;
 		if (_spawnProcess.getStartingResources() < this.m.MinStartingResource) return false;
 		if (_spawnProcess.getStartingResources() > this.m.MaxStartingResource) return false;
-		if (_spawnProcess.getPlayerStrength() < this.getStrengthMin()) return false;
-		if (_spawnProcess.getPlayerStrength() > this.getStrengthMax()) return false;
+		if (_spawnProcess.getWorldDays() < this.m.MinDays) return false;
+		if (_spawnProcess.getWorldDays() > this.m.MaxDays) return false;
 
 		if (_bonusResources == 0)	// We only allow ignoring of Cost if for considering new units to spawn
 		{
