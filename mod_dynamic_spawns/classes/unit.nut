@@ -7,20 +7,20 @@ this.unit <- inherit(::MSU.BBClass.Empty, {
 
 	// Optional Parameter
 		// SubParty
-		SubPartyDef = {},		// abilty to optionally spawn an additional party. Most commonly body guards or operators
+		SubPartyDef = {},				// abilty to optionally spawn an additional party. Most commonly body guards or operators
 
 		// Guards
-		StrengthMin = 0.0,		// The Playerstrength must be at least this value for this Unit to be able to spawn
-		StrengthMax = 900000.0,
-		MinStartingResource = 0,		// The initial resource amount that the spawnProcess started with must have been higher than this value
-		MaxStartingResource = 900000,	// The initial resource amount that the spawnProcess started with must have been lower than this value
+		StrengthMin = 0.0,				// This Unit is only able to spawn if the Playerstrength is higher than this value
+		StrengthMax = 900000.0,			// This Unit is only able to spawn if the Playerstrength is lower than this value
+		MinStartingResource = 0,		// This Unit is only able to spawn if the StartingResources of the current SpawnProcess is higher than this value
+		MaxStartingResource = 900000,	// This Unit is only able to spawn if the StartingResources of the current SpawnProcess is lower than this value
 
 		// Vanilla Properties of a Party
 		Figure = "",	// A party consisting of this unit as its highest costing unit, will be represented by this figure
 
 	// Private
 		// During Spawnprocess only
-		SubParty = null		// Cloned Party-Object. Is only filled during a spawning process
+		SubParty = null		// Cloned Party-Object
 	}
 
 	function create()

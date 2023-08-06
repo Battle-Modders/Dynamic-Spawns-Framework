@@ -29,10 +29,10 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 		this.m.StartingResources = _availableResources;
 		this.m.Resources = _availableResources;
 
-		this.m.IdealSize = this.m.Party.generateIdealSize();
+		this.m.IdealSize = this.getParty().generateIdealSize(this);
 
 		// Initialize SpawnInfo
-		foreach (staticUnit in this.m.Party.getStaticUnits())
+		foreach (staticUnit in this.getParty().getStaticUnits())
 		{
 			this.m.SpawnInfo["StaticUnits"] <- {	// HardCoded entry just for static units
 				Total = 0
@@ -40,7 +40,7 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 			this.m.SpawnInfo["StaticUnits"][staticUnit.getID()] <- 0;
 		}
 
-		foreach (unitBlock in this.m.Party.getUnitBlocks())
+		foreach (unitBlock in this.getParty().getUnitBlocks())
 		{
 			this.m.SpawnInfo[unitBlock.getID()] <- {
 				Total = 0

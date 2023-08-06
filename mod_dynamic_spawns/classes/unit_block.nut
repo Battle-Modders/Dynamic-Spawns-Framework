@@ -6,21 +6,21 @@ this.unit_block <- inherit(::MSU.BBClass.Empty, {
         UnitDefs = [],		// Array of Tables that require atleast 'ID' of the used Units. Other parameter will overwrite those in the referenced Units
 
 	// Optional Parameter
-        IsRandom = false,			// A random block will not upgrade between its troops and instead pick a random one each time
-		DeterminesFigure = false,	// If true then the spawned troops from this block are in the race for the final Figure of the spawned party
+        IsRandom = false,			// A random Block will not upgrade between its troops and instead pick a random one each time
+		DeterminesFigure = false,	// If true then the spawned troops from this Block are in the race for the final Figure of the spawned party
 
 		// Guards
-		RatioMin = 0.00,
-		RatioMax = 1.00,
-        ReqPartySize = 0,         // This Block will only be able to spawn if the amount of already spawned troops is greater or equal to ReqPartySize
-		MinStartingResource = 0,	// T
-		MaxStartingResource = 900000,
+		RatioMin = 0.00,		// If the ratio of already spawned units of this Block is below this value then the SpawnProcess will issue a ForceSpawn
+		RatioMax = 1.00,		// This Block can't spawn another unit if that would make the ratio of already spawned units of this Block exceed this value
+        ReqPartySize = 0,         		// This Block is only able to spawn if the amount of already spawned troops in the current SpawnProcess is greater or equal this value
+		MinStartingResource = 0,		// This Block is only able to spawn if the StartingResources of the current SpawnProcess is higher than this value
+		MaxStartingResource = 900000,	// This Block is only able to spawn if the StartingResources of the current SpawnProcess is lower than this value
 
 	// Private
 		LookupMap = {},
 
 		// During Spawnprocess only
-		Units = []		// Array of cloned Unit classes. Is only filled during a spawning process
+		Units = []		// Array of cloned Unit-Objects
 	}
 
 	function create()

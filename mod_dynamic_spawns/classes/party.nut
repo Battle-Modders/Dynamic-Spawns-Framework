@@ -13,15 +13,15 @@ this.party <- inherit(::MSU.BBClass.Empty, {
         HardMax = 9000,		// Greatest army size that is allowed for this party to even make sense. All spawning (not upgrading) is stopped when this is reached
 
 		// Vanilla Properties of a Party
-		DefaultFigure = "",		// This Figure will be used if the spawned units couldnt provide a better fitting one
-		MovementSpeedMult = 1.0,
-		VisibilityMult = 1.0,
-		VisionMult = 1.0,
+		DefaultFigure = "",			// This Figure will be used if the spawned units couldnt provide a better fitting one
+		MovementSpeedMult = 1.0,	// How fast does this party move on the world map
+		VisibilityMult = 1.0,		// How hard is it to spot this party
+		VisionMult = 1.0,			// How far can this party see
 
 	// Private
 		// During Spawnprocess only
-		UnitBlocks = [],		// Array of cloned UnitBlock classes. Is only filled during a spawning process
-		StaticUnits = []		// Array of cloned Unit classes that are forced to spawn if the Resources allow it. Can have multiples of the same unit.
+		UnitBlocks = [],		// Array of cloned UnitBlock-Objects
+		StaticUnits = []		// Array of cloned Unit-Objects
 	},
 
 	// Figure that represents this party on the world map. This is always filled at the very end of a spawn-process and uses DefaultFigure by default.
