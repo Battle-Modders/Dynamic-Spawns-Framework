@@ -164,7 +164,7 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 			}
 		}
 
-		if (!::DynamicSpawns.Const.Benchmark) this.printLog();
+		// if (!::DynamicSpawns.Const.Benchmark) this.printLog();
 
 		ret.extend(this.getUnits());
 
@@ -173,7 +173,7 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 		{
 			if (ret[i].getSubPartyDef().len() == 0) continue;	// skip all units that don't have a subparty
 
-			this.printPartyHeader(ret[i].getSubPartyDef().ID, ret[i].getEntityType());
+			// this.printPartyHeader(ret[i].getSubPartyDef().ID, ret[i].getEntityType());
 
 			local spawnProcess = ::new(::DynamicSpawns.Class.SpawnProcess);
 			ret.extend(spawnProcess.init(ret[i].getSubPartyDef()).spawn());
@@ -205,6 +205,7 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 
 	function getPlayerStrength()
 	{
+		if (("State" in ::World) == false) return 100.0;		// fix for when we test this framework in the main menu
 		return ::World.State.getPlayer().getStrength();		// This is cleaner but may be a bit inefficient compared to reading this value out once and saving it in a variable
 	}
 
