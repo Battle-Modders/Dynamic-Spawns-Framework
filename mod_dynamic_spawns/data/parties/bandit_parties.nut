@@ -80,7 +80,7 @@ local parties = [
 		]
 	}
 ]
-
+/*
 foreach(party in parties)
 {
 	local partyObj = ::new(::DynamicSpawns.Class.Party).init(party);
@@ -88,4 +88,4 @@ foreach(party in parties)
 
 	::Const.World.Spawn[partyObj.m.ID] <- partyObj;     // Overwrites all vanilla party objects that we defined replacements for
 }
-
+*/
