@@ -84,7 +84,7 @@ this.unit <- inherit(::MSU.BBClass.Empty, {
 		// Continue with the SubParty if it exists. Just gotta be careful to not cause an infinite recursion here
 		if (clonedUnit.m.SubPartyDef.len() != 0)
 		{
-			clonedUnit.m.SubParty = ::DynamicSpawns.Parties.findById(clonedUnit.m.SubPartyDef.ID).getClone();
+			clonedUnit.m.SubParty = ::DynamicSpawns.Parties.findById(this.m.SubPartyDef.ID).getClone(this.m.SubPartyDef);
 		}
 
 		return clonedUnit;
