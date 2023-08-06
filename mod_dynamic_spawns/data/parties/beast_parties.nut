@@ -7,7 +7,7 @@ local parties = [
         MovementSpeedMult = 1.0,
         VisibilityMult = 1.0,
         VisionMult = 1.0,
-        UnitBlocks = [
+        UnitBlockDefs = [
             { ID = "Beast.Direwolves", RatioMin = 0.00, RatioMax = 1.00}
         ]
     },
@@ -19,7 +19,7 @@ local parties = [
 		MovementSpeedMult = 1.0,
 		VisibilityMult = 1.0,
 		VisionMult = 1.0,
-        UnitBlocks = [
+        UnitBlockDefs = [
             { ID = "Beast.Ghouls", RatioMin = 0.00, RatioMax = 1.00}
         ]
     },
@@ -31,7 +31,7 @@ local parties = [
 		MovementSpeedMult = 1.0,
 		VisibilityMult = 1.0,
 		VisionMult = 1.0,
-        UnitBlocks = [
+        UnitBlockDefs = [
             { ID = "Beast.Lindwurms", RatioMin = 0.00, RatioMax = 1.00}
         ]
     },
@@ -43,7 +43,7 @@ local parties = [
 		MovementSpeedMult = 1.0,
 		VisibilityMult = 1.0,
 		VisionMult = 1.0,
-        UnitBlocks = [
+        UnitBlockDefs = [
             { ID = "Beast.Unholds", RatioMin = 0.00, RatioMax = 1.00}
         ]
     },
@@ -55,7 +55,7 @@ local parties = [
 		MovementSpeedMult = 1.0,
 		VisibilityMult = 1.0,
 		VisionMult = 1.0,
-        UnitBlocks = [
+        UnitBlockDefs = [
             { ID = "Beast.UnholdsFrost", RatioMin = 0.00, RatioMax = 1.00}
         ]
     },
@@ -67,7 +67,7 @@ local parties = [
 		MovementSpeedMult = 1.0,
 		VisibilityMult = 1.0,
 		VisionMult = 1.0,
-        UnitBlocks = [
+        UnitBlockDefs = [
             { ID = "Beast.UnholdsBog", RatioMin = 0.00, RatioMax = 1.00}
         ]
     },
@@ -79,7 +79,7 @@ local parties = [
 		MovementSpeedMult = 1.0,
 		VisibilityMult = 1.0,
 		VisionMult = 1.0,
-        UnitBlocks = [
+        UnitBlockDefs = [
             { ID = "Beast.Spiders", RatioMin = 0.00, RatioMax = 1.00}
         ]
     },
@@ -91,7 +91,7 @@ local parties = [
 		MovementSpeedMult = 1.0,
 		VisibilityMult = 1.0,
 		VisionMult = 1.0,
-        UnitBlocks = [
+        UnitBlockDefs = [
             { ID = "Beast.Alps", RatioMin = 0.00, RatioMax = 1.00}
         ]
     },
@@ -103,7 +103,7 @@ local parties = [
 		MovementSpeedMult = 0.5,
 		VisibilityMult = 1.0,
 		VisionMult = 1.0,
-        UnitBlocks = [
+        UnitBlockDefs = [
             { ID = "Beast.Schrats", RatioMin = 0.00, RatioMax = 1.00}
         ]
     },
@@ -118,7 +118,7 @@ local parties = [
         StaticUnits = [
             "Beast.Hexe"    // This one has no Bodyguards, which is not perfect because sometimes the only Hexe spawns with bodyguards in vanilla
         ],
-        UnitBlocks = [
+        UnitBlockDefs = [
             { ID = "Beast.HexenWithBodyguards", RatioMin = 0.08, RatioMax = 0.13 },
             { ID = "Beast.Spiders", RatioMin = 0.00, RatioMax = 1.00 },
             { ID = "Beast.Ghouls", RatioMin = 0.00, RatioMax = 1.00 },
@@ -141,7 +141,7 @@ local parties = [
         StaticUnits = [
             "Beast.Hexe"    // This one has no Bodyguards, which is not perfect because sometimes the only Hexe spawns with bodyguards in vanilla
         ],
-        UnitBlocks = [
+        UnitBlockDefs = [
             { ID = "Beast.HexenNoSpiders", RatioMin = 0.08, RatioMax = 0.13 },
             { ID = "Beast.Ghouls", RatioMin = 0.00, RatioMax = 1.00 },
             { ID = "Beast.Schrats", RatioMin = 0.00, RatioMax = 1.00 },
@@ -159,7 +159,7 @@ local parties = [
 		MovementSpeedMult = 1.0,
 		VisibilityMult = 1.0,
 		VisionMult = 1.0,
-        UnitBlocks = [
+        UnitBlockDefs = [
             { ID = "Beast.HexenNoBodyguards", RatioMin = 0.00, RatioMax = 1.00}
         ]
     },
@@ -173,7 +173,7 @@ local parties = [
 		MovementSpeedMult = 1.0,
 		VisibilityMult = 1.0,
 		VisionMult = 1.0,
-        UnitBlocks = [
+        UnitBlockDefs = [
             { ID = "Beast.Hyenas", RatioMin = 0.00, RatioMax = 1.00}
         ]
     },
@@ -185,7 +185,7 @@ local parties = [
 		MovementSpeedMult = 1.0,
 		VisibilityMult = 1.0,
 		VisionMult = 1.0,
-        UnitBlocks = [
+        UnitBlockDefs = [
             { ID = "Beast.Serpents", RatioMin = 0.00, RatioMax = 1.00}
         ]
     },
@@ -197,7 +197,7 @@ local parties = [
 		MovementSpeedMult = 1.0,
 		VisibilityMult = 1.0,
 		VisionMult = 1.0,
-        UnitBlocks = [
+        UnitBlockDefs = [
             { ID = "Beast.SandGolems", RatioMin = 0.00, RatioMax = 1.00}
         ]
     }

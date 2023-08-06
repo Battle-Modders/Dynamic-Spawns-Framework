@@ -2,14 +2,17 @@
 this.unit_block <- inherit(::MSU.BBClass.Empty, {
 	m = {
         ID = null,
-        Units = [],         // Spawnable units
+        UnitDefs = [],		// Array of Tables that require atleast 'ID' of the used Units. Other parameter will overwrite those in the referenced Units
         LookupMap = {},
         IsRandom = false,	// A random block will not upgrade between its troops and instead pick a random one each time
 
 		// Guards
         ReqPartySize = 0,         // This Block will only be able to spawn if the amount of already spawned troops is greater or equal to ReqPartySize
 		MinStartingResource = 0,
-		MaxStartingResource = 900000
+		MaxStartingResource = 900000,
+
+		// During Spawnprocess only
+		Units = []		// Array of cloned Unit classes. Is only filled during a spawning process
 	}
 
 	function create()
@@ -38,6 +41,36 @@ this.unit_block <- inherit(::MSU.BBClass.Empty, {
 			}
 		}
 		return this;
+	}
+
+	// Returns a copy of this unitBlock (except that arrays and tables)
+	function getClone( _unitBlockDef = null )
+	{
+		local clonedBlock = ::new(::DynamicSpawns.Class.UnitBlock);
+
+		// Copy all member variables from this unitBlock to its clone
+		foreach (key, value in this.m)
+		{
+			// We skip arrays for now as they would only arrive as references which is not real cloning
+			if (typeof value == "array") continue;
+			// We skip tables for now as they would only arrive as references which is not real cloning
+			if (typeof value == "table") continue;
+
+			clonedBlock.m[key] = value;
+		}
+
+		// Copy all data provided by the _partyDef (e.g. custom HardMin/HardMax) into the clone
+		if (_unitBlockDef != null) clonedBlock.init(_unitBlockDef);
+
+		// Create clones of all Units needed for this
+		this.m.Units = [];
+		foreach (unitDef in this.m.UnitDefs)
+		{
+			local unit = ::DynamicSpawns.Units.findById(unitDef.ID).getClone(unitDef);
+			this.m.Units.push(unit);
+		}
+
+		return clonedBlock;
 	}
 
 	function getID()

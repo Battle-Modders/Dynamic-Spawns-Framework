@@ -3,7 +3,7 @@ this.unit <- inherit(::MSU.BBClass.Empty, {
 		ID = null,
 		EntityType = null,		// String-IDs referencing entities from ::Const.World.Spawn.Troops table
 		Cost = 0,		// Cost of spawning this unit
-		SubParty = null,		// abilty to optionally spawn an additional party. Most commonly body guards or operators
+		SubPartyDef = {},		// abilty to optionally spawn an additional party. Most commonly body guards or operators
 
 		// Guards
 		StrengthMin = 0.0,		// The Playerstrength must be at least this value for this Unit to be able to spawn
@@ -13,6 +13,9 @@ this.unit <- inherit(::MSU.BBClass.Empty, {
 
 		// Vanilla Properties of a Party
 		Figure = "",	// A party consisting of this unit as its highest costing unit, will be represented by this figure
+
+		// During Spawnprocess only
+		SubParty = null		// Cloned Party-Object. Is only filled during a spawning process
 	}
 
 	function create()
@@ -37,6 +40,47 @@ this.unit <- inherit(::MSU.BBClass.Empty, {
 			}
 		}
 		return this;
+	}
+
+	// Returns a copy of this unit (except that arrays and tables)
+	function getClone( _unitDef = null )
+	{
+		local clonedUnit = ::new(::DynamicSpawns.Class.Unit);
+
+		// Copy all member variables from this unit to its clone
+		foreach (key, value in this.m)
+		{
+			// We skip arrays for now as they would only arrive as references which is not real cloning
+			if (typeof value == "array") continue;
+			// We skip tables for now as they would only arrive as references which is not real cloning
+			if (typeof value == "table") continue;
+
+			clonedUnit.m[key] = value;
+		}
+
+		// Copy all data provided by the _unitDef (e.g. custom resource cost) into the clone
+		if (_unitDef != null)
+		{
+			foreach (key, value in _unitDef)
+			{
+				if (typeof value == "function")
+				{
+					clonedUnit[key] = value;
+				}
+				else
+				{
+					clonedUnit.m[key] = value;
+				}
+			}
+		}
+
+		// Continue with the SubParty if it exists. Just gotta be careful to not cause an infinite recursion here
+		if (this.m.SubPartyDef.len() != 0)
+		{
+			this.m.SubParty = ::DynamicSpawns.Parties.findById(this.m.SubPartyDef.ID).getClone(this.m.SubPartyDef);
+		}
+
+		return clonedUnit;
 	}
 
 	function getID()

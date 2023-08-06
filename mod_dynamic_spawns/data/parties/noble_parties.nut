@@ -7,7 +7,7 @@ local parties = [
         MovementSpeedMult = 1.0,
         VisibilityMult = 1.0,
         VisionMult = 1.0,
-        UnitBlocks = [
+        UnitBlockDefs = [
             { ID = "Noble.Frontline",   RatioMin = 0.35, RatioMax = 1.00, DeterminesFigure = true },
             { ID = "Noble.Backline",    RatioMin = 0.08, RatioMax = 0.35 },
             { ID = "Noble.Ranged",      RatioMin = 0.08, RatioMax = 0.28 },
@@ -28,7 +28,7 @@ local parties = [
         StaticUnits = [
             "Human.CaravanDonkey"       // Makes it much easier to get a good ratio
         ],
-        UnitBlocks = [
+        UnitBlockDefs = [
             { ID = "Noble.Frontline",   RatioMin = 0.35, RatioMax = 1.00},
             { ID = "Noble.Backline",    RatioMin = 0.08, RatioMax = 0.35},
             { ID = "Noble.Ranged",      RatioMin = 0.08, RatioMax = 0.28},

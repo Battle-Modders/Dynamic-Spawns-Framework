@@ -1,8 +1,9 @@
 this.party <- inherit(::MSU.BBClass.Empty, {
 	m = {
         ID = null,
-        UnitBlocks = [],	// Array of Tables that require a 'ID', 'RatioMin', 'RatioMax' and optionally 'DeterminesFigure'
+        UnitBlockDefs = [],	// Array of Tables that require atleast 'ID' of the used UnitBlocks. Other parameter will overwrite those in the referenced UnitBLock
         // Resources = 0;
+
         UpgradeChance = 1.0,	// Chance that this Party will upgrade a unit instead of spawning a new unit when IdealSize is reached
         StaticUnits = [],	// Array of UnitObjects that are forced to spawn if the Resources allow it. Can have multiples of the same unit
 
@@ -14,7 +15,10 @@ this.party <- inherit(::MSU.BBClass.Empty, {
 		DefaultFigure = "",		// This Figure will be used if the spawned units couldnt provide a better fitting one
 		MovementSpeedMult = 1.0,
 		VisibilityMult = 1.0,
-		VisionMult = 1.0
+		VisionMult = 1.0,
+
+		// During Spawnprocess only
+		UnitBlocks = []		// Array of cloned UnitBlock classes. Is only filled during a spawning process
 	},
 
 	// Figure that represents this party on the world map. This is always filled at the very end of a spawn-process and uses DefaultFigure by default.
@@ -50,7 +54,7 @@ this.party <- inherit(::MSU.BBClass.Empty, {
 			}
 		}
 
-		foreach (unitBlock in this.m.UnitBlocks)	// Make sure there are default values for these Variables
+		foreach (unitBlock in this.m.UnitBlockDefs)	// Make sure there are default values for these Variables
 		{
 			if (!("RatioMin" in unitBlock)) unitBlock.RatioMin <- 0.0;
 			if (!("RatioMax" in unitBlock)) unitBlock.RatioMax <- 1.0;
@@ -60,6 +64,42 @@ this.party <- inherit(::MSU.BBClass.Empty, {
 		this.Body <- this.m.DefaultFigure;	// Because Vanilla expects a Table with this entry
 
 		return this;
+	}
+
+	// Returns a copy of this party (except that arrays)
+	function getClone( _partyDef = null )
+	{
+		local clonedParty = ::new(::DynamicSpawns.Class.Party);
+
+		// Copy all member variables from this party to its clone
+		foreach (key, value in this.m)
+		{
+			// We skip arrays for now as they would only arrive as references which is not real cloning
+			if (typeof value == "array") continue;
+
+			clonedParty.m[key] = value;
+		}
+
+		// Manually copy static unit ids over
+		foreach ( staticUnit in this.m.StaticUnits)
+		{
+			clonedParty.m.StaticUnits.push(staticUnit.getClone());
+		}
+
+		// Copy all data provided by the _partyDef (e.g. custom HardMin/HardMax) into the clone
+		if (_unitBlockDef != null) clonedParty.init(_partyDef);
+
+		// Create clones of all UnitBlocks needed for this
+		this.m.UnitBlocks = [];
+		foreach (unitBlockDef in this.m.UnitBlockDefs)
+		{
+			local unitBlock = ::DynamicSpawns.UnitBlocks.findById(unitBlockDef.ID).getClone(unitBlockDef);
+			this.m.UnitBlocks.push(unitBlock);
+		}
+
+		// Create clones of all StaticUnits
+
+		return clonedParty;
 	}
 
 	function updateFigure( _spawnProcess )
@@ -96,9 +136,16 @@ this.party <- inherit(::MSU.BBClass.Empty, {
 		return this.m.ID;
 	}
 
+	// returns an array of unitblock objects
 	function getUnitBlocks()
 	{
 		return this.m.UnitBlocks;
+	}
+
+	// returns an array of def-tables
+	function getUnitBlockDefs()
+	{
+		return this.m.UnitBlockDefs;
 	}
 
 	function spawn( _resources, _opposingParty = null, _customHardMin = -1, _customHardMax = -1 )
@@ -153,9 +200,8 @@ this.party <- inherit(::MSU.BBClass.Empty, {
 		if (_spawnProcess.getTotal() >= this.getHardMax()) return false;
 
 		// Atleast one of our unitBlocks must be able to spawn units
-		foreach (pBlock in this.getUnitBlocks())
+		foreach (unitBlock in this.getUnitBlocks())
 		{
-			local unitBlock = ::DynamicSpawns.UnitBlocks.findById(pBlock.ID);
 			if (unitBlock.canSpawn(_spawnProcess)) return true;
 		}
 

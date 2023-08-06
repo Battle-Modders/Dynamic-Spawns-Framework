@@ -9,7 +9,7 @@ local parties = [
         MovementSpeedMult = 1.0,
         VisibilityMult = 1.0,
         VisionMult = 1.0,
-        UnitBlocks = [
+        UnitBlockDefs = [
             { ID = "Southern.Frontline",    RatioMin = 0.50, RatioMax = 0.90, DeterminesFigure = true},			// Vanilla: doesn't care about size
             { ID = "Southern.Backline",     RatioMin = 0.10, RatioMax = 0.40 },				// Vanilla: doesn't care about size
             { ID = "Southern.Ranged",       RatioMin = 0.00, RatioMax = 0.30 },		// Vanilla: doesn't care about size
@@ -29,7 +29,7 @@ local parties = [
         StaticUnits = [
             "Southern.CaravanDonkey"
         ],
-        UnitBlocks = [
+        UnitBlockDefs = [
             { ID = "Southern.Frontline",        RatioMin = 0.15, RatioMax = 1.00 },
             { ID = "Southern.Slaves",           RatioMin = 0.00, RatioMax = 0.25 },
             { ID = "Southern.Backline",         RatioMin = 0.10, RatioMax = 0.40 },
@@ -49,7 +49,7 @@ local parties = [
         StaticUnits = [
             "Southern.CaravanDonkey"
         ],
-        UnitBlocks = [
+        UnitBlockDefs = [
             { ID = "Southern.Frontline",        RatioMin = 0.35, RatioMax = 1.00 },
             // { ID = "Southern.Slaves",           RatioMin = 0.00, RatioMax = 0.25 },     // This is new. I find Slaves seen as a trade good a nice touch for player escorted southern caravans
             { ID = "Southern.CaravanDonkeys",   RatioMin = 0.35, RatioMax = 0.50, ReqPartySize = 3 }
@@ -64,7 +64,7 @@ local parties = [
 		MovementSpeedMult = 0.66,
 		VisibilityMult = 1.0,
 		VisionMult = 1.0,
-        UnitBlocks = [
+        UnitBlockDefs = [
             { ID = "Southern.Slaves",           RatioMin = 0.00, RatioMax = 1.00 }
         ]
     },
@@ -76,7 +76,7 @@ local parties = [
 		MovementSpeedMult = 0.66,
 		VisibilityMult = 1.0,
 		VisionMult = 1.0,
-        UnitBlocks = [
+        UnitBlockDefs = [
             { ID = "Human.Slaves",           RatioMin = 0.00, RatioMax = 1.00 }
         ]
     },
@@ -88,7 +88,7 @@ local parties = [
 		MovementSpeedMult = 1.00,
 		VisibilityMult = 1.0,
 		VisionMult = 1.0,
-        UnitBlocks = [
+        UnitBlockDefs = [
             { ID = "Southern.Assassins",           RatioMin = 0.00, RatioMax = 1.00 }
         ]
     },
@@ -98,7 +98,7 @@ local parties = [
         ID = "MortarEngineers"
 		HardMin = 2,
 		HardMax = 2,
-        UnitBlocks = [
+        UnitBlockDefs = [
             { ID = "Southern.Engineer"}
         ]
     }
