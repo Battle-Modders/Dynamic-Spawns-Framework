@@ -2,7 +2,6 @@
 local parties = [
     {
         ID = "Barbarians",
-        UpgradeChance = 1.0,
         HardMin = 6,
         DefaultFigure = "figure_wildman_01",
         MovementSpeedMult = 1.0,
@@ -17,7 +16,6 @@ local parties = [
     },
     {
         ID = "BarbarianHunters",
-        UpgradeChance = 1.0,
         HardMin = 5,
         DefaultFigure = "figure_wildman_01",
         MovementSpeedMult = 1.0,

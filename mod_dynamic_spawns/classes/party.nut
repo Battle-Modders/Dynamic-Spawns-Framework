@@ -5,8 +5,8 @@ this.party <- inherit(::MSU.BBClass.Empty, {
         UnitBlockDefs = [],	// Array of Tables that require atleast 'ID' of the used UnitBlocks. Other parameter will overwrite those in the referenced UnitBLock
 
 	// Optional Parameter
-        UpgradeChance = 1.0,	// Chance that this Party will upgrade a unit instead of spawning a new unit when IdealSize is reached
-        StaticUnitIDs = [],	// Array of UnitObjects that are forced to spawn if the Resources allow it. Can have multiples of the same unit.
+        UpgradeChance = 0.5,	// Chance that this Party will upgrade a unit instead of spawning a new unit when IdealSize is reached
+        StaticUnitIDs = [],		// Array of UnitIDs that are forced to spawn if the Resources allow it. Can have multiples of the same unit.
 
 		// Guards
         HardMin = 0,		// Smallest army size that is allowed for this party to even make sense. Ressources are disregarded while trying to satisfy this. Could maybe be set to 1 be default
@@ -141,18 +141,16 @@ this.party <- inherit(::MSU.BBClass.Empty, {
 		return spawnProcess.spawn();
 	}
 
-	// Returns an unsigned integer. This can be random as this function is called only once during a SpawnProcess
-	function generateIdealSize()
+	// Returns an unsigned integer that will be used during this spawnProcess as IdealSize
+	function generateIdealSize( _spawnProcess )
 	{
-		local referencedBrothersAmount = this.getReferencedBrotherAmount();
-		referencedBrothersAmount += (::Math.max(2, ::Math.floor(referencedBrothersAmount * 0.3)));
-		referencedBrothersAmount + ::Math.rand(-1, 2);	// A little bit of random variance
-		return referencedBrothersAmount;
+		return this.getReferencedBrotherAmount();
 	}
 
 	function getReferencedBrotherAmount()
 	{
-		return 8;
+		if (("Assets" in ::World) == false) return 12;	// fix for when we test this framework in the main menu
+
 		local referencedAmount = ::World.getPlayerRoster().getAll().len();
 		referencedAmount = ::Math.min(referencedAmount, ::World.Assets.getBrothersScaleMax());
 		referencedAmount = ::Math.max(referencedAmount, ::World.Assets.getBrothersScaleMin());

@@ -1,7 +1,6 @@
 local parties = [
     {
         ID = "Noble",
-        UpgradeChance = 1.0,
         HardMin = 5,
         DefaultFigure = "figure_noble_01",
         MovementSpeedMult = 1.0,
@@ -19,7 +18,6 @@ local parties = [
     },
     {
         ID = "NobleCaravan",
-        UpgradeChance = 1.0,
         HardMin = 7,
         DefaultFigure = "cart_01",
 		MovementSpeedMult = 0.5,

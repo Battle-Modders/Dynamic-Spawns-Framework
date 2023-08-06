@@ -1,7 +1,6 @@
 local parties = [
     {
         ID = "Direwolves",
-        UpgradeChance = 1.0,
         HardMin = 3,
         DefaultFigure = "figure_werewolf_01",
         MovementSpeedMult = 1.0,
@@ -13,7 +12,6 @@ local parties = [
     },
     {
         ID = "Ghouls",
-        UpgradeChance = 1.0,
         HardMin = 5,
         DefaultFigure = "figure_ghoul_01",
 		MovementSpeedMult = 1.0,
@@ -25,7 +23,6 @@ local parties = [
     },
     {
         ID = "Lindwurm",
-        UpgradeChance = 1.0,
         HardMin = 1,
         DefaultFigure = "figure_lindwurm_01",
 		MovementSpeedMult = 1.0,
@@ -37,7 +34,6 @@ local parties = [
     },
     {
         ID = "Unhold",
-        UpgradeChance = 1.0,
         HardMin = 1,
         DefaultFigure = "figure_unhold_01",
 		MovementSpeedMult = 1.0,
@@ -49,7 +45,6 @@ local parties = [
     },
     {
         ID = "UnholdFrost",
-        UpgradeChance = 1.0,
         HardMin = 1,
         DefaultFigure = "figure_unhold_02",
 		MovementSpeedMult = 1.0,
@@ -61,7 +56,6 @@ local parties = [
     },
     {
         ID = "UnholdBog",
-        UpgradeChance = 1.0,
         HardMin = 1,
         DefaultFigure = "figure_unhold_03",
 		MovementSpeedMult = 1.0,
@@ -73,7 +67,6 @@ local parties = [
     },
     {
         ID = "Spiders",
-        UpgradeChance = 1.0,
         HardMin = 1,
         DefaultFigure = "figure_spider_01",
 		MovementSpeedMult = 1.0,
@@ -85,7 +78,6 @@ local parties = [
     },
     {
         ID = "Alps",
-        UpgradeChance = 1.0,
         HardMin = 3,
         DefaultFigure = "figure_alp_01",
 		MovementSpeedMult = 1.0,
@@ -97,7 +89,6 @@ local parties = [
     },
     {
         ID = "Schrats",
-        UpgradeChance = 1.0,
         HardMin = 1,
         DefaultFigure = "figure_schrat_01",
 		MovementSpeedMult = 0.5,
@@ -109,7 +100,6 @@ local parties = [
     },
     {
         ID = "HexenAndMore",
-        UpgradeChance = 1.0,
         HardMin = 5,
         DefaultFigure = "figure_hexe_01",
 		MovementSpeedMult = 1.0,
@@ -132,7 +122,6 @@ local parties = [
     },
     {
         ID = "HexenAndNoSpiders",
-        UpgradeChance = 1.0,
         HardMin = 5,
         DefaultFigure = "figure_hexe_01",
 		MovementSpeedMult = 1.0,
@@ -153,7 +142,6 @@ local parties = [
     },
     {
         ID = "Hexen",
-        UpgradeChance = 1.0,
         HardMin = 1,
         DefaultFigure = "figure_hexe_01",
 		MovementSpeedMult = 1.0,
@@ -167,7 +155,6 @@ local parties = [
     // Skipped Kraken
     {
         ID = "Hyenas",
-        UpgradeChance = 1.0,
         HardMin = 3,
         DefaultFigure = "figure_hyena_01",
 		MovementSpeedMult = 1.0,
@@ -179,7 +166,6 @@ local parties = [
     },
     {
         ID = "Serpents",
-        UpgradeChance = 1.0,
         HardMin = 3,
         DefaultFigure = "figure_serpent_01",
 		MovementSpeedMult = 1.0,
@@ -191,7 +177,6 @@ local parties = [
     },
     {
         ID = "SandGolems",
-        UpgradeChance = 1.0,
         HardMin = 3,
         DefaultFigure = "figure_golem_01",
 		MovementSpeedMult = 1.0,

@@ -1,7 +1,6 @@
 local parties = [
     {
         ID = "Cultist",
-        UpgradeChance = 1.0,
         HardMin = 4,
         DefaultFigure = "figure_civilian_03",
         MovementSpeedMult = 1.0,
@@ -13,7 +12,6 @@ local parties = [
     },
     {
         ID = "Peasants",
-        UpgradeChance = 1.0,
         HardMin = 3,
         DefaultFigure = "figure_civilian_01",
 		MovementSpeedMult = 0.75,
@@ -25,7 +23,6 @@ local parties = [
     },
     {
         ID = "PeasantsArmed",
-        UpgradeChance = 1.0,
         HardMin = 3,
         DefaultFigure = "figure_civilian_01",
 		MovementSpeedMult = 0.75,
@@ -37,7 +34,6 @@ local parties = [
     },
     {
         ID = "PeasantsSouthern",
-        UpgradeChance = 1.0,
         HardMin = 3,
         DefaultFigure = "figure_civilian_06",
 		MovementSpeedMult = 0.75,
@@ -49,7 +45,6 @@ local parties = [
     },
     {
         ID = "BountyHunters",
-        UpgradeChance = 1.0,
         HardMin = 5,
         DefaultFigure = "figure_bandit_03",
 		MovementSpeedMult = 1.0,
@@ -63,7 +58,6 @@ local parties = [
     },
     {
         ID = "Mercenaries",
-        UpgradeChance = 1.0,
         HardMin = 5,
         DefaultFigure = "figure_bandit_03",
 		MovementSpeedMult = 1.0,
@@ -78,7 +72,6 @@ local parties = [
     },
     {
         ID = "Militia",
-        UpgradeChance = 1.0,
         HardMin = 6,
         DefaultFigure = ["figure_militia_01", "figure_militia_02"],
 		MovementSpeedMult = 0.9,
@@ -92,7 +85,6 @@ local parties = [
     },
     {
         ID = "Caravan",
-        UpgradeChance = 1.0,
         HardMin = 4,
         DefaultFigure = "cart_02",
 		MovementSpeedMult = 0.5,
@@ -109,7 +101,6 @@ local parties = [
     },
     {
         ID = "CaravanEscort",   // Caravans spawned for player escort contract
-        UpgradeChance = 1.0,
         HardMin = 4,
         DefaultFigure = "cart_02",
 		MovementSpeedMult = 0.5,

@@ -2,7 +2,6 @@
 local parties = [
     {
         ID = "NomadRoamers",
-        UpgradeChance = 1.0,
         HardMin = 6,
         DefaultFigure = "figure_nomad_01",  // Icon for Cutthroats
         MovementSpeedMult = 1.0,
@@ -15,7 +14,6 @@ local parties = [
     },
     {
         ID = "NomadRaiders",
-        UpgradeChance = 1.0,
         HardMin = 4,
         DefaultFigure = "figure_nomad_01",  // Icon for Cutthroats
         MovementSpeedMult = 1.0,
@@ -30,7 +28,6 @@ local parties = [
     },
     {
         ID = "NomadDefenders",
-        UpgradeChance = 1.0,
         HardMin = 4,
         DefaultFigure = "figure_nomad_01",
         MovementSpeedMult = 1.0,

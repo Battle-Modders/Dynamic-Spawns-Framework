@@ -2,7 +2,6 @@
 local parties = [
     {
         ID = "Southern",
-        UpgradeChance = 1.0,
         HardMin = 5,
         // HardMax = 40,
         DefaultFigure = "figure_southern_01",
@@ -20,7 +19,6 @@ local parties = [
     },
     {
         ID = "CaravanSouthern",
-        UpgradeChance = 1.0,
         HardMin = 10,
         DefaultFigure = "cart_03",
 		MovementSpeedMult = 0.5,
@@ -40,7 +38,6 @@ local parties = [
     },
     {
         ID = "CaravanSouthernEscort",   // For Contract Escort missions
-        UpgradeChance = 1.0,
         HardMin = 2,
         DefaultFigure = "cart_03",
 		MovementSpeedMult = 0.5,
@@ -58,7 +55,6 @@ local parties = [
     },
     {
         ID = "Slaves",
-        UpgradeChance = 1.0,
         HardMin = 6,
         DefaultFigure = "figure_slave_01",
 		MovementSpeedMult = 0.66,
@@ -70,7 +66,6 @@ local parties = [
     },
     {
         ID = "NorthernSlaves",
-        UpgradeChance = 1.0,
         HardMin = 6,
         DefaultFigure = "figure_slave_01",
 		MovementSpeedMult = 0.66,
@@ -82,7 +77,6 @@ local parties = [
     },
     {
         ID = "Assassins",
-        UpgradeChance = 1.0,
         HardMin = 3,
         DefaultFigure = "figure_southern_01",
 		MovementSpeedMult = 1.00,
