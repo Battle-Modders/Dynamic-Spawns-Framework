@@ -1,6 +1,8 @@
 ::DynamicSpawns.Static <- {};
 ::DynamicSpawns.Static.assignTroops <- function( _worldParty, _party, _resources, _customHardMin = null, _customHardMax = null )
 {
+	_resources *= ::MSU.Math.randf( 0.8, 1.0 );
+
 	// ::logWarning("Spawning the party '" + this.m.ID + "' with '" + _resources + "' Resources");
 	local spawnProcess = ::new(::DynamicSpawns.Class.SpawnProcess);
 	spawnProcess.init({ID = _party.getID()}, _resources, _customHardMin, _customHardMax);
@@ -24,6 +26,8 @@
 // In Vanilla this function is part of the contract.nut
 ::DynamicSpawns.Static.addTroops <- function( _worldParty, _party, _resources, _customHardMin = null, _customHardMax = null )
 {
+	_resources *= ::MSU.Math.randf( 0.8, 1.0 );
+
 	// ::logWarning("Spawning the party '" + this.m.ID + "' with '" + _resources + "' Resources");
 	local spawnProcess = ::new(::DynamicSpawns.Class.SpawnProcess);
 	spawnProcess.init({ID = _party.getID()}, _resources, _worldParty.isLocation(), _customHardMin, _customHardMax);
