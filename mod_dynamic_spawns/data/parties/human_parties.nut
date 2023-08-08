@@ -73,7 +73,7 @@ local parties = [
 	{
 		ID = "Militia",
 		HardMin = 6,
-		DefaultFigure = ["figure_militia_01", "figure_militia_02"],
+		DefaultFigure = "figure_militia_01",	// In vanilla this is either ["figure_militia_01", "figure_militia_02"]
 		MovementSpeedMult = 0.9,
 		VisibilityMult = 1.0,
 		VisionMult = 1.0,
