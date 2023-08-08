@@ -3,13 +3,13 @@ this.unit <- inherit(::MSU.BBClass.Empty, {
 	// Required Parameter
 		ID = null,
 		EntityType = null,		// String-IDs referencing entities from ::Const.World.Spawn.Troops table
-		Cost = 0,		// Cost of spawning this unit
+		Cost = 0,				// Cost of spawning this unit
 
 	// Optional Parameter
 		// SubParty
 		SubPartyDef = {},				// abilty to optionally spawn an additional party. Most commonly body guards or operators
 
-		// Guards						// This Unit is only able to spawn if ...
+		// Guards for isValid()			// This Unit is only able to spawn if ...
 		MinStrength = 0.0,				// ... the Playerstrength is at least this value
 		MaxStrength = 900000.0,			// ... the Playerstrength is at most this value
 		MinStartingResource = 0,		// ... the StartingResources of the current SpawnProcess is at least this value
@@ -123,13 +123,6 @@ this.unit <- inherit(::MSU.BBClass.Empty, {
 
 	function canSpawn( _spawnProcess, _bonusResources = 0 )		// _bonusResources are used if you want to upgrade unit-A into unit-B. In those cases you have the resources from unit-A available in addition
 	{
-		if (_spawnProcess.getPlayerStrength() < this.m.MinStrength) return false;
-		if (_spawnProcess.getPlayerStrength() > this.m.MaxStrength) return false;
-		if (_spawnProcess.getStartingResources() < this.m.MinStartingResource) return false;
-		if (_spawnProcess.getStartingResources() > this.m.MaxStartingResource) return false;
-		if (_spawnProcess.getWorldDays() < this.m.MinDays) return false;
-		if (_spawnProcess.getWorldDays() > this.m.MaxDays) return false;
-
 		if (_bonusResources == 0)	// We only allow ignoring of Cost if for considering new units to spawn
 		{
 			if (!_spawnProcess.isIgnoringCost() && (_spawnProcess.getResources()) < this.getCost()) return false;
@@ -138,6 +131,20 @@ this.unit <- inherit(::MSU.BBClass.Empty, {
 		{
 			if ((_spawnProcess.getResources() + _bonusResources) < this.getCost()) return false;
 		}
+
+		return true;
+	}
+
+	// Returns true if this Block can theortically spawn a unit during this spawn proccess
+	// This is done by checking variables which never change during the spawn process
+	function isValid( _spawnProcess )
+	{
+		if (_spawnProcess.getPlayerStrength() < this.m.MinStrength) return false;
+		if (_spawnProcess.getPlayerStrength() > this.m.MaxStrength) return false;
+		if (_spawnProcess.getStartingResources() < this.m.MinStartingResource) return false;
+		if (_spawnProcess.getStartingResources() > this.m.MaxStartingResource) return false;
+		if (_spawnProcess.getWorldDays() < this.m.MinDays) return false;
+		if (_spawnProcess.getWorldDays() > this.m.MaxDays) return false;
 
 		return true;
 	}

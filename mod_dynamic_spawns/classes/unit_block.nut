@@ -9,15 +9,17 @@ this.unit_block <- inherit(::MSU.BBClass.Empty, {
 		IsRandom = false,			// A random Block will not upgrade between its troops and instead pick a random one each time
 		DeterminesFigure = false,	// If true then the spawned troops from this Block are in the race for the final Figure of the spawned party
 
-		// Guards						// This Unit is only able to spawn if ...
-		ReqPartySize = 0,         		// ... the amount of already spawned troops in the current SpawnProcess is at least this value
+		RatioMin = 0.00,				// If the ratio of already spawned units of this Block is below this value then the SpawnProcess will issue a ForceSpawn
+
+		// Guards for canSpawn()		// This UnitBlock is able to spawn ...
+		RatioMax = 1.00,				// ... if the RatioMax is not exceeded with that newly spawned unit
+		ReqPartySize = 0,         		// ... when the amount of already spawned troops in the current SpawnProcess is at least this value
+
+		// Guards for isValid()			// This UnitBlock is only able to spawn if ...
 		MinStartingResource = 0,		// ... the StartingResources of the current SpawnProcess is at least this value
 		MaxStartingResource = 900000,	// ... the StartingResources of the current SpawnProcess is at most this value
 		MinDays = 0,					// ... ::World.getTime().Days is at least this value
 		MaxDays = 900000				// ... ::World.getTime().Days is at most this value
-
-		RatioMin = 0.00,				// If the ratio of already spawned units of this Block is below this value then the SpawnProcess will issue a ForceSpawn
-		RatioMax = 1.00,				// This Block can't spawn another unit if that would make the ratio of already spawned units of this Block exceed this value
 
 	// Private
 		LookupMap = {},
@@ -146,10 +148,6 @@ this.unit_block <- inherit(::MSU.BBClass.Empty, {
 	// _spawnProcess = current spawnprocess reference that includes most important variables
 	function canSpawn( _spawnProcess )
 	{
-		if (_spawnProcess.getStartingResources() < this.m.MinStartingResource) return false;
-		if (_spawnProcess.getStartingResources() > this.m.MaxStartingResource) return false;
-		if (_spawnProcess.getWorldDays() < this.m.MinDays) return false;
-		if (_spawnProcess.getWorldDays() > this.m.MaxDays) return false;
 		if (_spawnProcess.getTotal() < this.m.ReqPartySize) return false;
 
 		// RatioMax is ignored if we do not satisfy the RatioMin yet
@@ -162,6 +160,18 @@ this.unit_block <- inherit(::MSU.BBClass.Empty, {
 		}
 
 		return false;
+	}
+
+	// Returns true if this Block can theortically spawn a unit during this spawn proccess
+	// This is done by checking variables which never change during the spawn process
+	function isValid( _spawnProcess )
+	{
+		if (_spawnProcess.getStartingResources() < this.m.MinStartingResource) return false;
+		if (_spawnProcess.getStartingResources() > this.m.MaxStartingResource) return false;
+		if (_spawnProcess.getWorldDays() < this.m.MinDays) return false;
+		if (_spawnProcess.getWorldDays() > this.m.MaxDays) return false;
+
+		return true;
 	}
 
 	// Returns true if the ratio of this unitblock would still be below its defined RatioMax if it was to spawn the next unit
@@ -280,12 +290,22 @@ this.unit_block <- inherit(::MSU.BBClass.Empty, {
 	}
 
 // Events
-	function onPartySpawnStart()
+
+	// This is will not be called if this UnitBlock is InValid and was removed by its Party during this spawn process
+	function onBeforeSpawnStart( _spawnProcess )
 	{
+		// We remove all Units that can't ever spawn in the first place to improve performance
+		local unitArray = this.getUnits();
+		for (local i = unitArray.len() - 1; i >= 0; i--)
+		{
+			if (unitArray[i].isValid(_spawnProcess) == false) unitArray.remove(i);
+		}
+
 		this.sort();
 	}
 
-	function onPartySpawnEnd()
+	// This is will not be called if this UnitBlock is InValid and was removed by its Party during this spawn process
+	function onSpawnEnd( _spawnProcess )
 	{
 	}
 

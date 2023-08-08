@@ -58,10 +58,8 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 
 	function spawn()
 	{
-		foreach (unitBlock in this.getParty().getUnitBlocks())
-		{
-			unitBlock.onPartySpawnStart();
-		}
+		// This will remove all unnecessary Unitblocks/Units to improve performance
+		this.getParty().onBeforeSpawnStart(this);
 
 		local ret = [];
 

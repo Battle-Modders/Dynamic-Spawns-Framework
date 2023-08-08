@@ -195,5 +195,28 @@ this.party <- inherit(::MSU.BBClass.Empty, {
 
 	}
 
+	function onBeforeSpawnStart( _spawnProcess )
+	{
+		// We remove all UnitBlocks that can't ever spawn in the first place to improve performance
+		local unitBlockArray = this.getUnitBlocks();
+		for (local i = unitBlockArray.len() - 1; i >= 0; i--)
+		{
+			if (unitBlockArray[i].isValid(_spawnProcess) == false) unitBlockArray.remove(i);
+		}
+
+		foreach (unitBlock in this.getUnitBlocks())
+		{
+			unitBlock.onBeforeSpawnStart( _spawnProcess );
+		}
+	}
+
+	function onSpawnEnd( _spawnProcess )
+	{
+		foreach (unitBlock in this.getUnitBlocks())
+		{
+			unitBlock.onSpawnEnd( _spawnProcess );
+		}
+	}
+
 });
 
