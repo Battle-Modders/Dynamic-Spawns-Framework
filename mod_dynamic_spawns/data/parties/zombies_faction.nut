@@ -7,7 +7,7 @@ local parties = [
 		VisibilityMult = 1.0,
 		VisionMult = 0.8,
 		UnitBlockDefs = [
-			{ ID = "Zombie.Frontline", 	RatioMin = 0.00, RatioMax = 1.00, MaxStartingResource = 140, DeterminesFigure = true},
+			{ ID = "Zombie.Frontline", 	RatioMin = 0.00, RatioMax = 1.00, DeterminesFigure = true},
 			{ ID = "Zombie.Elite", 		RatioMin = 0.00, RatioMax = 0.10, MinStartingResource = 114, DeterminesFigure = true},
 			{ ID = "Zombie.Elite", 		RatioMin = 0.00, RatioMax = 0.30, MinStartingResource = 200, DeterminesFigure = true},		// With 200+ Resources even more Elites can appear
 		]
@@ -31,7 +31,7 @@ local parties = [
 		VisibilityMult = 1.0,
 		VisionMult = 0.8,
 		UnitBlockDefs = [
-			{ ID = "Zombie.Frontline", 		RatioMin = 0.00, RatioMax = 1.00, MaxStartingResource = 140, DeterminesFigure = true},
+			{ ID = "Zombie.Frontline", 		RatioMin = 0.00, RatioMax = 1.00, DeterminesFigure = true},
 			{ ID = "Beast.GhoulLowOnly", 	RatioMin = 0.10, RatioMax = 0.30},
 			{ ID = "Zombie.Elite", 			RatioMin = 0.00, RatioMax = 0.10, MinStartingResource = 150, DeterminesFigure = true},
 			{ ID = "Zombie.Elite", 			RatioMin = 0.00, RatioMax = 0.30, MinStartingResource = 250, DeterminesFigure = true}		// With 250+ Resources even more Elites can appear
