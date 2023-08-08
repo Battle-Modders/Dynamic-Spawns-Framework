@@ -18,7 +18,7 @@ local unitBlocks = [
 		ID = "Southern.Officers",
 		//UnitDefs = [{ ID = "Officer" }, { ID = "Officer++" }]
 		UnitDefs = [{ ID = "Southern.Officer" }],
-		MinStartingResource = 250	// In Vanilla they appear in a group of 250 cost
+		StartingResourceMin = 250	// In Vanilla they appear in a group of 250 cost
 	},
 	{
 		ID = "Southern.Ranged",
@@ -28,7 +28,7 @@ local unitBlocks = [
 	{
 		ID = "Southern.Siege",
 		UnitDefs = [{ ID = "Southern.Mortar" }],
-		MinStartingResource = 340	// In Vanilla they appear in a group of 340 cost
+		StartingResourceMin = 340	// In Vanilla they appear in a group of 340 cost
 	},
 	{
 		ID = "Southern.Engineer",

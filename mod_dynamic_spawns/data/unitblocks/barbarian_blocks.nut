@@ -6,7 +6,7 @@ local unitBlocks = [
 	{
 		ID = "Barbarian.Support",
 		UnitDefs = [{ ID = "Barbarian.Drummer" }],
-		MinStartingResource = 200	// In Vanilla they start appearing in a group of 210 cost alongside 15 thralls
+		StartingResourceMin = 200	// In Vanilla they start appearing in a group of 210 cost alongside 15 thralls
 
 	},
 	{
@@ -16,7 +16,7 @@ local unitBlocks = [
 	{
 		ID = "Barbarian.Beastmaster",
 		UnitDefs = [{ ID = "Barbarian.BeastmasterU" }, { ID = "Barbarian.BeastmasterF" }, { ID = "Barbarian.BeastmasterUU" }, { ID = "Barbarian.BeastmasterFF" }],
-		MinStartingResource = 200	// In Vanilla they appear in a group of 195 cost
+		StartingResourceMin = 200	// In Vanilla they appear in a group of 195 cost
 	},
 	{
 		ID = "Barbarian.HunterFrontline",

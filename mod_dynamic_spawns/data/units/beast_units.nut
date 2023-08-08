@@ -10,7 +10,7 @@
 			EntityType = "DirewolfHIGH",
 			Figure = "figure_werewolf_01",
 			Cost = 25,
-			MinStartingResource = 95		// In Vanilla this is 95
+			StartingResourceMin = 95		// In Vanilla this is 95
 		},
 		{
 			ID = "Beast.GhoulLOW",
@@ -23,14 +23,14 @@
 			EntityType = "Ghoul",
 			Figure = "figure_ghoul_01",
 			Cost = 19,
-			MinStartingResource = 120	// In vanilla this is 120
+			StartingResourceMin = 120	// In vanilla this is 120
 		},
 		{
 			ID = "Beast.GhoulHIGH",
 			EntityType = "Ghoul",
 			Figure = "figure_ghoul_02",     // I don't know if a 'figure_ghoul_03' exists
 			Cost = 30,
-			MinStartingResource = 150	// In vanilla this is 120
+			StartingResourceMin = 150	// In vanilla this is 120
 		},
 		{
 			ID = "Beast.Lindwurm",
@@ -90,7 +90,7 @@
 			EntityType = "HyenaHIGH",
 			Figure = "figure_hyena_01",
 			Cost = 25,
-			MinStartingResource = 125		// In Vanilla this is 125
+			StartingResourceMin = 125		// In Vanilla this is 125
 		},
 		{
 			ID = "Beast.Serpent",

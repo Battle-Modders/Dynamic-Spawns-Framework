@@ -11,7 +11,7 @@ local unitBlocks = [
 		ID = "Mercenary.Elite",
 		IsRandom = true,
 		UnitDefs = [{ ID = "Human.MasterArcher" }, { ID = "Human.HedgeKnight" }, { ID = "Human.Swordmaster" }],
-		MinStartingResource = 286	// In Vanilla MasterArcher appear in a group of 286 cost
+		StartingResourceMin = 286	// In Vanilla MasterArcher appear in a group of 286 cost
 	},
 	{
 		ID = "Human.BountyHunter",
@@ -74,7 +74,7 @@ local unitBlocks = [
 	{
 		ID = "Human.MilitiaCaptain",
 		UnitDefs = [{ ID = "Human.MilitiaCaptain" }],
-		MinStartingResource = 144	// In Vanilla they appear in a group of 144 cost
+		StartingResourceMin = 144	// In Vanilla they appear in a group of 144 cost
 	}
 ]
 

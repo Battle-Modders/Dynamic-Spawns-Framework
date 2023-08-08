@@ -9,12 +9,12 @@ local parties = [
 		UnitBlockDefs = [
 			{ ID = "Greenskin.GoblinsFoot", RatioMin = 0.00, RatioMax = 0.50, DeterminesFigure = true},
 			{ ID = "Goblin.Flank", 			RatioMin = 0.00, RatioMax = 0.50, DeterminesFigure = true},
-			{ ID = "Goblin.Boss", 			RatioMin = 0.00, RatioMax = 0.13, MinStartingResource = 350, DeterminesFigure = true},
+			{ ID = "Goblin.Boss", 			RatioMin = 0.00, RatioMax = 0.13, StartingResourceMin = 350, DeterminesFigure = true},
 
 			{ ID = "Orc.Young", 			RatioMin = 0.00, RatioMax = 0.80, DeterminesFigure = true},
 			{ ID = "Orc.Warrior", 			RatioMin = 0.00, RatioMax = 0.50, DeterminesFigure = true},
 			{ ID = "Orc.Berserker", 		RatioMin = 0.00, RatioMax = 0.33, DeterminesFigure = true},
-			{ ID = "Orc.Boss", 				RatioMin = 0.00, RatioMax = 0.07, MinStartingResource = 350, DeterminesFigure = true}
+			{ ID = "Orc.Boss", 				RatioMin = 0.00, RatioMax = 0.07, StartingResourceMin = 350, DeterminesFigure = true}
 		]
 	}
 ]

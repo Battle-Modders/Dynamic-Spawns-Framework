@@ -34,7 +34,7 @@ local parties = [
 			{ ID = "Orc.Young", 	RatioMin = 0.15, RatioMax = 1.00, DeterminesFigure = true},
 			{ ID = "Orc.Berserker", RatioMin = 0.00, RatioMax = 0.45, DeterminesFigure = true},
 			{ ID = "Orc.Warrior", 	RatioMin = 0.00, RatioMax = 0.80, DeterminesFigure = true},
-			{ ID = "Orc.Boss", 		RatioMin = 0.00, RatioMax = 0.08, DeterminesFigure = true, MinStartingResource = 210}		// Vanilla never spawns more than one Boss here
+			{ ID = "Orc.Boss", 		RatioMin = 0.00, RatioMax = 0.08, DeterminesFigure = true, StartingResourceMin = 210}		// Vanilla never spawns more than one Boss here
 		]
 	},
 	{
@@ -48,7 +48,7 @@ local parties = [
 			{ ID = "Orc.Young", 	RatioMin = 0.15, RatioMax = 1.00},
 			{ ID = "Orc.Berserker", RatioMin = 0.00, RatioMax = 0.45},
 			{ ID = "Orc.Warrior", 	RatioMin = 0.00, RatioMax = 0.80},
-			{ ID = "Orc.Boss", 		RatioMin = 0.00, RatioMax = 0.08, MinStartingResource = 210}		// Vanilla never spawns more than one Boss here
+			{ ID = "Orc.Boss", 		RatioMin = 0.00, RatioMax = 0.08, StartingResourceMin = 210}		// Vanilla never spawns more than one Boss here
 		]
 	},
 	{
