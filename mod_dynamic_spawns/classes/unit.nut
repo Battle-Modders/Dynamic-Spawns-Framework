@@ -10,8 +10,8 @@ this.unit <- inherit(::MSU.BBClass.Empty, {
 		SubPartyDef = {},				// abilty to optionally spawn an additional party. Most commonly body guards or operators
 
 		// Guards for isValid()			// This Unit is only able to spawn if ...
-		StrengthMin = 0.0,				// ... the Playerstrength is at least this value
-		StrengthMax = 900000.0,			// ... the Playerstrength is at most this value
+		StrengthMin = 0,				// ... the Playerstrength is at least this value
+		StrengthMax = 900000,			// ... the Playerstrength is at most this value
 		StartingResourceMin = 0,		// ... the StartingResources of the current SpawnProcess is at least this value
 		StartingResourceMax = 900000,	// ... the StartingResources of the current SpawnProcess is at most this value
 		DaysMin = 0,					// ... ::World.getTime().Days is at least this value
@@ -139,10 +139,10 @@ this.unit <- inherit(::MSU.BBClass.Empty, {
 	// This is done by checking variables which never change during the spawn process
 	function isValid( _spawnProcess )
 	{
-		if (_spawnProcess.getPlayerStrength() < this.m.StrengthMin) return false;
-		if (_spawnProcess.getPlayerStrength() > this.m.StrengthMax) return false;
-		if (_spawnProcess.getStartingResources() < this.m.StartingResourceMin) return false;
-		if (_spawnProcess.getStartingResources() > this.m.StartingResourceMax) return false;
+		if (::Math.round(_spawnProcess.getPlayerStrength()) < this.m.StrengthMin) return false;
+		if (::Math.round(_spawnProcess.getPlayerStrength()) > this.m.StrengthMax) return false;
+		if (::Math.round(_spawnProcess.getStartingResources()) < this.m.StartingResourceMin) return false;
+		if (::Math.round(_spawnProcess.getStartingResources()) > this.m.StartingResourceMax) return false;
 		if (_spawnProcess.getWorldDays() < this.m.DaysMin) return false;
 		if (_spawnProcess.getWorldDays() > this.m.DaysMax) return false;
 

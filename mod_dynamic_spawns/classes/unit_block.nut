@@ -166,8 +166,8 @@ this.unit_block <- inherit(::MSU.BBClass.Empty, {
 	// This is done by checking variables which never change during the spawn process
 	function isValid( _spawnProcess )
 	{
-		if (_spawnProcess.getStartingResources() < this.m.StartingResourceMin) return false;
-		if (_spawnProcess.getStartingResources() > this.m.StartingResourceMax) return false;
+		if (::Math.round(_spawnProcess.getStartingResources()) < this.m.StartingResourceMin) return false;
+		if (::Math.round(_spawnProcess.getStartingResources()) > this.m.StartingResourceMax) return false;
 		if (_spawnProcess.getWorldDays() < this.m.DaysMin) return false;
 		if (_spawnProcess.getWorldDays() > this.m.DaysMax) return false;
 
