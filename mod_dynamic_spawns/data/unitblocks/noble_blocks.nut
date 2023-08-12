@@ -18,12 +18,12 @@ local unitBlocks = [
 	{
 		ID = "Noble.Support",
 		UnitDefs = [{ ID = "Noble.StandardBearer" }],
-		StartingResourceMin = 240	// In Vanilla they appear in a group of 240 cost
+		StartingResourceMin = 200	// In Vanilla they appear in a group of 240 cost
 	},
 	{
 		ID = "Noble.Officer",
 		UnitDefs = [{ ID = "Noble.Sergeant" }],
-		StartingResourceMin = 235	// In Vanilla they appear in a group of 235 cost in noble caravans
+		StartingResourceMin = 200	// In Vanilla they appear in a group of 235 cost in noble caravans
 	},
 	{
 		ID = "Noble.Elite",

@@ -13,8 +13,8 @@ local parties = [
 			{ ID = "Southern.Backline",     RatioMin = 0.10, RatioMax = 0.40 },				// Vanilla: doesn't care about size
 			{ ID = "Southern.Ranged",       RatioMin = 0.00, RatioMax = 0.30 },		// Vanilla: doesn't care about size
 			{ ID = "Southern.Assassins",    RatioMin = 0.00, RatioMax = 0.13, ReqPartySize = 7 },		// Vanilla: Start spawning at 8+
-			{ ID = "Southern.Officers",     RatioMin = 0.01, RatioMax = 0.08, ReqPartySize = 14, DeterminesFigure = true},		// Vanilla: Start spawning at 15+
-			{ ID = "Southern.Siege",        RatioMin = 0.00, RatioMax = 0.07, ReqPartySize = 18 }		// Vanilla: Start spawning at 19+
+			{ ID = "Southern.Officers",     RatioMin = 0.00, RatioMax = 0.08, ReqPartySize = 5, DeterminesFigure = true},		// Vanilla: Start spawning at 15+
+			{ ID = "Southern.Siege",        RatioMin = 0.00, RatioMax = 0.07, ReqPartySize = 16 }		// Vanilla: Start spawning at 19+
 		]
 	},
 	{

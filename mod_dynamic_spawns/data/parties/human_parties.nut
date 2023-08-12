@@ -111,7 +111,7 @@ local parties = [
 			"Human.CaravanDonkey"
 		],
 		UnitBlockDefs = [
-			{ ID = "Human.CaravanDonkeys",  RatioMin = 0.25, RatioMax = 0.30, ReqPartySize = 5 },   // Vanilla: Third donkey spawns at 6+
+			{ ID = "Human.CaravanDonkeys",  RatioMin = 0.15, RatioMax = 0.35, ReqPartySize = 5 },   // Vanilla: Third donkey spawns at 6+
 			{ ID = "Human.CaravanHands",    RatioMin = 0.50, RatioMax = 1.00}
 		]
 	}

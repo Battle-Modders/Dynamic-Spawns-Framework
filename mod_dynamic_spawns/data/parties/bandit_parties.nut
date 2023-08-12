@@ -64,7 +64,7 @@ local parties = [
 		UnitBlockDefs = [
 			{ ID = "Bandit.Frontline", RatioMin = 0.50, RatioMax = 1.00},
 			{ ID = "Bandit.Ranged", RatioMin = 0.00, RatioMax = 0.25},
-			{ ID = "Bandit.Elite", RatioMin = 0.00, RatioMax = 0.35},
+			{ ID = "Bandit.Elite", RatioMin = 0.00, RatioMax = 0.35, StartingResourceMin = 320},
 			{ ID = "Bandit.Boss", RatioMin = 0.01, RatioMax = 0.11}				// One boss is always guaranteed
 		]
 	},
