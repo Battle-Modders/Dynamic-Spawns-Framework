@@ -100,7 +100,7 @@ local parties = [
 	},
 	{
 		ID = "HexenAndMore",
-		HardMin = 5,
+		HardMin = 1,
 		DefaultFigure = "figure_hexe_01",
 		MovementSpeedMult = 1.0,
 		VisibilityMult = 1.0,
@@ -109,7 +109,7 @@ local parties = [
 			"Beast.Hexe"    // This one has no Bodyguards, which is not perfect because sometimes the only Hexe spawns with bodyguards in vanilla
 		],
 		UnitBlockDefs = [
-			{ ID = "Beast.HexenWithBodyguards", RatioMin = 0.08, RatioMax = 0.13 },
+			{ ID = "Beast.HexenWithBodyguards", RatioMin = 0.00, RatioMax = 0.13, StartingResourceMin = 300 },
 			{ ID = "Beast.Spiders", RatioMin = 0.00, RatioMax = 1.00 },
 			{ ID = "Beast.Ghouls", RatioMin = 0.00, RatioMax = 1.00 },
 			{ ID = "Beast.Schrats", RatioMin = 0.00, RatioMax = 1.00 },
@@ -122,7 +122,7 @@ local parties = [
 	},
 	{
 		ID = "HexenAndNoSpiders",
-		HardMin = 5,
+		HardMin = 1,
 		DefaultFigure = "figure_hexe_01",
 		MovementSpeedMult = 1.0,
 		VisibilityMult = 1.0,
@@ -131,7 +131,7 @@ local parties = [
 			"Beast.Hexe"    // This one has no Bodyguards, which is not perfect because sometimes the only Hexe spawns with bodyguards in vanilla
 		],
 		UnitBlockDefs = [
-			{ ID = "Beast.HexenNoSpiders", RatioMin = 0.08, RatioMax = 0.13 },
+			{ ID = "Beast.HexenNoSpiders", RatioMin = 0.00, RatioMax = 0.13, StartingResourceMin = 300 },
 			{ ID = "Beast.Ghouls", RatioMin = 0.00, RatioMax = 1.00 },
 			{ ID = "Beast.Schrats", RatioMin = 0.00, RatioMax = 1.00 },
 			{ ID = "Beast.Unholds", RatioMin = 0.00, RatioMax = 1.00 },
@@ -184,6 +184,20 @@ local parties = [
 		VisionMult = 1.0,
 		UnitBlockDefs = [
 			{ ID = "Beast.SandGolems", RatioMin = 0.00, RatioMax = 1.00}
+		]
+	}
+
+	// SubParties
+	{
+		ID = "SpiderBodyguards",
+		UnitBlockDefs = [
+			{ ID = "Beast.SpiderBodyguards"}
+		]
+	},
+	{
+		ID = "DirewolfBodyguards",
+		UnitBlockDefs = [
+			{ ID = "Beast.DirewolfBodyguards"}
 		]
 	}
 ]

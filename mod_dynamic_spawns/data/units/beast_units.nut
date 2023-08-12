@@ -127,30 +127,42 @@
 			ID = "Beast.HexeOneSpider",
 			EntityType = "Hexe",
 			Figure = "figure_hexe_01",
-			Cost = 50 + 12 + 12,
-			SubParty = "OneSpiderBodyguard"
+			Cost = 50 + 12,
+			SubParty = {ID = "SpiderBodyguards", HardMin = 1, HardMax = 1}
 		},
 		{
 			ID = "Beast.HexeTwoSpider",
 			EntityType = "Hexe",
 			Figure = "figure_hexe_01",
 			Cost = 50 + 12 + 12,
-			SubParty = "TwoSpiderBodyguard"
+			SubParty = {ID = "SpiderBodyguards", HardMin = 2, HardMax = 2}
 		},
 		{
 			ID = "Beast.HexeOneDirewolf",
 			EntityType = "Hexe",
 			Figure = "figure_hexe_01",
 			Cost = 50 + 25,
-			SubParty = "OneDirewolfBodyguard"
+			SubParty = {ID = "DirewolfBodyguards", HardMin = 1, HardMax = 1}
 		},
 		{
 			ID = "Beast.HexeTwoDirewolf",
 			EntityType = "Hexe",
 			Figure = "figure_hexe_01",
 			Cost = 50 + 25 + 25,
-			SubParty = "TwoDirewolfBodyguard"
+			SubParty = {ID = "DirewolfBodyguards", HardMin = 2, HardMax = 2}
 		},
+
+		// Bodyguards
+		{
+			ID = "Beast.SpiderBodyguard",
+			EntityType = "SpiderBodyguard",
+			Cost = 12
+		},
+		{
+			ID = "Beast.DirewolfBodyguard",
+			EntityType = "DirewolfBodyguard",
+			Cost = 25
+		}
 
 	]
 

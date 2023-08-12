@@ -75,6 +75,16 @@ local unitBlocks = [
 		ID = "Beast.HexenBanditsRanged",    // Spawn in HexenFights. In Vanilla they only ever spawn a single marksman alongside several raiders. Never more
 		UnitDefs = [{ ID = "Bandit.Marksman" }]
 	},
+
+// Bodyguards
+	{
+		ID = "Beast.SpiderBodyguards",
+		UnitDefs = [{ ID = "Bandit.SpiderBodyguard" }]
+	},
+	{
+		ID = "Beast.DirewolfBodyguards",
+		UnitDefs = [{ ID = "Bandit.DirewolfBodyguard" }]
+	}
 ]
 
 foreach (block in unitBlocks)
