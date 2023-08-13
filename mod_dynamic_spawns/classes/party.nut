@@ -6,7 +6,7 @@ this.party <- inherit(::MSU.BBClass.Empty, {
 
 	// Optional Parameter
 		UpgradeChance = 0.5,	// Chance that this Party will upgrade a unit instead of spawning a new unit when IdealSize is reached
-		StaticUnitIDs = [],		// Array of UnitIDs that are forced to spawn if the Resources allow it. Can have multiples of the same unit.
+		StaticUnitIDs = [],		// Array of UnitIDs that are forced to spawn if the Resources allow it. Can have multiples of the same unit. They consume resources
 		DefaultResources = 0,	// If the SpawnProcess is started without ResourceAmount it will use the value defined here. E.g. when spawning SubParties
 
 		// Guards

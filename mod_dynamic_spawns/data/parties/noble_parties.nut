@@ -8,8 +8,8 @@ local parties = [
 		VisionMult = 1.0,
 		UnitBlockDefs = [
 			{ ID = "Noble.Frontline",   RatioMin = 0.35, RatioMax = 1.00, DeterminesFigure = true },
-			{ ID = "Noble.Backline",    RatioMin = 0.08, RatioMax = 0.35 },
-			{ ID = "Noble.Ranged",      RatioMin = 0.08, RatioMax = 0.28 },
+			{ ID = "Noble.Backline",    RatioMin = 0.01, RatioMax = 0.35 },
+			{ ID = "Noble.Ranged",      RatioMin = 0.01, RatioMax = 0.28 },
 			{ ID = "Noble.Flank",       RatioMin = 0.00, RatioMax = 0.12 },
 			{ ID = "Noble.Support",     RatioMin = 0.01, RatioMax = 0.07, DeterminesFigure = true, ReqPartySize = 10 },    // Vanilla: Bannerman start spawning at 14
 			{ ID = "Noble.Officer",     RatioMin = 0.00, RatioMax = 0.08, DeterminesFigure = true, ReqPartySize = 8 },    // Vanilla: First sergeant spawns at 9, next one 12 and then 15+; Second one spawns at 27+

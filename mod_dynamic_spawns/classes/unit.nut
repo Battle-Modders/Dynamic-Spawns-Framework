@@ -3,7 +3,7 @@ this.unit <- inherit(::MSU.BBClass.Empty, {
 	// Required Parameter
 		ID = null,
 		EntityType = null,		// String-IDs referencing entities from ::Const.World.Spawn.Troops table
-		Cost = 0,				// Cost of spawning this unit
+		Cost = 1,				// Cost of spawning this unit
 
 	// Optional Parameter
 		// SubParty
