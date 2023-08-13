@@ -61,5 +61,10 @@
 
 ::DynamicSpawns.Static.isDynamicParty <- function( _party )
 {
-	return ((typeof _party == "table") && ("spawn" in _party));
+	if (typeof _party != "table") return false;
+
+	// We just check for any random member from our Party-Class to be present here
+	return ("getUnitBlockDefs" in _party);
+}
+
 }
