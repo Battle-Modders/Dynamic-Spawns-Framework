@@ -5,7 +5,7 @@ local unitBlocks = [
 	},
 	{
 		ID = "Bandit.Ranged",
-		UnitDefs = [{ ID = "Bandit.MarksmanLOW" }, { ID = "Bandit.Marksman" }]
+		UnitDefs = [{ ID = "Bandit.Poacher" }, { ID = "Bandit.Marksman" }]
 	},
 	{
 		ID = "Bandit.Dogs",

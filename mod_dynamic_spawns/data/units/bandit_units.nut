@@ -12,8 +12,9 @@ local units = [
 		Cost = 10
 	},
 	{
-		ID = "Bandit.MarksmanLOW",
+		ID = "Bandit.Poacher",
 		EntityType = "BanditMarksmanLOW",
+		Figure = "figure_bandit_01",
 		Cost = 12
 	},
 	{
