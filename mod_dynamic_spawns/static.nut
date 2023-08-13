@@ -42,6 +42,23 @@
 	_worldParty.updateStrength();
 }
 
+// @return reference to a dynamic Party if it exists within the given vanilla spawnlist, or null otherwise
+::DynamicSpawns.Static.retrieveDynamicParty <- function( _vanillaPartyList )
+{
+	if (typeof _vanillaPartyList != "array") return null;
+	if (_vanillaPartyList.len() == 0) return null;
+	if (!("DynamicParty" in _vanillaPartyList[0])) return null;
+
+	if (::DynamicSpawns.Static.isDynamicParty(_vanillaPartyList[0].DynamicParty))
+	{
+		return _vanillaPartyList[0].DynamicParty;
+	}
+	else
+	{
+		return null;
+	}
+}
+
 ::DynamicSpawns.Static.isDynamicParty <- function( _party )
 {
 	return ((typeof _party == "table") && ("spawn" in _party));
