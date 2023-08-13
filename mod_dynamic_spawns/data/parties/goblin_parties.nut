@@ -69,10 +69,7 @@ local parties = [
 	}
 ]
 
-foreach(party in parties)
+foreach(partyDef in parties)
 {
-	local partyObj = ::new(::DynamicSpawns.Class.Party).init(party);
-	::DynamicSpawns.Parties.LookupMap[partyObj.m.ID] <- partyObj; // Currently only needed for Guard-Parties
-
-	::Const.World.Spawn[partyObj.m.ID] <- partyObj;     // Overwrites all vanilla party objects that we defined replacements for
+	::DynamicSpawns.Public.registerParty(partyDef);
 }

@@ -1,4 +1,4 @@
-::DynamicSpawns.Data.UnitDefs <- [
+local units = [
 // Civilians
 	{
 		ID = "Human.Peasant",
@@ -122,9 +122,7 @@
 While there are ["figure_militia_01", "figure_militia_02"] it seems like they are just variations of the same tier of figure and interchangable.
 */
 
-foreach (unit in ::DynamicSpawns.Data.UnitDefs)
+foreach (unitDef in units)
 {
-	local unitObj = ::new(::DynamicSpawns.Class.Unit).init(unit);
-	::DynamicSpawns.Units.LookupMap[unitObj.m.ID] <- unitObj;
-	// ::logWarning("Added the unit: '" + unitObj.m.ID + "'");
+	::DynamicSpawns.Public.registerUnit(unitDef);
 }

@@ -1,4 +1,4 @@
-::DynamicSpawns.Data.UnitDefs <- [
+local units = [
 	{
 		ID = "Nomad.Cutthroat",
 		EntityType = "NomadCutthroat",
@@ -49,9 +49,7 @@
 	}
 ]
 
-foreach (unit in ::DynamicSpawns.Data.UnitDefs)
+foreach (unitDef in units)
 {
-	local unitObj = ::new(::DynamicSpawns.Class.Unit).init(unit);
-	::DynamicSpawns.Units.LookupMap[unitObj.m.ID] <- unitObj;
-	// ::logWarning("Added the unit: '" + unitObj.m.ID + "'");
+	::DynamicSpawns.Public.registerUnit(unitDef);
 }
