@@ -5,14 +5,18 @@
 {
 	while(!("EmployerID" in o.m)) o = o[o.SuperName]; // find the base class
 
+	// Generate a list of Units from _partyList given _resources resources and then add them to the party _worldParty
 	local oldAddUnitsToEntity = o.addUnitsToEntity;
 	o.addUnitsToEntity = function( _worldParty, _party, _resources )
 	{
-		if (::DynamicSpawns.Static.isDynamicParty(_party))    // check whether _partyList is a dynamic list or rather do we have already defined dynamic behavior for that?
+		local dynamicParty = ::DynamicSpawns.Static.retrieveDynamicParty(_partyList);
+		if (dynamicParty != null)    // a dynamicParty was found!
 		{
-			// ::logWarning("Sucessful redirect to custom assignTroops");
-			return ::DynamicSpawns.Static.addTroops(_worldParty, _party, _resources);
+			return ::DynamicSpawns.Static.addTroops(_worldParty, dynamicParty, _resources);
 		}
-		return oldAddUnitsToEntity(_worldParty, _party, _resources);
+		else
+		{
+			return oldAddUnitsToEntity(_worldParty, _party, _resources);
+		}
 	}
 });
