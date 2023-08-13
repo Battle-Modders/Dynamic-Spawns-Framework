@@ -178,6 +178,12 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 		}
 
 		this.getParty().updateFigure(this);
+
+		if (ret.len() == 0)		// This will lead to inconsistent states where parties on the world map have 0 troops in them and must be fixed as fast as possible
+		{
+			::logError("The Party with the ID '" + this.getParty().getID() + "' and " + this.getStartingResources() + "' Resources was not able to spawn even a single unit!");
+		}
+
 		return ret;
 	}
 
