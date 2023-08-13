@@ -67,4 +67,51 @@
 	return ("getUnitBlockDefs" in _party);
 }
 
+// Check all Parties, UnitBlocks and Units for consistency. Print Errors into the log if there are surface level problems
+// @return the amount of warnings or errors generated
+::DynamicSpawns.Static.consistencyCheck <- function()
+{
+	local logsGenerated = 0;
+
+	// Check all currently registered Parties
+	foreach (partyObj in ::DynamicSpawns.Parties.LookupMap)
+	{
+		if (partyObj.getUnitBlockDefs().len() == 0 && partyObj.m.StaticUnitIDs.len() == 0)
+		{
+			::logError("The Party '" + partyObj.getID() + "' has no units or blocks defined for it. It will not produce any units!");
+			logsGenerated++;
+		}
+		if (partyObj.getHardMax() <= 0)
+		{
+			::logError("The Party '" + partyObj.getID() + "' has HardMax of 0! It will not produce any units!");
+			logsGenerated++;
+		}
+	}
+
+	// Check all currently registered Unit Blocks
+	foreach (unitBlockObj in ::DynamicSpawns.UnitBlocks.LookupMap)
+	{
+		if (unitBlockObj.getUnitDefs().len() == 0)
+		{
+			::logWarning("The UnitBlock '" + unitBlockObj.getID() + "' has no units defined for it. It will never produce any units!");
+			logsGenerated++;
+		}
+		if (unitBlockObj.m.RatioMax <= 0.0)
+		{
+			::logWarning("The UnitBlock '" + unitBlockObj.getID() + "' has a RatioMax of 0 or less! It will never produce any units!");
+			logsGenerated++;
+		}
+	}
+
+	// Check all currently registered Units
+	foreach (unitObj in ::DynamicSpawns.Units.LookupMap)
+	{
+		if (unitObj.getEntityType() == null)
+		{
+			::logWarning("The Unit '" + unitObj.getID() + "' has EntityType defined for it. It will never produce any units!");
+			logsGenerated++;
+		}
+	}
+
+	return logsGenerated;
 }
