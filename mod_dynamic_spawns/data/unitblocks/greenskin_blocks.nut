@@ -1,7 +1,7 @@
 local unitBlocks = [
 	{
 		ID = "Greenskin.GoblinsFoot",
-		Units = [{ ID = "Goblin.Skirmisher" }, { ID = "Goblin.Ambusher" }],
+		UnitDefs = [{ ID = "Goblin.Skirmisher" }, { ID = "Goblin.Ambusher" }],
 		IsRandom = true
 	}
 ]
