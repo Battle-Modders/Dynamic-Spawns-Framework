@@ -9,7 +9,7 @@
 	local oldAddUnitsToEntity = o.addUnitsToEntity;
 	o.addUnitsToEntity = function( _worldParty, _party, _resources )
 	{
-		local dynamicParty = ::DynamicSpawns.Static.retrieveDynamicParty(_partyList);
+		local dynamicParty = ::DynamicSpawns.Static.retrieveDynamicParty(_party);
 		if (dynamicParty != null)    // a dynamicParty was found!
 		{
 			return ::DynamicSpawns.Static.addTroops(_worldParty, dynamicParty, _resources);
