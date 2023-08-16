@@ -10,6 +10,7 @@
 	::DynamicSpawns.Mod <- ::MSU.Class.Mod(::DynamicSpawns.ID, ::DynamicSpawns.Version, ::DynamicSpawns.Name);
 
 	::DynamicSpawns.Const <- {
+		Logging = false,
 		DetailedLogging = false,
 		Iterations = 3,
 		Benchmark = false
