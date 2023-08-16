@@ -119,6 +119,8 @@
 {
 	local logsGenerated = 0;
 
+	::logInfo("Checking " + ::DynamicSpawns.Parties.LookupMap.len() + " parties, " + ::DynamicSpawns.UnitBlocks.LookupMap.len() + " blocks and " + ::DynamicSpawns.Units.LookupMap.len() + " units for consistency...");
+
 	// Check all currently registered Parties
 	foreach (partyObj in ::DynamicSpawns.Parties.LookupMap)
 	{
@@ -152,7 +154,8 @@
 	// Check all currently registered Units
 	foreach (unitObj in ::DynamicSpawns.Units.LookupMap)
 	{
-		if (unitObj.getTroop() == null)
+		local entityType = unitObj.getEntityType();
+		if (entityType == null)
 		{
 			::logWarning("The Unit '" + unitObj.getID() + "' has no Troop defined for it. It will never produce any units!");
 			logsGenerated++;
