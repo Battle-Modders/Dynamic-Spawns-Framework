@@ -226,7 +226,7 @@ this.unit_block <- inherit(::MSU.BBClass.Empty, {
 		if (chosenUnit == null) return;		// This should not happen
 
 		_spawnProcess.incrementUnit(chosenUnit.getID(), this.getID());
-		if (!::DynamicSpawns.Const.Benchmark && ::DynamicSpawns.Const.DetailedLogging ) ::logInfo("Spawning - Block: " + this.getID() + " - Unit: " + chosenUnit.getEntityType() + " (Cost: " + chosenUnit.getCost() + ")\n");
+		if (!::DynamicSpawns.Const.Benchmark && ::DynamicSpawns.Const.DetailedLogging ) ::logInfo("Spawning - Block: " + this.getID() + " - Unit: " + chosenUnit.getTroop() + " (Cost: " + chosenUnit.getCost() + ")\n");
 		_spawnProcess.consumeResources(chosenUnit.getCost());
 	}
 
@@ -261,7 +261,7 @@ this.unit_block <- inherit(::MSU.BBClass.Empty, {
 			_spawnProcess.decrementUnit(roll.ID, this.getID());
 			_spawnProcess.incrementUnit(roll.UpgradeID, this.getID());
 			_spawnProcess.consumeResources(this.m.LookupMap[roll.UpgradeID].getCost() - this.m.LookupMap[roll.ID].getCost());
-			if (!::DynamicSpawns.Const.Benchmark && ::DynamicSpawns.Const.DetailedLogging ) ::logInfo("**Upgrading - Block: " + this.getID() + " - Unit: " + this.m.LookupMap[roll.ID].getEntityType() + " (Cost: " + this.m.LookupMap[roll.ID].getCost() + ") to " + this.m.LookupMap[roll.UpgradeID].getEntityType() + " (Cost: " + this.m.LookupMap[roll.UpgradeID].getCost() + ")**\n");
+			if (!::DynamicSpawns.Const.Benchmark && ::DynamicSpawns.Const.DetailedLogging ) ::logInfo("**Upgrading - Block: " + this.getID() + " - Unit: " + this.m.LookupMap[roll.ID].getTroop() + " (Cost: " + this.m.LookupMap[roll.ID].getCost() + ") to " + this.m.LookupMap[roll.UpgradeID].getTroop() + " (Cost: " + this.m.LookupMap[roll.UpgradeID].getCost() + ")**\n");
 		}
 	}
 

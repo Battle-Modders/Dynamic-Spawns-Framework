@@ -2,7 +2,7 @@ this.unit <- inherit(::MSU.BBClass.Empty, {
 	m = {
 	// Required Parameter
 		ID = null,
-		EntityType = null,		// String-IDs referencing entities from ::Const.World.Spawn.Troops table
+		Troop = null,		// String-IDs referencing entities from ::Const.World.Spawn.Troops table
 		Cost = 1,				// Cost of spawning this unit
 
 	// Optional Parameter
@@ -33,7 +33,7 @@ this.unit <- inherit(::MSU.BBClass.Empty, {
 	{
 		this.m.ID = _unitDef.ID;
 		this.m.Cost = _unitDef.Cost;
-		this.m.EntityType = _unitDef.EntityType;
+		this.m.Troop = _unitDef.Troop;
 
 		foreach (key, value in _unitDef)
 		{
@@ -105,9 +105,9 @@ this.unit <- inherit(::MSU.BBClass.Empty, {
 		return this.m.SubPartyDef;
 	}
 
-	function getEntityType()
+	function getTroop()
 	{
-		return this.m.EntityType;
+		return this.m.Troop;
 	}
 
 	function getCost()

@@ -171,7 +171,7 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 		{
 			if (ret[i].getSubPartyDef().len() == 0) continue;	// skip all units that don't have a subparty
 
-			// this.printPartyHeader(ret[i].getSubPartyDef().ID, ret[i].getEntityType());
+			// this.printPartyHeader(ret[i].getSubPartyDef().ID, ret[i].getTroop());
 
 			local spawnProcess = ::new(::DynamicSpawns.Class.SpawnProcess);
 			ret.extend(spawnProcess.init(ret[i].getSubPartyDef()).spawn());
@@ -309,7 +309,7 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 			local str = (_block.getID().find("Static") != null ? "Static" : _block.getID()) + ": " + this.m.SpawnInfo[_block.getID()].Total + " (" + percentage + "%) - ";
 			foreach (unit in _block.getUnits())
 			{
-				str += unit.getEntityType() + ": " + this.m.SpawnInfo[_block.getID()][unit.getID()] + ", ";
+				str += unit.getTroop() + ": " + this.m.SpawnInfo[_block.getID()][unit.getID()] + ", ";
 			}
 
 			::logInfo(str.slice(0, -2));

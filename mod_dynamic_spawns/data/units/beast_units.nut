@@ -1,118 +1,118 @@
 local units = [
 	{
 		ID = "Beast.Direwolf",
-		EntityType = "Direwolf",
+		Troop = "Direwolf",
 		Figure = "figure_werewolf_01",
 		Cost = 20
 	},
 	{
 		ID = "Beast.DirewolfHIGH",
-		EntityType = "DirewolfHIGH",
+		Troop = "DirewolfHIGH",
 		Figure = "figure_werewolf_01",
 		Cost = 25,
 		StartingResourceMin = 95		// In Vanilla this is 95
 	},
 	{
 		ID = "Beast.GhoulLOW",
-		EntityType = "GhoulLOW",
+		Troop = "GhoulLOW",
 		Figure = "figure_ghoul_01",
 		Cost = 9
 	},
 	{
 		ID = "Beast.Ghoul",
-		EntityType = "Ghoul",
+		Troop = "Ghoul",
 		Figure = "figure_ghoul_01",
 		Cost = 19,
 		StartingResourceMin = 120	// In vanilla this is 120
 	},
 	{
 		ID = "Beast.GhoulHIGH",
-		EntityType = "Ghoul",
+		Troop = "Ghoul",
 		Figure = "figure_ghoul_02",     // I don't know if a 'figure_ghoul_03' exists
 		Cost = 30,
 		StartingResourceMin = 150	// In vanilla this is 120
 	},
 	{
 		ID = "Beast.Lindwurm",
-		EntityType = "Lindwurm",
+		Troop = "Lindwurm",
 		Figure = "figure_lindwurm_01",
 		Cost = 90
 	},
 	{
 		ID = "Beast.Unhold",
-		EntityType = "Unhold",
+		Troop = "Unhold",
 		Figure = "figure_unhold_01",
 		Cost = 50
 	},
 	{
 		ID = "Beast.UnholdFrost",
-		EntityType = "UnholdFrost",
+		Troop = "UnholdFrost",
 		Figure = "figure_unhold_02",
 		Cost = 60
 	},
 	{
 		ID = "Beast.UnholdBog",
-		EntityType = "UnholdBog",
+		Troop = "UnholdBog",
 		Figure = "figure_unhold_03",
 		Cost = 50
 	},
 	{
 		ID = "Beast.Spider",
-		EntityType = "Spider",
+		Troop = "Spider",
 		Figure = "figure_spider_01",
 		Cost = 12
 	},
 	{
 		ID = "Beast.Alp",
-		EntityType = "Alp",
+		Troop = "Alp",
 		Figure = "figure_alp_01",
 		Cost = 30
 	},
 	{
 		ID = "Beast.Schrat",
-		EntityType = "Schrat",
+		Troop = "Schrat",
 		Figure = "figure_schrat_01",
 		Cost = 70
 	},
 	{
 		ID = "Beast.Kraken",
-		EntityType = "Kraken",
+		Troop = "Kraken",
 		Cost = 200
 	},
 	{
 		ID = "Beast.Hyena",
-		EntityType = "Hyena",
+		Troop = "Hyena",
 		Figure = "figure_hyena_01",
 		Cost = 20
 	},
 	{
 		ID = "Beast.HyenaHIGH",
-		EntityType = "HyenaHIGH",
+		Troop = "HyenaHIGH",
 		Figure = "figure_hyena_01",
 		Cost = 25,
 		StartingResourceMin = 125		// In Vanilla this is 125
 	},
 	{
 		ID = "Beast.Serpent",
-		EntityType = "Serpent",
+		Troop = "Serpent",
 		Figure = "figure_serpent_01",
 		Cost = 20
 	},
 	{
 		ID = "Beast.SandGolem",
-		EntityType = "SandGolem",
+		Troop = "SandGolem",
 		Figure = "figure_golem_01",
 		Cost = 13
 	},
 	{
 		ID = "Beast.SandGolemMEDIUM",
-		EntityType = "SandGolemMEDIUM",
+		Troop = "SandGolemMEDIUM",
 		Figure = "figure_golem_01",
 		Cost = 42   // 35 in Vanilla, 3 Small Golems should cost slightly less than 1 Medium Golem because they always spend their first turn action morphing
 	},
 	{	// In Vanilla these never spawn naturally as part of the line-up
 		ID = "Beast.SandGolemHIGH",
-		EntityType = "SandGolemHIGH",
+		Troop = "SandGolemHIGH",
 		Figure = "figure_golem_02",    // I don't know if a 'figure_golem_03' exists
 		Cost = 129   // 70 in Vanilla, -!!-
 	}
@@ -120,34 +120,34 @@ local units = [
 	// Possible Hexen
 	{
 		ID = "Beast.Hexe",      // Without Bodyguards
-		EntityType = "Hexe",
+		Troop = "Hexe",
 		Figure = "figure_hexe_01",
 		Cost = 50
 	},
 	{
 		ID = "Beast.HexeOneSpider",
-		EntityType = "Hexe",
+		Troop = "Hexe",
 		Figure = "figure_hexe_01",
 		Cost = 50 + 12,
 		SubParty = {ID = "SpiderBodyguards", HardMin = 1, HardMax = 1}
 	},
 	{
 		ID = "Beast.HexeTwoSpider",
-		EntityType = "Hexe",
+		Troop = "Hexe",
 		Figure = "figure_hexe_01",
 		Cost = 50 + 12 + 12,
 		SubParty = {ID = "SpiderBodyguards", HardMin = 2, HardMax = 2}
 	},
 	{
 		ID = "Beast.HexeOneDirewolf",
-		EntityType = "Hexe",
+		Troop = "Hexe",
 		Figure = "figure_hexe_01",
 		Cost = 50 + 25,
 		SubParty = {ID = "DirewolfBodyguards", HardMin = 1, HardMax = 1}
 	},
 	{
 		ID = "Beast.HexeTwoDirewolf",
-		EntityType = "Hexe",
+		Troop = "Hexe",
 		Figure = "figure_hexe_01",
 		Cost = 50 + 25 + 25,
 		SubParty = {ID = "DirewolfBodyguards", HardMin = 2, HardMax = 2}
@@ -156,12 +156,12 @@ local units = [
 	// Bodyguards
 	{
 		ID = "Beast.SpiderBodyguard",
-		EntityType = "SpiderBodyguard",
+		Troop = "SpiderBodyguard",
 		Cost = 12
 	},
 	{
 		ID = "Beast.DirewolfBodyguard",
-		EntityType = "DirewolfBodyguard",
+		Troop = "DirewolfBodyguard",
 		Cost = 25
 	}
 ]

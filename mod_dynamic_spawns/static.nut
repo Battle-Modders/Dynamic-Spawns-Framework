@@ -18,7 +18,7 @@
 
 	foreach (unit in spawnedUnits)
 	{
-		::Const.World.Common.addTroop(_worldParty, {Type = ::Const.World.Spawn.Troops[unit.getEntityType()]}, false, _minibossify);
+		::Const.World.Common.addTroop(_worldParty, {Type = ::Const.World.Spawn.Troops[unit.getTroop()]}, false, _minibossify);
 	}
 	_worldParty.updateStrength();
 
@@ -40,7 +40,7 @@
 
 	foreach (unit in spawnedUnits)
 	{
-		local addedTroop = ::Const.World.Common.addTroop(_worldParty, {Type = ::Const.World.Spawn.Troops[unit.getEntityType()]}, false, _minibossify);
+		local addedTroop = ::Const.World.Common.addTroop(_worldParty, {Type = ::Const.World.Spawn.Troops[unit.getTroop()]}, false, _minibossify);
 		if (_faction != null) addedTroop.Faction = _faction;	// optionally overwrite the faction of this troop
 	}
 	_worldParty.updateStrength();
@@ -110,9 +110,9 @@
 	// Check all currently registered Units
 	foreach (unitObj in ::DynamicSpawns.Units.LookupMap)
 	{
-		if (unitObj.getEntityType() == null)
+		if (unitObj.getTroop() == null)
 		{
-			::logWarning("The Unit '" + unitObj.getID() + "' has EntityType defined for it. It will never produce any units!");
+			::logWarning("The Unit '" + unitObj.getID() + "' has no Troop defined for it. It will never produce any units!");
 			logsGenerated++;
 		}
 	}

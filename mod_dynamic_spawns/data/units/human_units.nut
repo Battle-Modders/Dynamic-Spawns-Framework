@@ -2,47 +2,47 @@ local units = [
 // Civilians
 	{
 		ID = "Human.Peasant",
-		EntityType = "Peasant",
+		Troop = "Peasant",
 		Cost = 10,
 		Figure = "figure_civilian_01"
 	},
 	{
 		ID = "Human.PeasantArmed",
-		EntityType = "PeasantArmed",
+		Troop = "PeasantArmed",
 		Cost = 10,
 		Figure = "figure_civilian_01"
 	},
 	{
 		ID = "Human.SouthernPeasant",
-		EntityType = "SouthernPeasant",
+		Troop = "SouthernPeasant",
 		Cost = 10
 	},
 	{
 		ID = "Human.CultistAmbush",
-		EntityType = "CultistAmbush",
+		Troop = "CultistAmbush",
 		Cost = 15,
 		Figure = "figure_civilian_03"
 	},
 	{
 		ID = "Human.Slave",
-		EntityType = "NorthernSlave",
+		Troop = "NorthernSlave",
 		Cost = 7
 	},
 
 // Caravans
 	{
 		ID = "Human.CaravanHand",
-		EntityType = "CaravanHand",
+		Troop = "CaravanHand",
 		Cost = 10
 	},
 	{
 		ID = "Human.CaravanGuard",
-		EntityType = "CaravanGuard",
+		Troop = "CaravanGuard",
 		Cost = 14
 	},
 	{
 		ID = "Human.CaravanDonkey",
-		EntityType = "CaravanDonkey",
+		Troop = "CaravanDonkey",
 		Cost = 10,      // 0 in Vanilla
 		Figure = "cart_02"
 	},
@@ -50,70 +50,70 @@ local units = [
 // Militia
 	{
 		ID = "Human.Militia",
-		EntityType = "Militia",
+		Troop = "Militia",
 		Cost = 10
 	},
 	{
 		ID = "Human.MilitiaRanged",
-		EntityType = "MilitiaRanged",
+		Troop = "MilitiaRanged",
 		Cost = 10
 	},
 	{
 		ID = "Human.MilitiaVeteran",
-		EntityType = "MilitiaVeteran",
+		Troop = "MilitiaVeteran",
 		Cost = 15   // Vanilla 12
 	},
 	{
 		ID = "Human.MilitiaCaptain",
-		EntityType = "MilitiaCaptain",
+		Troop = "MilitiaCaptain",
 		Cost = 20
 	},
 
 // Mercenaries
 	{
 		ID = "Human.BountyHunter",
-		EntityType = "BountyHunter",
+		Troop = "BountyHunter",
 		Cost = 25
 	},
 	{
 		ID = "Human.BountyHunterRanged",
-		EntityType = "BountyHunterRanged",
+		Troop = "BountyHunterRanged",
 		Cost = 20
 	},
 	{
 		ID = "Human.Wardog",
-		EntityType = "Wardog",
+		Troop = "Wardog",
 		Cost = 8
 	},
 
 	{
 		ID = "Human.MercenaryLOW",
-		EntityType = "MercenaryLOW",
+		Troop = "MercenaryLOW",
 		Cost = 18
 	},
 	{
 		ID = "Human.Mercenary",
-		EntityType = "Mercenary",
+		Troop = "Mercenary",
 		Cost = 25
 	},
 	{
 		ID = "Human.MercenaryRanged",
-		EntityType = "MercenaryRanged",
+		Troop = "MercenaryRanged",
 		Cost = 25
 	},
 	{
 		ID = "Human.MasterArcher",
-		EntityType = "MasterArcher",
+		Troop = "MasterArcher",
 		Cost = 40
 	},
 	{
 		ID = "Human.HedgeKnight",
-		EntityType = "HedgeKnight",
+		Troop = "HedgeKnight",
 		Cost = 40
 	},
 	{
 		ID = "Human.Swordmaster",
-		EntityType = "Swordmaster",
+		Troop = "Swordmaster",
 		Cost = 40
 	}
 ]

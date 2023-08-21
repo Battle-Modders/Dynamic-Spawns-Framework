@@ -1,51 +1,51 @@
 local units = [
 	{
 		ID = "Noble.Footman",
-		EntityType = "Footman",
+		Troop = "Footman",
 		Cost = 20
 	},
 	{
 		ID = "Noble.Billman",
-		EntityType = "Billman",
+		Troop = "Billman",
 		Cost = 15
 	},
 	{
 		ID = "Noble.Arbalester",
-		EntityType = "Arbalester",
+		Troop = "Arbalester",
 		Cost = 20
 	},
 	{
 		ID = "Noble.ArmoredWardog",
-		EntityType = "ArmoredWardog",
+		Troop = "ArmoredWardog",
 		Cost = 8
 	},
 	{
 		ID = "Noble.StandardBearer",
-		EntityType = "StandardBearer",
+		Troop = "StandardBearer",
 		Cost = 20,
 		Figure = "figure_noble_02"
 	},
 	{
 		ID = "Noble.Sergeant",
-		EntityType = "Sergeant",
+		Troop = "Sergeant",
 		Cost = 25,
 		Figure = "figure_noble_02"
 	},
 	{
 		ID = "Noble.Zweihander",
-		EntityType = "Greatsword",
+		Troop = "Greatsword",
 		Cost = 25
 	},
 	{
 		ID = "Noble.Knight",
-		EntityType = "Knight",
+		Troop = "Knight",
 		Cost = 35,
 		Figure = "figure_noble_03"
 	},
 
 	{   // This already exists under human_units but noble caravans use a different figure
 		ID = "Noble.CaravanDonkey",
-		EntityType = "CaravanDonkey",
+		Troop = "CaravanDonkey",
 		Cost = 10,      // 0 in Vanilla
 		Figure = "cart_01"
 	}

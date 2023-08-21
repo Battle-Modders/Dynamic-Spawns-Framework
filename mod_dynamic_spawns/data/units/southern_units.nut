@@ -1,52 +1,52 @@
 local units = [
 	{
 		ID = "Southern.Conscript",
-		EntityType = "Conscript",
+		Troop = "Conscript",
 		Cost = 20,
 		Figure = "figure_southern_01"
 	},
 	{
 		ID = "Southern.Conscript_Polearm",
-		EntityType = "ConscriptPolearm",
+		Troop = "ConscriptPolearm",
 		Cost = 15
 	},
 	{
 		ID = "Southern.Officer",
-		EntityType = "Officer",
+		Troop = "Officer",
 		Cost = 25,
 		Figure = "figure_southern_02"
 	},
 	{
 		ID = "Southern.Gunner",
-		EntityType = "Gunner",
+		Troop = "Gunner",
 		Cost = 20
 	},
 	{
 		ID = "Southern.Engineer",
-		EntityType = "Engineer",
+		Troop = "Engineer",
 		Cost = 10
 	},
 	{
 		ID = "Southern.Mortar",
-		EntityType = "Mortar",
+		Troop = "Mortar",
 		Cost = 20,
 		SubPartyDef = {ID = "MortarEngineers"}
 	},
 	{
 		ID = "Southern.Assassin",
-		EntityType = "Assassin",
+		Troop = "Assassin",
 		Cost = 35
 	},
 	{
 		ID = "Southern.Slave",
-		EntityType = "Slave",
+		Troop = "Slave",
 		Cost = 7
 	},
 
 // Caravans
 	{
 		ID = "Southern.CaravanDonkey",
-		EntityType = "SouthernDonkey",
+		Troop = "SouthernDonkey",
 		Figure = "cart_02",
 		Cost = 10      // 0 in Vanilla
 	}

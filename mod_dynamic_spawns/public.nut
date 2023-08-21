@@ -47,7 +47,7 @@
  *
  * If a unit with that ID already exists then it will be overwritten
  *
- * @param _unitDef table containing at least the entries "ID", "EntityType" and "Cost"
+ * @param _unitDef table containing at least the entries "ID", "Troop" and "Cost"
  */
 ::DynamicSpawns.Public.registerUnit <- function( _unitDef )
 {

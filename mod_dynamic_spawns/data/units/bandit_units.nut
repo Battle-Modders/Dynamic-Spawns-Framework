@@ -2,47 +2,47 @@ local units = [
 // Bandits
 	{
 		ID = "Bandit.Thug",
-		EntityType = "BanditThug",
+		Troop = "BanditThug",
 		Figure = "figure_bandit_02",
 		Cost = 9
 	},
 	{
 		ID = "Bandit.Wardog",
-		EntityType = "Wardog",
+		Troop = "Wardog",
 		Cost = 10
 	},
 	{
 		ID = "Bandit.Poacher",
-		EntityType = "BanditMarksmanLOW",
+		Troop = "BanditMarksmanLOW",
 		Figure = "figure_bandit_01",
 		Cost = 12
 	},
 	{
 		ID = "Bandit.Marksman",
-		EntityType = "BanditMarksman",
+		Troop = "BanditMarksman",
 		Cost = 15
 	},
 	{
 		ID = "Bandit.RaiderLOW",
-		EntityType = "BanditRaiderLOW",
+		Troop = "BanditRaiderLOW",
 		Figure = "figure_bandit_03",
 		Cost = 16
 	},
 	{
 		ID = "Bandit.Raider",
-		EntityType = "BanditRaider",
+		Troop = "BanditRaider",
 		Figure = "figure_bandit_03",
 		Cost = 20
 	},
 	{
 		ID = "Bandit.Leader",
-		EntityType = "BanditLeader",
+		Troop = "BanditLeader",
 		Figure = "figure_bandit_04",
 		Cost = 25
 	},
 	{
 		ID = "Bandit.RaiderWolf",
-		EntityType = "BanditRaiderWolf",
+		Troop = "BanditRaiderWolf",
 		Cost = 25
 	}
 
