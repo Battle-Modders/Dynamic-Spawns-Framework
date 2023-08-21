@@ -25,9 +25,6 @@ this.party <- inherit(::MSU.BBClass.Empty, {
 		StaticUnits = []		// Array of cloned Unit-Objects
 	},
 
-	// Figure that represents this party on the world map. This is always filled at the very end of a spawn-process and uses DefaultFigure by default.
-	Body = null,
-
 	function create()
 	{
 	}
@@ -48,8 +45,6 @@ this.party <- inherit(::MSU.BBClass.Empty, {
 				this.m[key] = value;
 			}
 		}
-
-		this.Body <- this.m.DefaultFigure;	// Because Vanilla expects a Table with this entry
 
 		return this;
 	}
@@ -87,11 +82,6 @@ this.party <- inherit(::MSU.BBClass.Empty, {
 		}
 
 		return clonedParty;
-	}
-
-	function updateFigure( _spawnProcess )
-	{
-		this.Body = this.getFigure(_spawnProcess);
 	}
 
 	function getFigure( _spawnProcess )

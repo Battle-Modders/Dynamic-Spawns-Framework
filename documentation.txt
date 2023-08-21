@@ -54,9 +54,6 @@ But the current algorithm will always pick the first one of them to spawn. A way
 - At the start of the spawn() function I optionally overwrite the HardMin/HardMax of the party I'm spawning with. This is to streamline how those variables are accessed.
 - At the end of that function I change them back to their original value because I don't want to permanently change those default values
 
-- Vanilla expects the return value from 'assignTroops' to be a table that contains at least the entry 'Body' which needs to be a string.
-I solve this currently by just returning the party object and have each party object manually add that entry themselves upon creation
-
 - The Figure of a generated Party is currently decided by the highest costing spawned troop in that party from a block that has been marked as 'DeterminesFigure = True'
 - For Vanilla Purposes this does a fine job. But if we ever introduce Figures that also/just depend on the amount of spawned troops then this system can't support that
 
