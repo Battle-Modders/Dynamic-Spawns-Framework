@@ -79,11 +79,11 @@ local unitBlocks = [
 // Bodyguards
 	{
 		ID = "Beast.SpiderBodyguards",
-		UnitDefs = [{ ID = "Bandit.SpiderBodyguard" }]
+		UnitDefs = [{ ID = "Beast.SpiderBodyguard" }]
 	},
 	{
 		ID = "Beast.DirewolfBodyguards",
-		UnitDefs = [{ ID = "Bandit.DirewolfBodyguard" }]
+		UnitDefs = [{ ID = "Beast.DirewolfBodyguard" }]
 	}
 ]
 
