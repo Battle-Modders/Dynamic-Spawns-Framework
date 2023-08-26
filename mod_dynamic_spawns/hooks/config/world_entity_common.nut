@@ -18,14 +18,14 @@ local oldAssignTroops = ::Const.World.Common.assignTroops;
 	}
 }
 
-// Generate a list of Units from _partyList given _resource resources, add them to the existing party _into but under a different faction _faction
+// Generate a list of Units from _partyList given _resource resources, add them to the existing unitList _into but under a different faction _faction
 local oldAddUnitsToCombat = ::Const.World.Common.addUnitsToCombat;
 ::Const.World.Common.addUnitsToCombat = function( _into, _partyList, _resources, _faction, _minibossify = 0 )
 {
 	local dynamicParty = ::DynamicSpawns.Static.retrieveDynamicParty(_partyList);
 	if (dynamicParty != null)    // a dynamicParty was found!
 	{
-		return ::DynamicSpawns.Static.addTroops(_into, dynamicParty, _resources, _faction, _minibossify);
+		return ::DynamicSpawns.Static.addUnitsToCombat(_into, dynamicParty, _resources, _faction, _minibossify);
 	}
 	else
 	{

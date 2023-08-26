@@ -46,6 +46,48 @@
 	_worldParty.updateStrength();
 }
 
+// add an array of units to an unit array in a given combat
+// This is mostly used for contracts scripting a battle
+::DynamicSpawns.Static.addUnitsToCombat <- function( _combatUnitArray, _party, _resources, _faction, _minibossify = 0 )
+{
+
+	_resources *= ::MSU.Math.randf( 0.8, 1.0 );
+
+	// ::logWarning("Spawning the party '" + this.m.ID + "' with '" + _resources + "' Resources");
+	local spawnProcess = ::new(::DynamicSpawns.Class.SpawnProcess);
+	spawnProcess.init({ID = _party.getID()}, _resources, false);
+
+	foreach (unit in spawnProcess.spawn())
+	{
+		local troopTemplate = ::Const.World.Spawn.Troops[unit.getTroop()];
+		local unit = clone troopTemplate;
+
+		// The following code is an exact copy of how vanilla does this in their 'function addUnitsToCombat'
+		unit.Faction <- _faction;
+		unit.Name <- "";
+
+		if (unit.Variant > 0)
+		{
+			if (!::Const.DLC.Wildmen || ::Math.rand(1, 100) > unit.Variant + _minibossify + (::World.getTime().Days > 90 ? 0 : -1))
+			{
+				unit.Variant = 0;
+			}
+			else
+			{
+				unit.Strength = ::Math.round(unit.Strength * 1.35);
+				unit.Variant = ::Math.rand(1, 255);
+
+				if ("NameList" in troopTemplate.Type)
+				{
+					unit.Name = this.generateName(troopTemplate.Type.NameList) + (troopTemplate.Type.TitleList != null ? " " + troopTemplate.Type.TitleList[::Math.rand(0, troopTemplate.Type.TitleList.len() - 1)] : "");
+				}
+			}
+		}
+
+		_combatUnitArray.push(unit);
+	}
+}
+
 // @return reference to a dynamic Party if it exists within the given vanilla spawnlist, or null otherwise
 ::DynamicSpawns.Static.retrieveDynamicParty <- function( _vanillaPartyList )
 {
