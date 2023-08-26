@@ -36,7 +36,7 @@ local parties = [
 		UnitBlockDefs = [
 			{ ID = "Bandit.Frontline", RatioMin = 0.50, RatioMax = 1.00, DeterminesFigure = true},
 			{ ID = "Bandit.Ranged", RatioMin = 0.00, RatioMax = 0.35},
-			{ ID = "Bandit.Elite", RatioMin = 0.00, RatioMax = 0.35, StartingResourceMin = 320},
+			{ ID = "Bandit.Elite", RatioMin = 0.00, RatioMax = 0.35},
 			{ ID = "Bandit.Boss", RatioMin = 0.00, RatioMax = 0.11, StartingResourceMin = 150, DeterminesFigure = true},
 		]
 	},
@@ -50,7 +50,7 @@ local parties = [
 		UnitBlockDefs = [
 			{ ID = "Bandit.Frontline", RatioMin = 0.50, RatioMax = 1.00},
 			{ ID = "Bandit.Ranged", RatioMin = 0.00, RatioMax = 0.25},
-			{ ID = "Bandit.Elite", RatioMin = 0.00, RatioMax = 0.35, StartingResourceMin = 320},
+			{ ID = "Bandit.Elite", RatioMin = 0.00, RatioMax = 0.35},
 			{ ID = "Bandit.Boss", RatioMin = 0.0, RatioMax = 0.11, StartingResourceMin = 150}
 		]
 	},
@@ -64,7 +64,7 @@ local parties = [
 		UnitBlockDefs = [
 			{ ID = "Bandit.Frontline", RatioMin = 0.50, RatioMax = 1.00},
 			{ ID = "Bandit.Ranged", RatioMin = 0.00, RatioMax = 0.25},
-			{ ID = "Bandit.Elite", RatioMin = 0.00, RatioMax = 0.35, StartingResourceMin = 320},
+			{ ID = "Bandit.Elite", RatioMin = 0.00, RatioMax = 0.35},
 			{ ID = "Bandit.Boss", RatioMin = 0.01, RatioMax = 0.11}				// One boss is always guaranteed
 		]
 	},
