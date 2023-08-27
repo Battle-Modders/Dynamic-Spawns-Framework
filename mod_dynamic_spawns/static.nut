@@ -154,7 +154,7 @@
 	// Check all currently registered Units
 	foreach (unitObj in ::DynamicSpawns.Units.LookupMap)
 	{
-		local entityType = unitObj.getEntityType();
+		local entityType = unitObj.getTroop();
 		if (entityType == null)
 		{
 			::logWarning("The Unit '" + unitObj.getID() + "' has no Troop defined for it. It will never produce any units!");

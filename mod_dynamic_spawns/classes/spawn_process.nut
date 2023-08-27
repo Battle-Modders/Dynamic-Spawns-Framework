@@ -171,7 +171,7 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 		{
 			if (ret[i].getSubPartyDef().len() == 0) continue;	// skip all units that don't have a subparty
 
-			if (::DynamicSpawns.Const.Logging) this.printPartyHeader(ret[i].getSubPartyDef().ID, ret[i].getEntityType());
+			if (::DynamicSpawns.Const.Logging) this.printPartyHeader(ret[i].getSubPartyDef().ID, ret[i].getTroop());
 
 			local spawnProcess = ::new(::DynamicSpawns.Class.SpawnProcess);
 			ret.extend(spawnProcess.init(ret[i].getSubPartyDef()).spawn());
