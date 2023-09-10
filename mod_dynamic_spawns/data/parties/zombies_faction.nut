@@ -125,7 +125,7 @@ local parties = [
 		ID = "SubPartyNomad",
 		UnitBlockDefs = [
 			{
-				ID = "Undead.ZombieNomadBodyguard"
+				ID = "Zombie.ZombieNomadBodyguard"
 			}
 		]
 	}
