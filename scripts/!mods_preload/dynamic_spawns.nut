@@ -2,12 +2,16 @@
 	Version = "0.1.0",
 	ID = "mod_dynamic_spawns",
 	Name = "Dynamic Spawns",
+	GitHubURL = "https://github.com/Battle-Modders/Dynamic-Spawns-Framework"
 };
 
 ::mods_registerMod(::DynamicSpawns.ID, ::DynamicSpawns.Version, ::DynamicSpawns.Name);
 ::mods_queue(::DynamicSpawns.ID, "mod_msu", function() {
 
 	::DynamicSpawns.Mod <- ::MSU.Class.Mod(::DynamicSpawns.ID, ::DynamicSpawns.Version, ::DynamicSpawns.Name);
+
+	::DynamicSpawns.Mod.Registry.addModSource(::MSU.System.Registry.ModSourceDomain.GitHub, ::DynamicSpawns.GitHubURL);
+	::DynamicSpawns.Mod.Registry.setUpdateSource(::MSU.System.Registry.ModSourceDomain.GitHub);
 
 	::DynamicSpawns.Const <- {
 		Logging = false,
