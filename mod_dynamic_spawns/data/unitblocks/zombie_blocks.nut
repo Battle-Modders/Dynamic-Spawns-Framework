@@ -43,7 +43,7 @@ local unitBlocks = [
 	{
 		ID = "Zombie.ZombieNomadBodyguard",
 		UnitDefs = [
-			{ ID = "Zombie.ZombieNomadBodyguard" }
+			{ ID = "Undead.ZombieNomadBodyguard" }
 		]
 	}
 ]
