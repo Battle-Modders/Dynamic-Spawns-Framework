@@ -7,9 +7,7 @@ local parties = [
 		VisibilityMult = 1.0,
 		VisionMult = 0.8,
 		UnitBlockDefs = [
-			{ ID = "Zombie.Frontline", 	RatioMin = 0.00, RatioMax = 1.00, DeterminesFigure = true},
-			{ ID = "Zombie.Elite", 		RatioMin = 0.00, RatioMax = 0.10, StartingResourceMin = 114, DeterminesFigure = true},
-			{ ID = "Zombie.Elite", 		RatioMin = 0.00, RatioMax = 0.30, StartingResourceMin = 200, DeterminesFigure = true},		// With 200+ Resources even more Elites can appear
+			{ ID = "Zombie.Frontline", 	RatioMin = 0.00, RatioMax = 1.00, DeterminesFigure = true}
 		]
 	},
 	{
@@ -33,8 +31,6 @@ local parties = [
 		UnitBlockDefs = [
 			{ ID = "Zombie.Frontline", 		RatioMin = 0.00, RatioMax = 1.00, DeterminesFigure = true},
 			{ ID = "Beast.GhoulLowOnly", 	RatioMin = 0.10, RatioMax = 0.30},
-			{ ID = "Zombie.Elite", 			RatioMin = 0.00, RatioMax = 0.10, StartingResourceMin = 150, DeterminesFigure = true},
-			{ ID = "Zombie.Elite", 			RatioMin = 0.00, RatioMax = 0.30, StartingResourceMin = 250, DeterminesFigure = true}		// With 250+ Resources even more Elites can appear
 		]
 	},
 	{
@@ -47,8 +43,6 @@ local parties = [
 		UnitBlockDefs = [
 			{ ID = "Zombie.Frontline", 		RatioMin = 0.00, RatioMax = 1.00, DeterminesFigure = true},
 			{ ID = "Zombie.Ghost", 			RatioMin = 0.12, RatioMax = 0.35},
-			{ ID = "Zombie.Elite", 			RatioMin = 0.00, RatioMax = 0.10, StartingResourceMin = 150, DeterminesFigure = true},
-			{ ID = "Zombie.Elite", 			RatioMin = 0.00, RatioMax = 0.30, StartingResourceMin = 250, DeterminesFigure = true}		// With 250+ Resources even more Elites can appear
 		]
 	},
 	{
@@ -62,7 +56,6 @@ local parties = [
 			{ ID = "Zombie.Frontline", 						RatioMin = 0.50, RatioMax = 1.00},
 			{ ID = "Zombie.Ghost", 							RatioMin = 0.00, RatioMax = 0.20},
 			{ ID = "Zombie.NecromancerWithBodyguards", 		RatioMin = 0.04, RatioMax = 0.09, DeterminesFigure = true},
-			{ ID = "Zombie.Elite", 							RatioMin = 0.00, RatioMax = 0.20, StartingResourceMin = 150},
 		]
 	},
 	{
