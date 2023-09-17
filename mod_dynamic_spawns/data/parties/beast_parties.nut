@@ -112,12 +112,12 @@ local parties = [
 			{ ID = "Beast.HexenWithBodyguards", RatioMin = 0.00, RatioMax = 0.13, StartingResourceMin = 300 },
 			{ ID = "Beast.Spiders", RatioMin = 0.00, RatioMax = 1.00 },
 			{ ID = "Beast.Ghouls", RatioMin = 0.00, RatioMax = 1.00 },
-			{ ID = "Beast.Schrats", RatioMin = 0.00, RatioMax = 1.00 },
-			{ ID = "Beast.Unholds", RatioMin = 0.00, RatioMax = 1.00 },
-			{ ID = "Beast.UnholdsBog", RatioMin = 0.00, RatioMax = 1.00 },
+			{ ID = "Beast.Schrats", RatioMin = 0.00, RatioMax = 1.00, StartingResourceMin = 300 },
+			{ ID = "Beast.Unholds", RatioMin = 0.00, RatioMax = 1.00, StartingResourceMin = 200 },
+			{ ID = "Beast.UnholdsBog", RatioMin = 0.00, RatioMax = 1.00, StartingResourceMin = 250 },
 			{ ID = "Beast.Direwolves", RatioMin = 0.00, RatioMax = 1.00 },
-			{ ID = "Beast.HexenBandits", RatioMin = 0.00, RatioMax = 1.00 },
-			{ ID = "Beast.HexenBanditsRanged", RatioMin = 0.00, RatioMax = 0.13 }
+			{ ID = "Beast.HexenBandits", RatioMin = 0.00, RatioMax = 1.00, StartingResourceMin = 200 },
+			{ ID = "Beast.HexenBanditsRanged", RatioMin = 0.00, RatioMax, StartingResourceMin = 200 = 0.13 }
 		]
 	},
 	{
@@ -132,12 +132,12 @@ local parties = [
 		],
 		UnitBlockDefs = [
 			{ ID = "Beast.HexenNoSpiders", RatioMin = 0.00, RatioMax = 0.13, StartingResourceMin = 300 },
-			{ ID = "Beast.Ghouls", RatioMin = 0.00, RatioMax = 1.00 },
-			{ ID = "Beast.Schrats", RatioMin = 0.00, RatioMax = 1.00 },
-			{ ID = "Beast.Unholds", RatioMin = 0.00, RatioMax = 1.00 },
-			{ ID = "Beast.UnholdsBog", RatioMin = 0.00, RatioMax = 1.00 },
+			{ ID = "Beast.Ghouls", RatioMin = 0.00, RatioMax = 1.00, StartingResourceMin = 80 },
+			{ ID = "Beast.Schrats", RatioMin = 0.00, RatioMax = 1.00, StartingResourceMin = 300 },
+			{ ID = "Beast.Unholds", RatioMin = 0.00, RatioMax = 1.00, StartingResourceMin = 200 },
+			{ ID = "Beast.UnholdsBog", RatioMin = 0.00, RatioMax = 1.00, StartingResourceMin = 250 },
 			{ ID = "Beast.Direwolves", RatioMin = 0.00, RatioMax = 1.00 },
-			{ ID = "Beast.HexenBandits", RatioMin = 0.00, RatioMax = 1.00 }
+			{ ID = "Beast.HexenBandits", RatioMin = 0.00, RatioMax = 1.00, StartingResourceMin = 200 }
 		]
 	},
 	{

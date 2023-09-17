@@ -9,8 +9,8 @@ local parties = [
 		UnitBlockDefs = [
 			{ ID = "Undead.Frontline", 	RatioMin = 0.50, RatioMax = 1.00, DeterminesFigure = true},
 			{ ID = "Undead.Backline", 	RatioMin = 0.00, RatioMax = 0.50, DeterminesFigure = true, ReqPartySize = 8},
-			{ ID = "Undead.Boss", 		RatioMin = 0.00, RatioMax = 0.10, DeterminesFigure = true, ReqPartySize = 15},
-			{ ID = "Undead.Vampire", 	RatioMin = 0.00, RatioMax = 0.11, DeterminesFigure = true, ReqPartySize = 18},
+			{ ID = "Undead.Boss", 		RatioMin = 0.00, RatioMax = 0.10, DeterminesFigure = true, ReqPartySize = 15, StartingResourceMin = 225},
+			{ ID = "Undead.Vampire", 	RatioMin = 0.00, RatioMax = 0.11, DeterminesFigure = true, ReqPartySize = 18, StartingResourceMin = 225},
 		]
 	},
 	{
