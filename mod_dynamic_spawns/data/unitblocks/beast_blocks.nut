@@ -10,7 +10,7 @@ local unitBlocks = [
 	},
 	{
 		ID = "Beast.Ghouls",
-		UnitDefs = [{ ID = "Beast.GhoulLOW" }, { ID = "Beast.Ghoul" }, { ID = "Beast.GhoulHIGH" }]
+		UnitDefs = [{ ID = "Beast.GhoulLOW" }, { ID = "Beast.Ghoul", StartingResourceMin = 125 }, { ID = "Beast.GhoulHIGH", StartingResourceMin = 175 }]
 	},
 	{
 		ID = "Beast.Lindwurms",

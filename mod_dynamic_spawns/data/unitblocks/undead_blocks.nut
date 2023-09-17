@@ -3,15 +3,15 @@ local unitBlocks = [
 		ID = "Undead.Frontline",
 		UnitDefs = [
 			{ ID = "Undead.SkeletonLight" },
-			{ ID = "Undead.SkeletonMedium" },
-			{ ID = "Undead.SkeletonHeavy" }
+			{ ID = "Undead.SkeletonMedium", StartingResourceMin = 125 },
+			{ ID = "Undead.SkeletonHeavy", StartingResourceMin = 175 }
 		]
 	},
 	{
 		ID = "Undead.Backline",
 		UnitDefs = [
-			{ ID = "Undead.SkeletonMediumPolearm" },
-			{ ID = "Undead.SkeletonHeavyPolearm" }
+			{ ID = "Undead.SkeletonMediumPolearm", StartingResourceMin = 125 },
+			{ ID = "Undead.SkeletonHeavyPolearm", StartingResourceMin = 175 }
 		]
 	},
 	{

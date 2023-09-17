@@ -36,7 +36,7 @@ local parties = [
 		UnitBlockDefs = [
 			{ ID = "Nomad.Frontline",       RatioMin = 0.25, RatioMax = 1.00, DeterminesFigure = true },
 			{ ID = "Nomad.Ranged",          RatioMin = 0.00, RatioMax = 0.35, DeterminesFigure = true },
-			{ ID = "Nomad.Leader",          RatioMin = 0.00, RatioMax = 0.14, DeterminesFigure = true },    // Vanilla: spawn at 7+
+			{ ID = "Nomad.Leader",          RatioMin = 0.00, RatioMax = 0.10, DeterminesFigure = true },    // Vanilla: spawn at 7+
 			{ ID = "Nomad.Elite",           RatioMin = 0.00, RatioMax = 0.30, DeterminesFigure = true }
 		]
 	}

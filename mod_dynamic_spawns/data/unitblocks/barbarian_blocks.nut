@@ -1,7 +1,7 @@
 local unitBlocks = [
 	{
 		ID = "Barbarian.Frontline",
-		UnitDefs = [{ ID = "Barbarian.Thrall" }, { ID = "Barbarian.Marauder" }, { ID = "Barbarian.Chosen" }]
+		UnitDefs = [{ ID = "Barbarian.Thrall" }, { ID = "Barbarian.Marauder", StartingResourceMin = 125 }, { ID = "Barbarian.Chosen", StartingResourceMin = 200 }]
 	},
 	{
 		ID = "Barbarian.Support",
