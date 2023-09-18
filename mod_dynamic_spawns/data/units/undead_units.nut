@@ -10,7 +10,7 @@ local units = [
 	},
 	{
 		ID = "Undead.ZombieYeoman",
-		Troop = "Zombie",
+		Troop = "ZombieYeoman",
 		Figure = "figure_zombie_02",
 		Cost = 12
 	},
