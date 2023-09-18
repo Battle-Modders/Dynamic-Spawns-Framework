@@ -27,7 +27,7 @@ local units = [
 	},
 	{
 		ID = "Beast.GhoulHIGH",
-		Troop = "Ghoul",
+		Troop = "GhoulHIGH",
 		Figure = "figure_ghoul_02",     // I don't know if a 'figure_ghoul_03' exists
 		Cost = 30,
 		StartingResourceMin = 150	// In vanilla this is 120
