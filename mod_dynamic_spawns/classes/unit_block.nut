@@ -249,6 +249,7 @@ this.unit_block <- inherit(::MSU.BBClass.Empty, {
 					{
 						local weight = count + (this.m.Units.len() - i) * 3;	// weight higher for weaker troopTypes and those that already spawned a lot
 						ids.add({ID = id, UpgradeID = this.m.Units[j].getID()}, weight);
+						break;	// We are only interested in the closest possible upgrade path, not all of them
 					}
 				}
 
