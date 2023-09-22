@@ -97,7 +97,7 @@
 
 				if ("NameList" in troopTemplate.Type)
 				{
-					unit.Name = this.generateName(troopTemplate.Type.NameList) + (troopTemplate.Type.TitleList != null ? " " + troopTemplate.Type.TitleList[::Math.rand(0, troopTemplate.Type.TitleList.len() - 1)] : "");
+					unit.Name = ::Const.World.Common.generateName(troopTemplate.Type.NameList) + (troopTemplate.Type.TitleList != null ? " " + troopTemplate.Type.TitleList[::Math.rand(0, troopTemplate.Type.TitleList.len() - 1)] : "");
 				}
 			}
 		}
