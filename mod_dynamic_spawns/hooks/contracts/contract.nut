@@ -10,7 +10,18 @@
 		local dynamicParty = ::DynamicSpawns.Static.retrieveDynamicParty(_party);
 		if (dynamicParty != null)    // a dynamicParty was found!
 		{
-			return ::DynamicSpawns.Static.addUnitsToEntity(_worldParty, dynamicParty, _resources);
+			// Minibossify depending on contract difficulty (copy of vanilla code)
+			local minibossify = -99;	// super weak contracts actively prevent spawning of champions
+			if (_difficultyMultiplier >= 1.15)
+			{
+				minibossify = 5;
+			}
+			else if (_difficultyMultiplier >= 0.85)
+			{
+				minibossify = 0;
+			}
+
+			return ::DynamicSpawns.Static.addUnitsToEntity(_worldParty, dynamicParty, _resources, minibossify);
 		}
 		else
 		{
