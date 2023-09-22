@@ -18,7 +18,7 @@ local oldAssignTroops = ::Const.World.Common.assignTroops;
 	}
 }
 
-// Generate a list of Units from _partyList given _resource resources, add them to the existing unitList _into but under a different faction _faction
+// Generate troops given a partyList and resources and adds those to a given array under a set faction
 local oldAddUnitsToCombat = ::Const.World.Common.addUnitsToCombat;
 ::Const.World.Common.addUnitsToCombat = function( _into, _partyList, _resources, _faction, _minibossify = 0 )
 {

@@ -1,11 +1,21 @@
+// Collection of stateless functions used to implement the hooking
 ::DynamicSpawns.Static <- {};
-::DynamicSpawns.Static.assignTroops <- function( _worldParty, _party, _resources, _minibossify = 0 )
-{
-	_resources *= ::MSU.Math.randf( 0.8, 1.0 );
 
-	// ::logWarning("Spawning the party '" + this.m.ID + "' with '" + _resources + "' Resources");
+/** Generate troops given a dynamic party and resources and add those to a world party.
+ * Equivalent to the vanilla function ::Const.World.Common.assignTroops().
+ *
+ * @Param _worldparty vanilla-party object that we spawn the troops into
+ * @Param _dynamicParty DSF-Party object used for the spawning process
+ * @Param _resources unsigned integer describing amount of resources available for spending in this spawning process
+ *
+ * @Return table guaranteed to contain the entry 'Body' having a brush name representing this party
+ */
+::DynamicSpawns.Static.assignTroops <- function( _worldParty, _dynamicParty, _resources, _minibossify = 0 )
+{
+	_resources *= ::MSU.Math.randf(0.8, 1.0);	// This accounts for vanilla choosing a random party composition allowing for picking slightly weaker aswell
+
 	local spawnProcess = ::new(::DynamicSpawns.Class.SpawnProcess);
-	spawnProcess.init({ID = _party.getID()}, _resources);
+	spawnProcess.init({ID = _dynamicParty.getID()}, _resources);
 	local spawnedUnits = spawnProcess.spawn();
 
 	local party = spawnProcess.getParty();
@@ -26,36 +36,44 @@
 	return {Body = body};
 }
 
-// Similar to assignTroops but doesn't apply the parties properties
-// In Vanilla this function is part of the contract.nut (without _faction feature)
-// and part of world_entity_common.nut function addUnitsToCombat (here it supports _faction)
-::DynamicSpawns.Static.addTroops <- function( _worldParty, _party, _resources, _faction = null, _minibossify = 0 )
+/** Generate additional troops, given a dynamic party and resources, and add those to a world party.
+ * Used for hooking the vanilla function addUnitsToEntity() from the contract.nut and createDefenders() from the location.nut
+ *
+ * @Param _worldparty vanilla-party object that we spawn the troops into
+ * @Param _dynamicParty DSF-Party object used for the spawning process
+ * @Param _resources unsigned integer describing amount of resources available for spending in this spawning process
+ * @Param _miniBossify unsigned bonus chance for every troop in this party to become a champion (if permitted by that troop)
+ */
+::DynamicSpawns.Static.addUnitsToEntity <- function( _worldParty, _dynamicParty, _resources, _miniBossify = 0 )
 {
-	_resources *= ::MSU.Math.randf( 0.8, 1.0 );
+	_resources *= ::MSU.Math.randf(0.8, 1.0);	// This accounts for the vanilla function picking a random party between 0.7 and 1.0 cost
 
 	// ::logWarning("Spawning the party '" + this.m.ID + "' with '" + _resources + "' Resources");
 	local spawnProcess = ::new(::DynamicSpawns.Class.SpawnProcess);
-	spawnProcess.init({ID = _party.getID()}, _resources, _worldParty.isLocation());
-	local spawnedUnits = spawnProcess.spawn();
+	spawnProcess.init({ID = _dynamicParty.getID()}, _resources, _worldParty.isLocation());
 
-	foreach (unit in spawnedUnits)
+	foreach (unit in spawnProcess.spawn())
 	{
-		local addedTroop = ::Const.World.Common.addTroop(_worldParty, {Type = ::Const.World.Spawn.Troops[unit.getTroop()]}, false, _minibossify);
-		if (_faction != null) addedTroop.Faction = _faction;	// optionally overwrite the faction of this troop
+		::Const.World.Common.addTroop(_worldParty, {Type = ::Const.World.Spawn.Troops[unit.getTroop()]}, false, _miniBossify);
 	}
 	_worldParty.updateStrength();
 }
 
-// add an array of units to an unit array in a given combat
-// This is mostly used for contracts scripting a battle
-::DynamicSpawns.Static.addUnitsToCombat <- function( _combatUnitArray, _party, _resources, _faction, _minibossify = 0 )
+/** Generate troops given a dynamic party and resources and adds those to a given array
+ * Equivalent to the vanilla function ::Const.World.Common.addUnitsToCombat()
+ *
+ * @Param _combatUnitArray array of generated troops that this function adds its generated troops into
+ * @Param _dynamicParty DSF-Party object used for the spawning process
+ * @Param _resources unsigned integer describing amount of resources available for spending in this spawning process
+ * @Param _faction factionID that all spawned troops will receive
+ * @Param _minibossify unsigned integer defining an addtional chance to spawn chapmions
+ */
+::DynamicSpawns.Static.addUnitsToCombat <- function( _combatUnitArray, _dynamicParty, _resources, _faction, _minibossify = 0 )
 {
+	_resources *= ::MSU.Math.randf(0.8, 1.0);	// This accounts for vanilla choosing a random party with cost between 0.7 and 1.0 of resources given
 
-	_resources *= ::MSU.Math.randf( 0.8, 1.0 );
-
-	// ::logWarning("Spawning the party '" + this.m.ID + "' with '" + _resources + "' Resources");
 	local spawnProcess = ::new(::DynamicSpawns.Class.SpawnProcess);
-	spawnProcess.init({ID = _party.getID()}, _resources, false);
+	spawnProcess.init({ID = _dynamicParty.getID()}, _resources, false);
 
 	foreach (unit in spawnProcess.spawn())
 	{
@@ -88,7 +106,12 @@
 	}
 }
 
-// @return reference to a dynamic Party if it exists within the given vanilla spawnlist, or null otherwise
+/** Return a dynamic party definition given a vanilla party definition
+ *
+ * @Param _vanillaPartyList object from the vanilla table ::Const.World.Spawn
+ *
+ * @Return DSF-Party object if one exists for the given vanilla party list; null if none was set for it
+ */
 ::DynamicSpawns.Static.retrieveDynamicParty <- function( _vanillaPartyList )
 {
 	if (typeof _vanillaPartyList != "array") return null;
@@ -105,16 +128,24 @@
 	}
 }
 
-::DynamicSpawns.Static.isDynamicParty <- function( _party )
+/** Check whether a dynamic party exists given a vanilla partyList
+ *
+ * @Param _partyList table containing vanilla party compositions of for the same partyType
+ *
+ * @Return true if a dynamic party is defined for this vanilla partyList, false otherwise
+ */
+::DynamicSpawns.Static.isDynamicParty <- function( _partyList )
 {
-	if (typeof _party != "table") return false;
+	if (typeof _partyList != "table") return false;
 
 	// We just check for any random member from our Party-Class to be present here
-	return ("getUnitBlockDefs" in _party);
+	return ("getUnitBlockDefs" in _partyList);
 }
 
-// Check all Parties, UnitBlocks and Units for consistency. Print Errors into the log if there are surface level problems
-// @return the amount of warnings or errors generated
+/** Check all Parties, UnitBlocks and Units for consistency. Print Errors into the log if there are surface level problems
+ *
+ * @Return amount of warnings or errors generated
+ */
 ::DynamicSpawns.Static.consistencyCheck <- function()
 {
 	local logsGenerated = 0;

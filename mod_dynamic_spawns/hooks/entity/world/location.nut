@@ -23,8 +23,6 @@
 				resources = resources * 0.75;
 			}
 
-			this.m.Troops = [];
-
 			if (::Time.getVirtualTimeF() - this.m.LastSpawnTime <= 60.0)
 			{
 				this.m.DefenderSpawnDay = ::World.getTime().Days - 7;
@@ -34,8 +32,10 @@
 				this.m.DefenderSpawnDay = ::World.getTime().Days;
 			}
 
+			this.m.Troops = [];		// Whatever was in this camp before is getting wiped
+
 			// The above calculations are a copy of vanilla code
-			return ::DynamicSpawns.Static.addTroops(this, dynamicParty, resources);
+			return ::DynamicSpawns.Static.addUnitsToEntity(this, dynamicParty, resources);
 		}
 		else
 		{
