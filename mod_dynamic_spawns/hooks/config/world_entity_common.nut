@@ -29,6 +29,8 @@ local oldAddUnitsToCombat = ::Const.World.Common.addUnitsToCombat;
 	}
 	else
 	{
+		::logWarning("No dynamic party definition found for this vanilla party!");
+		::MSU.Log.printStackTrace();
 		return oldAddUnitsToCombat(_into, _partyList, _resources, _faction, _minibossify);
 	}
 }
