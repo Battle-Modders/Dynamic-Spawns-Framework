@@ -8,22 +8,30 @@
  *
  * @param _partyDef table containing at least the entries "ID" and either "StaticUnitIDs" or "UnitBlockDefs"
  */
-::DynamicSpawns.Public.registerParty <- function( _partyDef )
+ ::DynamicSpawns.Public.registerParty <- function( _partyDef )
 {
-	local partyObj = ::new(::DynamicSpawns.Class.Party).init(_partyDef);
-	::DynamicSpawns.Parties.LookupMap[partyObj.m.ID] <- partyObj;
+	foreach (key, value in _partyDef)
+	{
+		if (!(key in ::DynamicSpawns.Class.Party))
+		{
+			throw "Invalid key " + key + " in partyDef"
+		}
+	}
+	_partyDef.setdelegate(::DynamicSpawns.__partyMeta);
+
+	::DynamicSpawns.Parties.LookupMap[partyObj.ID] <- _partyDef;
 
 	// We also place a reference of our dynmic party in the vanilla spawn table so our hooks can redirect the spawn behaviors accordingly
-	if (partyObj.m.ID in ::Const.World.Spawn)
+	if (_partyDef.ID in ::Const.World.Spawn)
 	{
 		// We just insert our DynamicParty reference into the very first entry of that array. This is a dirty solution but the best one for now to stay backwards compatible with vanilla
-		::Const.World.Spawn[partyObj.m.ID][0].DynamicParty <- partyObj;		// We don't care if we insert a new object or overwrite an existing entry
+		::Const.World.Spawn[_partyDef.ID][0].DynamicParty <- _partyDef;		// We don't care if we insert a new object or overwrite an existing entry
 	}
 	else
 	{
-		::Const.World.Spawn[partyObj.m.ID] <- [
+		::Const.World.Spawn[_partyDef.ID] <- [
 			{
-				DynamicParty = partyObj
+				DynamicParty = _partyDef
 			}
 		];
 	}
@@ -36,10 +44,15 @@
  *
  * @param _unitBlockDef table containing at least the entries "ID" and "UnitDefs"
  */
-::DynamicSpawns.Public.registerUnitBlock <- function( _unitBlockDef )
+ ::DynamicSpawns.Public.registerUnitBlock <- function( _unitBlockDef )
 {
-	local unitBlockObj = ::new(::DynamicSpawns.Class.UnitBlock).init(_unitBlockDef);
-	::DynamicSpawns.UnitBlocks.LookupMap[unitBlockObj.m.ID] <- unitBlockObj;
+	foreach (key, value in ::DynamicSpawns.Class.UnitBlock)
+	{
+		if (!(key in _unitBlockDef))
+			throw "Invalid key " + key + " in _unitBlockDef";
+	}
+	_unitBlockDef.setdelegate(::DynamicSpawns.__unitBlockMeta);
+	::DynamicSpawns.UnitBlocks.LookupMap[_unitBlockDef.ID] <- _unitBlockDef;
 }
 
 /**
@@ -51,8 +64,13 @@
  */
 ::DynamicSpawns.Public.registerUnit <- function( _unitDef )
 {
-	local unitObj = ::new(::DynamicSpawns.Class.Unit).init(_unitDef);
-	::DynamicSpawns.Units.LookupMap[unitObj.m.ID] <- unitObj;
+	foreach (key, value in ::DynamicSpawns.Class.Unit)
+	{
+		if (!(key in _unitDef))
+			throw "Invalid key " + key + " in _unitDef";
+	}
+	_unitDef.setdelegate(::DynamicSpawns.__unitMeta);
+	::DynamicSpawns.Units.LookupMap[_unitDef.ID] <- _unitDef;
 }
 
 /**

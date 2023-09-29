@@ -1,124 +1,89 @@
-this.unit <- inherit(::MSU.BBClass.Empty, {
-	m = {
-	// Required Parameter
-		ID = null,
-		Troop = null,		// String-IDs referencing entities from ::Const.World.Spawn.Troops table
-		Cost = 1,				// Cost of spawning this unit
+::DynamicSpawns.Class.Unit <- {
+// Required Parameter
+	ID = null,
+	Troop = null,		// String-IDs referencing entities from ::Const.World.Spawn.Troops table
+	Cost = 1,				// Cost of spawning this unit
 
-	// Optional Parameter
-		// SubParty
-		SubPartyDef = {},				// abilty to optionally spawn an additional party. Most commonly body guards or operators
+// Optional Parameter
+	// SubParty
+	SubPartyDef = {},				// abilty to optionally spawn an additional party. Most commonly body guards or operators
 
-		// Guards for isValid()			// This Unit is only able to spawn if ...
-		StrengthMin = 0,				// ... the Playerstrength is at least this value
-		StrengthMax = 900000,			// ... the Playerstrength is at most this value
-		StartingResourceMin = 0,		// ... the StartingResources of the current SpawnProcess is at least this value
-		StartingResourceMax = 900000,	// ... the StartingResources of the current SpawnProcess is at most this value
-		DaysMin = 0,					// ... ::World.getTime().Days is at least this value
-		DaysMax = 900000,				// ... ::World.getTime().Days is at most this value
+	// Guards for isValid()			// This Unit is only able to spawn if ...
+	StrengthMin = 0,				// ... the Playerstrength is at least this value
+	StrengthMax = 900000,			// ... the Playerstrength is at most this value
+	StartingResourceMin = 0,		// ... the StartingResources of the current SpawnProcess is at least this value
+	StartingResourceMax = 900000,	// ... the StartingResources of the current SpawnProcess is at most this value
+	DaysMin = 0,					// ... ::World.getTime().Days is at least this value
+	DaysMax = 900000,				// ... ::World.getTime().Days is at most this value
 
-		// Vanilla Properties of a Party
-		Figure = "",	// A party consisting of this unit as its highest costing unit, will be represented by this figure
+	// Vanilla Properties of a Party
+	Figure = "",	// A party consisting of this unit as its highest costing unit, will be represented by this figure
 
-	// Private
-		// During Spawnprocess only
-		SubParty = null		// Cloned Party-Object
-	}
+// Private
+	// During Spawnprocess only
+	SubParty = null		// Cloned Party-Object
 
-	function create()
+	// Create SubParty from SubPartyDef
+	function init()
 	{
-	}
-
-	function init( _unitDef )
-	{
-		this.m.ID = _unitDef.ID;
-		this.m.Cost = _unitDef.Cost;
-		this.m.Troop = _unitDef.Troop;
-
-		foreach (key, value in _unitDef)
+		// Just gotta be careful to not cause an infinite recursion here
+		if (this.SubPartyDef.len() != 0)
 		{
-			if (typeof value == "function")
-			{
-				this[key] = value;
-			}
-			else
-			{
-				this.m[key] = value;
-			}
+			this.SubParty = ::DynamicSpawns.Parties.findById(this.SubPartyDef.ID).getClone(this.SubPartyDef);
 		}
+
 		return this;
 	}
 
 	// Returns a copy of this unit (except that arrays and tables)
-	function getClone( _unitDef = null )
+	function getClone( _unitDef = null, _initialize = true )
 	{
-		local clonedUnit = ::new(::DynamicSpawns.Class.Unit);
+		local clonedUnit = clone this
 
-		// Copy all member variables from this unit to its clone
-		foreach (key, value in this.m)
-		{
-			// We skip arrays for now as they would only arrive as references which is not real cloning
-			if (typeof value == "array") continue;
-			// We skip tables for now as they would only arrive as references which is not real cloning
-			if (typeof value == "table") continue;
-
-			clonedUnit.m[key] = value;
-		}
-
-		// Copy all data provided by the _unitDef (e.g. custom resource cost) into the clone
 		if (_unitDef != null)
 		{
+			// Copy all data provided by the _unitDef
 			foreach (key, value in _unitDef)
 			{
-				if (typeof value == "function")
-				{
-					clonedUnit[key] = value;
-				}
-				else
-				{
-					clonedUnit.m[key] = value;
-				}
+				clonedBlock[key] = value;
 			}
 		}
 
-		// Continue with the SubParty if it exists. Just gotta be careful to not cause an infinite recursion here
-		if (clonedUnit.m.SubPartyDef.len() != 0)
-		{
-			clonedUnit.m.SubParty = ::DynamicSpawns.Parties.findById(this.m.SubPartyDef.ID).getClone(this.m.SubPartyDef);
-		}
+		if (_initialize)
+			clonedUnit.init();
 
 		return clonedUnit;
 	}
 
 	function getID()
 	{
-		return this.m.ID;
+		return this.ID;
 	}
 
 	function getSubParty()
 	{
-		return this.m.SubParty;
+		return this.SubParty;
 	}
 
 	function getSubPartyDef()
 	{
-		return this.m.SubPartyDef;
+		return this.SubPartyDef;
 	}
 
 	function getTroop()
 	{
-		return this.m.Troop;
+		return this.Troop;
 	}
 
 	function getCost()
 	{
-		return this.m.Cost;
+		return this.Cost;
 	}
 
 	function getFigure()
 	{
-		if (typeof this.m.Figure == "string") return this.m.Figure;
-		return this.m.Figure[::Math.rand(0, this.m.Figure.len() - 1)];
+		if (typeof this.Figure == "string") return this.Figure;
+		return this.Figure[::Math.rand(0, this.Figure.len() - 1)];
 	}
 
 	function canSpawn( _spawnProcess, _bonusResources = 0 )		// _bonusResources are used if you want to upgrade unit-A into unit-B. In those cases you have the resources from unit-A available in addition
@@ -139,14 +104,14 @@ this.unit <- inherit(::MSU.BBClass.Empty, {
 	// This is done by checking variables which never change during the spawn process
 	function isValid( _spawnProcess )
 	{
-		if (::Math.round(_spawnProcess.getPlayerStrength()) < this.m.StrengthMin) return false;
-		if (::Math.round(_spawnProcess.getPlayerStrength()) > this.m.StrengthMax) return false;
-		if (::Math.round(_spawnProcess.getStartingResources()) < this.m.StartingResourceMin) return false;
-		if (::Math.round(_spawnProcess.getStartingResources()) > this.m.StartingResourceMax) return false;
-		if (_spawnProcess.getWorldDays() < this.m.DaysMin) return false;
-		if (_spawnProcess.getWorldDays() > this.m.DaysMax) return false;
+		if (::Math.round(_spawnProcess.getPlayerStrength()) < this.StrengthMin) return false;
+		if (::Math.round(_spawnProcess.getPlayerStrength()) > this.StrengthMax) return false;
+		if (::Math.round(_spawnProcess.getStartingResources()) < this.StartingResourceMin) return false;
+		if (::Math.round(_spawnProcess.getStartingResources()) > this.StartingResourceMax) return false;
+		if (_spawnProcess.getWorldDays() < this.DaysMin) return false;
+		if (_spawnProcess.getWorldDays() > this.DaysMax) return false;
 
 		return true;
 	}
 
-});
+};
