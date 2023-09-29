@@ -16,7 +16,7 @@
 	function _newSlot( _key, _value )
 	{
 		if (!(_key in this.__ParentClass))
-			throw format("the index \'%s\' does not exist in the DynamicSpawns Party class", _key);
+			throw format("the index \'%s\' does not exist in the parent DynamicSpawns class for this object", _key);
 		this[_key] <- _value;
 	}
 }
