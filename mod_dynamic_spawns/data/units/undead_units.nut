@@ -156,14 +156,14 @@ local units = [
 		Troop = "Necromancer",
 		Figure = "figure_skeleton_04",
 		Cost = 30 + 12,
-		SubPartyDef = {ID = "SubPartyYeoman"}
+		SubPartyDef = {ID = "SubPartyHonor"}
 	},
 	{
 		ID = "Undead.SkeletonPriestHH",
 		Troop = "Necromancer",
 		Figure = "figure_skeleton_04",
 		Cost = 30 + 24,
-		SubPartyDef = {ID = "SubPartyKnight"}
+		SubPartyDef = {ID = "SubPartyHonorHonor"}
 	},
 
 // Bodyguards for Priests
