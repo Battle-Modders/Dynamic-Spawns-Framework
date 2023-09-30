@@ -10,7 +10,7 @@
 	StartingResources = null;		// Resource that this spawnProcess started with
 	IdealSize = null;
 
-	constructor( _partyDef, _availableResources = -1, _isLocation = false, _customHardMin = null, _customHardMax = null )
+	constructor( _partyDef, _availableResources = -1, _isLocation = false )
 	{
 		this.SpawnInfo = {};
 		this.UnitCount = 0;
@@ -18,10 +18,14 @@
 		this.StartingResources = 0;
 		this.IdealSize = 6;
 
-		this.Party = ::DynamicSpawns.Parties.LookupMap[_partyDef.ID].getClone(_partyDef);
+		if (!("ID" in _partyDef))
+		{
+			::DynamicSpawns.Static.registerParty(_partyDef);
+		}
 
-		if (_customHardMin != null) this.Party.HardMin = _customHardMin;
-		if (_customHardMax != null) this.Party.HardMax = _customHardMax;
+		this.Party = ::DynamicSpawns.Parties.LookupMap[_partyDef.ID].getClone(_partyDef, false);
+		this.Party.setSpawnProcess(this);
+		this.Party.init();
 
 		this.StartingResources = (_availableResources == -1) ? this.getParty().DefaultResources : _availableResources;
 		this.Resources = this.StartingResources;
@@ -49,14 +53,15 @@
 				this.SpawnInfo[unitBlock.getID()][unit.getID()] <- 0;
 			}
 		}
-
-		return this;
 	}
 
 	function spawn()
 	{
+		::logWarning("=========== spawn() ===========")
+		::logInfo(this.getParty().getUnitBlocks().len());
 		// This will remove all unnecessary Unitblocks/Units to improve performance
-		this.getParty().onBeforeSpawnStart(this);
+		this.getParty().onBeforeSpawnStart();
+		::logInfo(this.getParty().getUnitBlocks().len());
 
 		local ret = [];
 
@@ -82,13 +87,13 @@
 			local ratioSpawn = false;	// A ratioSpawn is a forced spawn for a block because its RatioMin is not satisfied anymore
 			foreach (unitBlock in this.getParty().getUnitBlocks())
 			{
-				if (this.getParty().canSpawn(this) && unitBlock.canSpawn(this))
+				if (this.getParty().canSpawn() && unitBlock.canSpawn())
 				{
 					// ::logWarning("The Block " + unitBlock.getID() + " is able to spawn!");
-					if (unitBlock.satisfiesRatioMin(this) == false)	// An unsatisfied RatioMin results into an immediate forced Spawn
+					if (unitBlock.satisfiesRatioMin() == false)	// An unsatisfied RatioMin results into an immediate forced Spawn
 					{
 						// ::logWarning("Force Spawn!");
-						unitBlock.spawnUnit(this);
+						unitBlock.spawnUnit();
 						ratioSpawn = true;
 						break;
 					}
@@ -104,9 +109,9 @@
 					spawnAffordableBlocks.add(unitBlock, weight);
 				}
 
-				if (this.getTotal() >= this.getIdealSize() && unitBlock.canUpgrade(this))
+				if (this.getTotal() >= this.getIdealSize() && unitBlock.canUpgrade())
 				{
-					local upgradeWeight = unitBlock.getUpgradeWeight(this) ;
+					local upgradeWeight = unitBlock.getUpgradeWeight() ;
 					upgradeAffordableBlocks.add(unitBlock, upgradeWeight);	// Weight = maximum amount of times this block can currently upgrade troops (favors blocks with many tiers)
 				}
 			}
@@ -143,7 +148,7 @@
 				local unitBlock = upgradeAffordableBlocks.roll();
 				if (unitBlock != null)
 				{
-					unitBlock.upgradeUnit(this);
+					unitBlock.upgradeUnit();
 				}
 				else if (spawnAffordableBlocks.len() == 0) break;
 			}
@@ -153,7 +158,7 @@
 				local unitBlock = spawnAffordableBlocks.roll();
 				if (unitBlock != null)
 				{
-					unitBlock.spawnUnit(this);
+					unitBlock.spawnUnit();
 				}
 				else if (upgradeAffordableBlocks.len() == 0) break;
 			}
@@ -166,7 +171,7 @@
 		// Spawn SubParties
 		for (local i = ret.len() - 1; i >= 0; i--)		// Backwards counting as this array is growing during this process
 		{
-			if (ret[i].getSubPartyDef().len() == 0) continue;	// skip all units that don't have a subparty
+			if (ret[i].getSubPartyDef() == null || ret[i].getSubPartyDef().len() == 0) continue;	// skip all units that don't have a subparty
 
 			if (::DynamicSpawns.Const.Logging) this.printPartyHeader(ret[i].getSubPartyDef().ID, ret[i].getTroop());
 

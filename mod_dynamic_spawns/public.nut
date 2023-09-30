@@ -8,18 +8,21 @@
  *
  * @param _partyDef table containing at least the entries "ID" and either "StaticUnitIDs" or "UnitBlockDefs"
  */
+ local autoID_party = 0;
  ::DynamicSpawns.Public.registerParty <- function( _partyDef )
 {
 	foreach (key, value in _partyDef)
 	{
 		if (!(key in ::DynamicSpawns.Class.Party))
 		{
-			throw "Invalid key " + key + " in partyDef"
+			throw "invalid key " + key + " in partyDef"
 		}
 	}
+	if (!("ID" in _partyDef)) _partyDef.ID <- "Party.DynamicSpawnsAuto_" + autoID_party++;
+	::DynamicSpawns.__addFields(_partyDef, ::DynamicSpawns.Class.Party);
 	_partyDef.setdelegate(::DynamicSpawns.__partyMeta);
 
-	::DynamicSpawns.Parties.LookupMap[partyObj.ID] <- _partyDef;
+	::DynamicSpawns.Parties.LookupMap[_partyDef.ID] <- _partyDef;
 
 	// We also place a reference of our dynmic party in the vanilla spawn table so our hooks can redirect the spawn behaviors accordingly
 	if (_partyDef.ID in ::Const.World.Spawn)
@@ -44,13 +47,16 @@
  *
  * @param _unitBlockDef table containing at least the entries "ID" and "UnitDefs"
  */
+local autoID_unitBlock = 0;
  ::DynamicSpawns.Public.registerUnitBlock <- function( _unitBlockDef )
 {
-	foreach (key, value in ::DynamicSpawns.Class.UnitBlock)
+	foreach (key, value in _unitBlockDef)
 	{
-		if (!(key in _unitBlockDef))
-			throw "Invalid key " + key + " in _unitBlockDef";
+		if (!(key in ::DynamicSpawns.Class.UnitBlock))
+			throw "invalid key " + key + " in _unitBlockDef";
 	}
+	if (!("ID" in _unitBlockDef)) _unitBlockDef.ID <- "UnitBlock.DynamicSpawnsAuto_" + autoID_unitBlock++;
+	::DynamicSpawns.__addFields(_unitBlockDef, ::DynamicSpawns.Class.UnitBlock);
 	_unitBlockDef.setdelegate(::DynamicSpawns.__unitBlockMeta);
 	::DynamicSpawns.UnitBlocks.LookupMap[_unitBlockDef.ID] <- _unitBlockDef;
 }
@@ -62,13 +68,16 @@
  *
  * @param _unitDef table containing at least the entries "ID", "Troop" and "Cost"
  */
+local autoID_unit = 0;
 ::DynamicSpawns.Public.registerUnit <- function( _unitDef )
 {
-	foreach (key, value in ::DynamicSpawns.Class.Unit)
+	foreach (key, value in _unitDef)
 	{
-		if (!(key in _unitDef))
-			throw "Invalid key " + key + " in _unitDef";
+		if (!(key in ::DynamicSpawns.Class.Unit))
+			throw "invalid key " + key + " in _unitDef";
 	}
+	if (!("ID" in _unitDef)) _unitDef.ID <- "Unit.DynamicSpawnsAuto_" + autoID_unit++;
+	::DynamicSpawns.__addFields(_unitDef, ::DynamicSpawns.Class.Unit);
 	_unitDef.setdelegate(::DynamicSpawns.__unitMeta);
 	::DynamicSpawns.Units.LookupMap[_unitDef.ID] <- _unitDef;
 }

@@ -18,7 +18,7 @@
 	local spawnedUnits = spawnProcess.spawn();
 
 	local party = spawnProcess.getParty();
-	local body = party.getFigure(spawnProcess);
+	local body = party.getFigure();
 
 	_worldParty.setMovementSpeed(party.MovementSpeedMult * ::Const.World.MovementSettings.Speed);
 	_worldParty.setVisibilityMult(party.VisibilityMult);
@@ -136,7 +136,7 @@
 	if (typeof _partyList != "table") return false;
 
 	// We just check for any random member from our Party-Class to be present here
-	return ("getUnitBlockDefs" in _partyList);
+	return ("UnitBlockDefs" in _partyList);
 }
 
 /** Check all Parties, UnitBlocks and Units for consistency. Print Errors into the log if there are surface level problems

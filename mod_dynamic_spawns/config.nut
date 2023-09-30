@@ -22,10 +22,3 @@
 }
 
 ::DynamicSpawns.Data <- {};
-
-::DynamicSpawns.Class <- {
-	Unit = "mod_dynamic_spawns/classes/unit",
-	UnitBlock = "mod_dynamic_spawns/classes/unit_block",
-	SpawnProcess = "mod_dynamic_spawns/classes/spawn_process",
-	Party = "mod_dynamic_spawns/classes/party"
-};
