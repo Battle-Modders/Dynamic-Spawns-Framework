@@ -57,11 +57,8 @@
 
 	function spawn()
 	{
-		::logWarning("=========== spawn() ===========")
-		::logInfo(this.getParty().getUnitBlocks().len());
 		// This will remove all unnecessary Unitblocks/Units to improve performance
 		this.getParty().onBeforeSpawnStart();
-		::logInfo(this.getParty().getUnitBlocks().len());
 
 		local ret = [];
 

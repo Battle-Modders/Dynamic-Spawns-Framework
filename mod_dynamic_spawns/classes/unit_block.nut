@@ -11,6 +11,7 @@
 	// During Spawnprocess only
 	__LookupMap = null;
 	__Units = null;		// Array of cloned Unit-Objects
+	__UnitsWeightedContainer = null;
 
 	// Create Units from UnitDefs
 	function init()
@@ -18,18 +19,33 @@
 		this.__LookupMap = {};
 		this.__Units = [];
 		// Create clones of all Units needed for this
-		this.__Units = array(this.UnitDefs.len());
-		foreach (i, unitDef in this.UnitDefs)
+		if (this.UnitDefs instanceof ::MSU.Class.WeightedContainer)
 		{
-			if (!("ID" in unitDef))
+			this.__UnitsWeightedContainer = ::MSU.Class.WeightedContainer();
+			foreach (unitDef, weight in this.UnitDefs)
 			{
-				::DynamicSpawns.Static.registerUnit(unitDef);
+				local unit = ::DynamicSpawns.Units.findById(unitDef.ID).getClone(unitDef, false);
+				unit.setSpawnProcess(this.__SpawnProcess);
+				unit.init();
+				this.__Units.push(unit);
+				this.__UnitsWeightedContainer.add(unit, weight);
 			}
-			local unit = ::DynamicSpawns.Units.findById(unitDef.ID).getClone(unitDef, false);
-			unit.setSpawnProcess(this.__SpawnProcess);
-			unit.init();
-			this.__Units[i] = unit;
-			this.__LookupMap[unit.getID()] <- unit;
+		}
+		else
+		{
+			this.__Units = array(this.UnitDefs.len());
+			foreach (i, unitDef in this.UnitDefs)
+			{
+				if (!("ID" in unitDef))
+				{
+					::DynamicSpawns.Static.registerUnit(unitDef);
+				}
+				local unit = ::DynamicSpawns.Units.findById(unitDef.ID).getClone(unitDef, false);
+				unit.setSpawnProcess(this.__SpawnProcess);
+				unit.init();
+				this.__Units[i] = unit;
+				this.__LookupMap[unit.getID()] <- unit;
+			}
 		}
 
 		// Add cloned units to the cloned objects LookupMap
@@ -66,6 +82,11 @@
 	function getUnitDefs()
 	{
 		return this.UnitDefs;
+	}
+
+	function isRandom()
+	{
+		return this.UnitDefs instanceof ::MSU.Class.WeightedContainer;
 	}
 
 	function getAverageCost()	// Average cost over all unit types in this block
@@ -172,14 +193,16 @@
 	function spawnUnit()
 	{
 		local chosenUnit = null;
-		if (this.IsRandom)	// Currently this is implemented non-weighted and purely random
+		if (this.isRandom())	// Currently this is implemented non-weighted and purely random
 		{
-			local possibleSpawns = [];
-			foreach(unit in this.getUnits())
-			{
-				if (unit.canSpawn()) possibleSpawns.push(unit);
-			}
-			if (possibleSpawns.len() != 0) chosenUnit = possibleSpawns[::Math.rand(0, possibleSpawns.len() - 1)];
+			local table = this.__UnitsWeightedContainer.Table;
+			local total = this.__UnitsWeightedContainer.Total;
+
+			this.__UnitsWeightedContainer.apply(@(unit, weight) unit.canSpawn() ? weight : 0);
+			chosenUnit = this.__UnitsWeightedContainer.roll();
+
+			this.__UnitsWeightedContainer.Table = table;
+			this.__UnitsWeightedContainer.Total = total;
 		}
 		else	// Weakest affordable unit is spawned
 		{
@@ -202,7 +225,7 @@
 
 	function upgradeUnit()
 	{
-		if (this.IsRandom) return;	// This should never happen because the canUpgrade check already returns false in these cases
+		if (this.isRandom()) return;	// This should never happen because the canUpgrade check already returns false in these cases
 
 		local ids = ::MSU.Class.WeightedContainer();
 
@@ -239,7 +262,7 @@
 	// _spawnInfo is Array of Arrays which counts the spawned troops in this spawnprocess
 	function canUpgrade()
 	{
-		if (this.IsRandom == true) return false;		// A UnitBlock that is purely random does not support an upgrade system
+		if (this.isRandom()) return false;		// A UnitBlock that is purely random does not support an upgrade system
 
 		for (local i = 0; i < this.__Units.len() - 1; i++)
 		{
@@ -278,7 +301,8 @@
 	// This is will not be called if this UnitBlock is InValid and was removed by its Party during this spawn process
 	function onSpawnEnd()
 	{
-		this.__Units = null;
 		this.__LookupMap = null;
+		this.__Units = null;
+		this.__UnitsWeightedContainer = null;
 	}
 };
