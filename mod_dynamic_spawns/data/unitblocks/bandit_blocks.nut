@@ -17,8 +17,11 @@ local unitBlocks = [
 	{
 		ID = "Bandit.Elite",
 		StartingResourceMin = 320,
-		IsRandom = true,
-		UnitDefs = [{ ID = "Human.MasterArcher" }, { ID = "Human.HedgeKnight" }, { ID = "Human.Swordmaster" }]
+		UnitDefs = ::MSU.Class.WeightedContainer([
+			[1, { ID = "Human.MasterArcher" }],
+			[1, { ID = "Human.HedgeKnight" }],
+			[1, { ID = "Human.Swordmaster" }]
+		])
 	},
 	{
 		ID = "Bandit.Boss",

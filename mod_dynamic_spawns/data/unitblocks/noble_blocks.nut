@@ -27,8 +27,10 @@ local unitBlocks = [
 	},
 	{
 		ID = "Noble.Elite",
-		IsRandom = true,
-		UnitDefs = [{ ID = "Noble.Zweihander" }, { ID = "Noble.Knight" }],
+		UnitDefs = ::MSU.Class.WeightedContainer([
+			[1, { ID = "Noble.Zweihander" }],
+			[1, { ID = "Noble.Knight" }]
+		]),
 		StartingResourceMin = 325	// In Vanilla they appear in a group of 235 cost in noble caravans
 	},
 
