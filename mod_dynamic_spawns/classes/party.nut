@@ -4,8 +4,8 @@
 	UnitBlockDefs = null;	// Array of Tables that require atleast 'ID' of the used UnitBlocks. Other parameter will overwrite those in the referenced UnitBLock
 
 	// Optional Parameter
-	UpgradeChance = null;	// Chance that this Party will upgrade a unit instead of spawning a new unit when IdealSize is reached	
-	StaticUnitIDs = null;		// Array of UnitIDs that are forced to spawn if the Resources allow it. Can have multiples of the same unit. They consume resources
+	UpgradeChance = null;	// Chance that this Party will upgrade a unit instead of spawning a new unit when IdealSize is reached
+	StaticUnitDefs = null;	// Array of unitdefs that are forced to spawn if the Resources allow it. Can have multiples of the same unit. They consume resources
 	DefaultResources = null;	// If the SpawnProcess is started without ResourceAmount it will use the value defined here. E.g. when spawning SubParties
 
 	// Vanilla Properties of a Party
@@ -25,7 +25,6 @@
 		this.UnitBlockDefs = [];
 
 		this.UpgradeChance = 0.75;
-		this.StaticUnitIDs = [];
 		this.DefaultResources = 0;
 
 		this.HardMin = 0;
@@ -49,10 +48,14 @@
 			this.__UnitBlocks[i] = ::DynamicSpawns.__getObjectFromDef(unitBlockDef, ::DynamicSpawns.UnitBlocks);
 		}
 
-		this.__StaticUnits = array(this.StaticUnitIDs.len());
-		foreach (i, staticUnitID in this.StaticUnitIDs)
+		if (this.StaticUnitDefs == null) this.__StaticUnits = [];
+		else
 		{
-			this.__StaticUnits[i] = ::DynamicSpawns.__getObjectFromDef(staticUnitID, ::DynamicSpawns.Units);
+			this.__StaticUnits = array(this.StaticUnitDefs.len());
+			foreach (i, staticUnitDef in this.StaticUnitDefs)
+			{
+				this.__StaticUnits[i] = ::DynamicSpawns.__getObjectFromDef(staticUnitDef, ::DynamicSpawns.Units);
+			}
 		}
 
 		return this;
