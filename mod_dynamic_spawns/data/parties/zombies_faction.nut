@@ -87,31 +87,31 @@ local parties = [
 	{
 		ID = "SubPartyYeoman",
 		HardMin = 1,
-		StaticUnitIDs = [
-			"Undead.YeomanBodyguard"
+		StaticUnitDefs = [
+			{ ID = "Undead.YeomanBodyguard" }
 		]
 	},
 	{
 		ID = "SubPartyKnight",
 		HardMin = 1,
-		StaticUnitIDs = [
-			"Undead.FallenHeroBodyguard"
+		StaticUnitDefs = [
+			{ ID = "Undead.FallenHeroBodyguard" }
 		]
 	},
 	{
 		ID = "SubPartyYeomanKnight",
 		HardMin = 2,
-		StaticUnitIDs = [
-			"Undead.YeomanBodyguard",
-			"Undead.FallenHeroBodyguard"
+		StaticUnitDefs = [
+			{ ID = "Undead.YeomanBodyguard" },
+			{ ID = "Undead.FallenHeroBodyguard" }
 		]
 	},
 	{
 		ID = "SubPartyKnightKnight",
 		HardMin = 2,
-		StaticUnitIDs = [
-			"Undead.FallenHeroBodyguard",
-			"Undead.FallenHeroBodyguard"
+		StaticUnitDefs = [
+			{ ID = "Undead.FallenHeroBodyguard" },
+			{ ID = "Undead.FallenHeroBodyguard" }
 		]
 	},
 	{	// The amount is set from outside

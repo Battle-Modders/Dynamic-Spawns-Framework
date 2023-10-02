@@ -23,8 +23,8 @@ local parties = [
 		MovementSpeedMult = 0.5,
 		VisibilityMult = 1.0,
 		VisionMult = 0.25,
-		StaticUnitIDs = [
-			"Human.CaravanDonkey"       // Makes it much easier to get a good ratio
+		StaticUnitDefs = [
+			{ ID = "Human.CaravanDonkey" }      // Makes it much easier to get a good ratio
 		],
 		UnitBlockDefs = [
 			{ ID = "Noble.Frontline",   RatioMin = 0.35, RatioMax = 1.00},

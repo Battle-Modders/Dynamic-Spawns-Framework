@@ -90,8 +90,8 @@ local parties = [
 		MovementSpeedMult = 0.5,
 		VisibilityMult = 1.0,
 		VisionMult = 0.25,
-		StaticUnitIDs = [
-			"Human.CaravanDonkey"
+		StaticUnitDefs = [
+			{ ID = "Human.CaravanDonkey" }
 		],
 		UnitBlockDefs = [
 			{ ID = "Human.CaravanDonkeys",  RatioMin = 0.17, RatioMax = 0.20, ReqPartySize = 6 },      // Vanilla: Second Donkey starts spawning at 7+
@@ -106,9 +106,9 @@ local parties = [
 		MovementSpeedMult = 0.5,
 		VisibilityMult = 1.0,
 		VisionMult = 0.25,
-		StaticUnitIDs = [
-			"Human.CaravanDonkey",      // In vanilla an escorted caravan can also have only a single Donkey. I chose to force 2 donkey every time instead
-			"Human.CaravanDonkey"
+		StaticUnitDefs = [
+			{ ID = "Human.CaravanDonkey" },      // In vanilla an escorted caravan can also have only a single Donkey. I chose to force 2 donkey every time instead
+			{ ID = "Human.CaravanDonkey" }
 		],
 		UnitBlockDefs = [
 			{ ID = "Human.CaravanDonkeys",  RatioMin = 0.15, RatioMax = 0.35, ReqPartySize = 5 },   // Vanilla: Third donkey spawns at 6+
