@@ -29,8 +29,8 @@ local parties = [
 	{
 		ID = "BarbarianKing",
 		DefaultFigure = "figure_wildman_06",
-		StaticUnitIDs = [
-			"Barbarian.King"
+		StaticUnitDefs = [
+			{ ID = "Barbarian.King" }
 		]
 	},
 

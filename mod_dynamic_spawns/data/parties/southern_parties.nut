@@ -24,8 +24,8 @@ local parties = [
 		MovementSpeedMult = 0.5,
 		VisibilityMult = 1.0,
 		VisionMult = 0.25,
-		StaticUnitIDs = [
-			"Southern.CaravanDonkey"
+		StaticUnitDefs = [
+			{ ID = "Southern.CaravanDonkey" }
 		],
 		UnitBlockDefs = [
 			{ ID = "Southern.Frontline",        RatioMin = 0.15, RatioMax = 1.00 },
@@ -43,8 +43,8 @@ local parties = [
 		MovementSpeedMult = 0.5,
 		VisibilityMult = 1.0,
 		VisionMult = 0.25,
-		StaticUnitIDs = [
-			"Southern.CaravanDonkey"
+		StaticUnitDefs = [
+			{ ID = "Southern.CaravanDonkey" }
 		],
 		UnitBlockDefs = [
 			{ ID = "Southern.Frontline",        RatioMin = 0.35, RatioMax = 1.00 },
