@@ -129,28 +129,28 @@ local units = [
 		Troop = "Hexe",
 		Figure = "figure_hexe_01",
 		Cost = 50 + 12,
-		SubParty = {ID = "SpiderBodyguards", HardMin = 1, HardMax = 1}
+		SubPartyDef = {ID = "SpiderBodyguards", HardMin = 1, HardMax = 1}
 	},
 	{
 		ID = "Beast.HexeTwoSpider",
 		Troop = "Hexe",
 		Figure = "figure_hexe_01",
 		Cost = 50 + 12 + 12,
-		SubParty = {ID = "SpiderBodyguards", HardMin = 2, HardMax = 2}
+		SubPartyDef = {ID = "SpiderBodyguards", HardMin = 2, HardMax = 2}
 	},
 	{
 		ID = "Beast.HexeOneDirewolf",
 		Troop = "Hexe",
 		Figure = "figure_hexe_01",
 		Cost = 50 + 25,
-		SubParty = {ID = "DirewolfBodyguards", HardMin = 1, HardMax = 1}
+		SubPartyDef = {ID = "DirewolfBodyguards", HardMin = 1, HardMax = 1}
 	},
 	{
 		ID = "Beast.HexeTwoDirewolf",
 		Troop = "Hexe",
 		Figure = "figure_hexe_01",
 		Cost = 50 + 25 + 25,
-		SubParty = {ID = "DirewolfBodyguards", HardMin = 2, HardMax = 2}
+		SubPartyDef = {ID = "DirewolfBodyguards", HardMin = 2, HardMax = 2}
 	},
 
 	// Bodyguards
