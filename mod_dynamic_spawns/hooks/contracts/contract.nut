@@ -21,6 +21,11 @@
 				minibossify = 0;
 			}
 
+			if (_worldParty.isLocation())
+			{
+				_worldParty.resetDefenderSpawnDay();
+			}
+
 			return ::DynamicSpawns.Static.addUnitsToEntity(_worldParty, dynamicParty, _resources, minibossify);
 		}
 		else
