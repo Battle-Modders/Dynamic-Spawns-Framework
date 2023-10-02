@@ -14,8 +14,11 @@ local unitBlocks = [
 	},
 	{
 		ID = "Nomad.Elite",
-		IsRandom = true,
-		UnitDefs = [{ ID = "Nomad.Executioner" }, { ID = "Nomad.DesertStalker" }, { ID = "Nomad.DesertDevil" }],
+		UnitDefs = ::MSU.Class.WeightedContainer([
+			[1, { ID = "Nomad.Executioner" }],
+			[1, { ID = "Nomad.DesertStalker" }],
+			[1, { ID = "Nomad.DesertDevil" }]
+		]),
 		StartingResourceMin = 350	// In Vanilla Executioner appear in a group of 350 cost
 	}
 ]

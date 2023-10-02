@@ -20,11 +20,10 @@ local unitBlocks = [
 	},
 	{
 		ID = "Goblin.Boss",
-		IsRandom = true,
-		UnitDefs = [
-			{ ID = "Goblin.Overseer" },
-			{ ID = "Goblin.Shaman" }
-		]
+		UnitDefs = ::MSU.Class.WeightedContainer([
+			[1, { ID = "Goblin.Overseer" }],
+			[1, { ID = "Goblin.Shaman" }]
+		])
 	}
 ]
 

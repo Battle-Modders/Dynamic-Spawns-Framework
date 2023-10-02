@@ -9,8 +9,11 @@ local unitBlocks = [
 	},
 	{
 		ID = "Mercenary.Elite",
-		IsRandom = true,
-		UnitDefs = [{ ID = "Human.MasterArcher" }, { ID = "Human.HedgeKnight" }, { ID = "Human.Swordmaster" }],
+		UnitDefs = ::MSU.Class.WeightedContainer([
+			[1, { ID = "Human.MasterArcher" }],
+			[1, { ID = "Human.HedgeKnight" }],
+			[1, { ID = "Human.Swordmaster" }]
+		]),
 		StartingResourceMin = 286	// In Vanilla MasterArcher appear in a group of 286 cost
 	},
 	{
