@@ -5,7 +5,6 @@
 	UnitDefs = null;		// Array of Tables that require atleast 'ID' of the used Units. Other parameter will overwrite those in the referenced Units
 
 	// Optional Parameter
-	IsRandom = null;			// A random Block will not upgrade between its troops and instead pick a random one each time
 	DeterminesFigure = null;	// If true then the spawned troops from this Block are in the race for the final Figure of the spawned party
 
 	// Private
@@ -13,12 +12,12 @@
 
 	// During Spawnprocess only
 	__Units = null;		// Array of cloned Unit-Objects
+	__UnitsWeightedContainer = null;
 
 	constructor( _unitBlockDef )
 	{
 		this.ID = "";
 		this.UnitDefs = [];
-		this.IsRandom = false;
 		this.DeterminesFigure = false;
 
 		this.__LookupMap = {};
@@ -28,12 +27,27 @@
 
 	function init()
 	{
-		this.__Units = array(this.UnitDefs.len());
-		foreach (i, unitDef in this.UnitDefs)
+		if (this.UnitDefs instanceof ::MSU.Class.WeightedContainer)
 		{
-			local unit = ::DynamicSpawns.__getObjectFromDef(unitDef, ::DynamicSpawns.Units);
-			this.__Units[i] = unit;
-			this.__LookupMap[unit.getID()] <- unit;
+			this.__Units = [];
+			this.__UnitsWeightedContainer = ::MSU.Class.WeightedContainer();
+			foreach (unitDef, weight in this.UnitDefs)
+			{
+				local unit = ::DynamicSpawns.__getObjectFromDef(unitDef, ::DynamicSpawns.Units);
+				this.__Units.push(unit);
+				this.__UnitsWeightedContainer.add(unit, weight);
+				this.__LookupMap[unit.getID()] <- unit;
+			}
+		}
+		else
+		{
+			this.__Units = array(this.UnitDefs.len());
+			foreach (i, unitDef in this.UnitDefs)
+			{
+				local unit = ::DynamicSpawns.__getObjectFromDef(unitDef, ::DynamicSpawns.Units);
+				this.__Units[i] = unit;
+				this.__LookupMap[unit.getID()] <- unit;
+			}
 		}
 
 		return this;
@@ -52,6 +66,11 @@
 	function getUnitDefs()
 	{
 		return this.UnitDefs;
+	}
+
+	function isRandom()
+	{
+		return this.UnitDefs instanceof ::MSU.Class.WeightedContainer;
 	}
 
 	function getAverageCost()	// Average cost over all unit types in this block
@@ -138,14 +157,14 @@
 	function spawnUnit( _spawnProcess )
 	{
 		local chosenUnit = null;
-		if (this.IsRandom)	// Currently this is implemented non-weighted and purely random
+		if (this.isRandom())	// Currently this is implemented non-weighted and purely random
 		{
-			local possibleSpawns = [];
-			foreach(unit in this.getUnits())
+			local possibleSpawns = ::MSU.Class.WeightedContainer();
+			foreach(unit, weight in this.__UnitsWeightedContainer)
 			{
-				if (unit.canSpawn(_spawnProcess)) possibleSpawns.push(unit);
+				if (unit.canSpawn(_spawnProcess)) possibleSpawns.add(unit, weight);
 			}
-			if (possibleSpawns.len() != 0) chosenUnit = possibleSpawns[::Math.rand(0, possibleSpawns.len() - 1)];
+			chosenUnit = possibleSpawns.roll();
 		}
 		else	// Weakest affordable unit is spawned
 		{
@@ -168,7 +187,7 @@
 
 	function upgradeUnit( _spawnProcess )
 	{
-		if (this.IsRandom) return;	// This should never happen because the canUpgrade check already returns false in these cases
+		if (this.isRandom()) return;	// This should never happen because the canUpgrade check already returns false in these cases
 
 		local ids = ::MSU.Class.WeightedContainer();
 
@@ -205,7 +224,7 @@
 	// _spawnInfo is Array of Arrays which counts the spawned troops in this spawnprocess
 	function canUpgrade( _spawnProcess )
 	{
-		if (this.IsRandom == true) return false;		// A UnitBlock that is purely random does not support an upgrade system
+		if (this.isRandom()) return false;		// A UnitBlock that is purely random does not support an upgrade system
 
 		for (local i = 0; i < this.__Units.len() - 1; i++)
 		{
