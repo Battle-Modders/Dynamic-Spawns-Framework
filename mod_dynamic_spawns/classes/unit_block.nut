@@ -25,6 +25,15 @@
 		this.copyDataFromDef(_unitBlockDef);
 	}
 
+	function setSpawnProcess( _spawnProcess )
+	{
+		base.setSpawnProcess(_spawnProcess);
+		foreach (unit in this.__Units)
+		{
+			unit.setSpawnProcess(_spawnProcess);
+		}
+	}
+
 	function init()
 	{
 		if (this.UnitDefs instanceof ::MSU.Class.WeightedContainer)
@@ -96,10 +105,10 @@
 	}
 
 	// This weight is used to randomly roll which UnitBlock should have one of their troops upgrade during that cycle
-	function getUpgradeWeight( _spawnProcess )
+	function getUpgradeWeight()
 	{
 		local weight = 0;
-		foreach (unit in _spawnProcess.getUnits(this.getID()))
+		foreach (unit in this.__SpawnProcess.getUnits(this.getID()))
 		{
 			weight += this.getStrongerUnitTypeCount(unit);
 		}
@@ -112,49 +121,46 @@
 	}
 
 	// Returns true if this Block is allowed to spawn another unit and atleast one of its units is also able to be spawned
-	// _spawnProcess = current spawnprocess reference that includes most important variables
-	function canSpawn( _spawnProcess )
+	function canSpawn()
 	{
-		if (_spawnProcess.getTotal() < this.ReqPartySize) return false;
+		if (this.__SpawnProcess.getTotal() < this.ReqPartySize) return false;
 
 		// RatioMax is ignored if we do not satisfy the RatioMin yet
-		if (this.satisfiesRatioMin(_spawnProcess) && !this.isWithinRatioMax(_spawnProcess)) return false;
+		if (this.satisfiesRatioMin() && !this.isWithinRatioMax()) return false;
 
 		// Atleast one of our referenced units is able to spawn
 		foreach (unit in this.__Units)
 		{
-			if (unit.canSpawn(_spawnProcess)) return true;
+			if (unit.canSpawn()) return true;
 		}
 
 		return false;
 	}
 
 	// Returns true if the ratio of this unitblock would still be below its defined RatioMax if it was to spawn the next unit
-	// _spawnProcess = current spawnprocess reference that includes most important variables
-	function isWithinRatioMax( _spawnProcess )
+	function isWithinRatioMax()
 	{
-		local referencedTotal = ::Math.max(_spawnProcess.getTotal() + 1.0, _spawnProcess.getParty().getHardMin());
+		local referencedTotal = ::Math.max(this.__SpawnProcess.getTotal() + 1.0, this.__SpawnProcess.getParty().getHardMin());
 		local maxAllowed = ::Math.round(this.RatioMax * referencedTotal);
-		return (_spawnProcess.getBlockTotal(this.getID()) < maxAllowed);
+		return (this.__SpawnProcess.getBlockTotal(this.getID()) < maxAllowed);
 	}
 
 	// Returns true if the ratio of this unitblock would still be above its defined RatioMin if it was to spawn the next unit
-	// _spawnProcess = current spawnprocess reference that includes most important variables
-	function satisfiesRatioMin( _spawnProcess )
+	function satisfiesRatioMin()
 	{
-		local referencedTotal = _spawnProcess.getTotal() + 1;
-		if (_spawnProcess.getTotal() + 1 < _spawnProcess.getParty().getHardMin())
+		local referencedTotal = this.__SpawnProcess.getTotal() + 1;
+		if (this.__SpawnProcess.getTotal() + 1 < this.__SpawnProcess.getParty().getHardMin())
 		{
-			referencedTotal = _spawnProcess.getParty().getHardMin();
+			referencedTotal = this.__SpawnProcess.getParty().getHardMin();
 		}
 
 		local minRequired = ::Math.ceil(referencedTotal * this.RatioMin);	// Using ceil here will make any non-zero RatioMin always force atleast 1 of its units into the spawned party.
 		// But the alternative is not consequent/good either. The solution is that you should always use the ReqPartySize or StartingResourceMin alongside that to prevent small parties from spawning exotic units.
 
-		return (_spawnProcess.getBlockTotal(this.getID()) >= minRequired);
+		return (this.__SpawnProcess.getBlockTotal(this.getID()) >= minRequired);
 	}
 
-	function spawnUnit( _spawnProcess )
+	function spawnUnit()
 	{
 		local chosenUnit = null;
 		if (this.isRandom())	// Currently this is implemented non-weighted and purely random
@@ -162,7 +168,7 @@
 			local possibleSpawns = ::MSU.Class.WeightedContainer();
 			foreach(unit, weight in this.__UnitsWeightedContainer)
 			{
-				if (unit.canSpawn(_spawnProcess)) possibleSpawns.add(unit, weight);
+				if (unit.canSpawn()) possibleSpawns.add(unit, weight);
 			}
 			chosenUnit = possibleSpawns.roll();
 		}
@@ -170,7 +176,7 @@
 		{
 			foreach (unit in this.getUnits())
 			{
-				if (unit.canSpawn(_spawnProcess))
+				if (unit.canSpawn())
 				{
 					chosenUnit = unit;
 					break;
@@ -180,12 +186,12 @@
 
 		if (chosenUnit == null) return;		// This should not happen
 
-		_spawnProcess.incrementUnit(chosenUnit.getID(), this.getID());
+		this.__SpawnProcess.incrementUnit(chosenUnit.getID(), this.getID());
 		if (!::DynamicSpawns.Const.Benchmark && ::DynamicSpawns.Const.DetailedLogging ) ::logInfo("Spawning - Block: " + this.getID() + " - Unit: " + chosenUnit.getTroop() + " (Cost: " + chosenUnit.getCost() + ")\n");
-		_spawnProcess.consumeResources(chosenUnit.getCost());
+		this.__SpawnProcess.consumeResources(chosenUnit.getCost());
 	}
 
-	function upgradeUnit( _spawnProcess )
+	function upgradeUnit()
 	{
 		if (this.isRandom()) return;	// This should never happen because the canUpgrade check already returns false in these cases
 
@@ -195,12 +201,12 @@
 		for (local i = 0; i < this.__Units.len() - 1; i++)
 		{
 			local id = this.__Units[i].getID();
-			local count = _spawnProcess.getUnitCount(id, this.getID());
+			local count = this.__SpawnProcess.getUnitCount(id, this.getID());
 			if (count > 0)
 			{
 				for (local j = i + 1; j < this.__Units.len(); j++)	// for loop because the next very unitType could have some requirements (like playerstrength) preventing spawn
 				{
-					if (this.__Units[j].canSpawn(_spawnProcess, this.__Units[i].getCost()))
+					if (this.__Units[j].canSpawn(this.__Units[i].getCost()))
 					{
 						local weight = count + (this.__Units.len() - i) * 3;	// weight higher for weaker troopTypes and those that already spawned a lot
 						ids.add({ID = id, UpgradeID = this.__Units[j].getID()}, weight);
@@ -214,25 +220,25 @@
 		if (ids.len() > 0)
 		{
 			local roll = ids.roll();
-			_spawnProcess.decrementUnit(roll.ID, this.getID());
-			_spawnProcess.incrementUnit(roll.UpgradeID, this.getID());
-			_spawnProcess.consumeResources(this.__LookupMap[roll.UpgradeID].getCost() - this.__LookupMap[roll.ID].getCost());
+			this.__SpawnProcess.decrementUnit(roll.ID, this.getID());
+			this.__SpawnProcess.incrementUnit(roll.UpgradeID, this.getID());
+			this.__SpawnProcess.consumeResources(this.__LookupMap[roll.UpgradeID].getCost() - this.__LookupMap[roll.ID].getCost());
 			if (!::DynamicSpawns.Const.Benchmark && ::DynamicSpawns.Const.DetailedLogging ) ::logInfo("**Upgrading - Block: " + this.getID() + " - Unit: " + this.__LookupMap[roll.ID].getTroop() + " (Cost: " + this.__LookupMap[roll.ID].getCost() + ") to " + this.__LookupMap[roll.UpgradeID].getTroop() + " (Cost: " + this.__LookupMap[roll.UpgradeID].getCost() + ")**\n");
 		}
 	}
 
 	// _spawnInfo is Array of Arrays which counts the spawned troops in this spawnprocess
-	function canUpgrade( _spawnProcess )
+	function canUpgrade()
 	{
 		if (this.isRandom()) return false;		// A UnitBlock that is purely random does not support an upgrade system
 
 		for (local i = 0; i < this.__Units.len() - 1; i++)
 		{
-			if (_spawnProcess.getUnitCount(this.__Units[i].getID(), this.getID()) > 0)
+			if (this.__SpawnProcess.getUnitCount(this.__Units[i].getID(), this.getID()) > 0)
 			{
 				for (local j = i + 1; j < this.__Units.len(); j++)	// This requires the unit list to be sorted by cost
 				{
-					if (this.__Units[j].canSpawn(_spawnProcess, this.__Units[i].getCost())) return true;
+					if (this.__Units[j].canSpawn(this.__Units[i].getCost())) return true;
 				}
 			}
 		}
@@ -248,20 +254,20 @@
 	// Events
 
 	// This is will not be called if this UnitBlock is InValid and was removed by its Party during this spawn process
-	function onBeforeSpawnStart( _spawnProcess )
+	function onBeforeSpawnStart()
 	{
 		// We remove all Units that can't ever spawn in the first place to improve performance
 		local unitArray = this.getUnits();
 		for (local i = unitArray.len() - 1; i >= 0; i--)
 		{
-			if (unitArray[i].isValid(_spawnProcess) == false) unitArray.remove(i);
+			if (unitArray[i].isValid() == false) unitArray.remove(i);
 		}
 
 		this.sort();
 	}
 
 	// This is will not be called if this UnitBlock is InValid and was removed by its Party during this spawn process
-	function onSpawnEnd( _spawnProcess )
+	function onSpawnEnd()
 	{
 	}
 };

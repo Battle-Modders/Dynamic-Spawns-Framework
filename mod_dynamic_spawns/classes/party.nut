@@ -44,6 +44,19 @@
 		return this.__SubParties;
 	}
 
+	function setSpawnProcess( _spawnProcess )
+	{
+		base.setSpawnProcess(_spawnProcess);
+		foreach (unitBlock in this.__UnitBlocks)
+		{
+			unitBlock.setSpawnProcess(_spawnProcess);
+		}
+		foreach (unit in this.__StaticUnits)
+		{
+			unit.setSpawnProcess(_spawnProcess);
+		}
+	}
+
 	function init()
 	{
 		if (this.UnitBlockDefs == null) this.__UnitBlocks = [];
@@ -166,39 +179,36 @@
 
 	// Returns false if there is a reason why this party is not allowed to spawn anymore. This function only checks for a small subset of all possible reasons.
 	// Checks only against HardMax and HardMin
-	function canSpawn( _spawnProcess )
+	function canSpawn()
 	{
-		if (_spawnProcess.getTotal() >= this.getHardMax()) return false;
+		if (this.__SpawnProcess.getTotal() >= this.getHardMax()) return false;
 
 		// RatioMax is ignored if we do not satisfy the RatioMin yet
-		if (_spawnProcess.__MainSpawnProcess != null)
-		{
-			if (!this.satisfiesRatioMin(_spawnProcess.__MainSpawnProcess))
+		if (!this.satisfiesRatioMin())
 				return true;
 
-			if (!this.isWithinRatioMax(_spawnProcess.__MainSpawnProcess)) return false;
-		}
+		if (!this.isWithinRatioMax()) return false;
 
 		foreach (subparty in this.getSubParties())
 		{
-			if (subparty.canSpawn(_spawnProcess.__SubSpawnProcesses[subparty.getID()])) return true;
+			if (subparty.canSpawn()) return true;
 		}
 		// Atleast one of our unitBlocks must be able to spawn units
 		foreach (unitBlock in this.getUnitBlocks())
 		{
-			if (unitBlock.canSpawn(_spawnProcess)) return true;
+			if (unitBlock.canSpawn()) return true;
 		}
 		return false;
 
 	}
 
-	function onBeforeSpawnStart( _spawnProcess )
+	function onBeforeSpawnStart()
 	{
 		// We remove all UnitBlocks that can't ever spawn in the first place to improve performance
 		local unitBlockArray = this.getUnitBlocks();
 		for (local i = unitBlockArray.len() - 1; i >= 0; i--)
 		{
-			if (unitBlockArray[i].isValid(_spawnProcess) == false) unitBlockArray.remove(i);
+			if (unitBlockArray[i].isValid() == false) unitBlockArray.remove(i);
 		}
 
 		foreach (category in this.__SubParties)
@@ -208,49 +218,57 @@
 
 		foreach (unitBlock in this.getUnitBlocks())
 		{
-			unitBlock.onBeforeSpawnStart( _spawnProcess );
+			unitBlock.onBeforeSpawnStart();
 		}
 	}
 
-	function onSpawnEnd( _spawnProcess )
+	function onSpawnEnd()
 	{
 		foreach (unitBlock in this.getUnitBlocks())
 		{
-			unitBlock.onSpawnEnd( _spawnProcess );
+			unitBlock.onSpawnEnd();
 		}
 	}
 
 	// Returns true if the ratio of this unitblock would still be below its defined RatioMax if it was to spawn the next unit
 	// _spawnProcess = current spawnprocess reference that includes most important variables
-	function isWithinRatioMax( _spawnProcess )
+	function isWithinRatioMax()
 	{
-		local referencedTotal = ::Math.max(_spawnProcess.getTotal() + 1.0, _spawnProcess.getParty().getHardMin());
+		local mainSpawnProcess = this.__SpawnProcess.getMainSpawnProcess();
+		if (mainSpawnProcess == null)
+			return true;
+
+		local referencedTotal = ::Math.max(mainSpawnProcess.getTotal() + 1.0, mainSpawnProcess.getParty().getHardMin());
 		local maxAllowed = ::Math.round(this.RatioMax * referencedTotal);
-		return (_spawnProcess.getCategoryTotal(this.getID()) < maxAllowed);
+		return (mainSpawnProcess.getCategoryTotal(this.getID()) < maxAllowed);
 	}
 
 	// Returns true if the ratio of this unitblock would still be above its defined RatioMin if it was to spawn the next unit
 	// _spawnProcess = current spawnprocess reference that includes most important variables
-	function satisfiesRatioMin( _spawnProcess )
+	function satisfiesRatioMin()
 	{
-		local referencedTotal = _spawnProcess.getTotal() + 1;
-		if (_spawnProcess.getTotal() + 1 < _spawnProcess.getParty().getHardMin())
+		local mainSpawnProcess = this.__SpawnProcess.getMainSpawnProcess();
+		if (mainSpawnProcess == null)
+			return true;
+
+		local referencedTotal = mainSpawnProcess.getTotal() + 1;
+		if (mainSpawnProcess.getTotal() + 1 < mainSpawnProcess.getParty().getHardMin())
 		{
-			referencedTotal = _spawnProcess.getParty().getHardMin();
+			referencedTotal = mainSpawnProcess.getParty().getHardMin();
 		}
 
 		local minRequired = ::Math.ceil(referencedTotal * this.RatioMin);	// Using ceil here will make any non-zero RatioMin always force atleast 1 of its units into the spawned party.
 		// But the alternative is not consequent/good either. The solution is that you should always use the ReqPartySize or StartingResourceMin alongside that to prevent small parties from spawning exotic units.
 
-		return (_spawnProcess.getCategoryTotal(this.getID()) >= minRequired);
+		return (mainSpawnProcess.getCategoryTotal(this.getID()) >= minRequired);
 	}
 
-	function getUpgradeWeight( _spawnProcess )
+	function getUpgradeWeight()
 	{
 		local ret = 0;
 		foreach (unitBlock in this.getUnitBlocks())
 		{
-			local weight = unitBlock.getUpgradeWeight(_spawnProcess);
+			local weight = unitBlock.getUpgradeWeight();
 			if (weight > ret) ret = weight;
 		}
 		foreach (subParty in this.__SubParties)
@@ -261,11 +279,11 @@
 		return ret;
 	}
 
-	function canUpgrade( _spawnProcess )
+	function canUpgrade()
 	{
 		foreach (unitBlock in this.getUnitBlocks())
 		{
-			if (unitBlock.canUpgrade(_spawnProcess))
+			if (unitBlock.canUpgrade())
 				return true;
 		}
 		foreach (subParty in this.__SubParties)
