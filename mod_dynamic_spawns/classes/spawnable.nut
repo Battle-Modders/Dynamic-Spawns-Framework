@@ -13,6 +13,8 @@
 	StrengthMin = 0;
 	StrengthMax = 900000;
 
+	__SpawnProcess = null;
+
 	function getID()
 	{
 		return this.ID;
@@ -82,16 +84,22 @@
 		}
 	}
 
+	function setSpawnProcess( _spawnProcess )
+	{
+		::MSU.requireInstanceOf(::DynamicSpawns.Class.SpawnProcess, _spawnProcess);
+		this.__SpawnProcess = _spawnProcess.weakref();
+	}
+
 	// Returns true if this can theortically spawn during this spawn proccess
 	// This is done by checking variables which never change during the spawn process
-	function isValid( _spawnProcess )
+	function isValid()
 	{
-		if (::Math.round(_spawnProcess.getPlayerStrength()) < this.StrengthMin) return false;
-		if (::Math.round(_spawnProcess.getPlayerStrength()) > this.StrengthMax) return false;
-		if (::Math.round(_spawnProcess.getStartingResources()) < this.StartingResourceMin) return false;
-		if (::Math.round(_spawnProcess.getStartingResources()) > this.StartingResourceMax) return false;
-		if (_spawnProcess.getWorldDays() < this.DaysMin) return false;
-		if (_spawnProcess.getWorldDays() > this.DaysMax) return false;
+		if (::Math.round(this.__SpawnProcess.getPlayerStrength()) < this.StrengthMin) return false;
+		if (::Math.round(this.__SpawnProcess.getPlayerStrength()) > this.StrengthMax) return false;
+		if (::Math.round(this.__SpawnProcess.getStartingResources()) < this.StartingResourceMin) return false;
+		if (::Math.round(this.__SpawnProcess.getStartingResources()) > this.StartingResourceMax) return false;
+		if (this.__SpawnProcess.getWorldDays() < this.DaysMin) return false;
+		if (this.__SpawnProcess.getWorldDays() > this.DaysMax) return false;
 
 		return true;
 	}
