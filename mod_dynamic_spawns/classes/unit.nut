@@ -30,6 +30,12 @@
 		this.copyDataFromDef(_unitDef);
 	}
 
+	function setSpawnProcess( _spawnProcess )
+	{
+		base.setSpawnProcess(_spawnProcess);
+		if (this.__SubParty != null) this.__SubParty.setSpawnProcess(_spawnProcess);
+	}
+
 	function init()
 	{
 		if (this.SubPartyDef.len() != 0)
@@ -70,15 +76,15 @@
 		return this.Figure[::Math.rand(0, this.Figure.len() - 1)];
 	}
 
-	function canSpawn( _spawnProcess, _bonusResources = 0 )		// _bonusResources are used if you want to upgrade unit-A into unit-B. In those cases you have the resources from unit-A available in addition
+	function canSpawn( _bonusResources = 0 )		// _bonusResources are used if you want to upgrade unit-A into unit-B. In those cases you have the resources from unit-A available in addition
 	{
 		if (_bonusResources == 0)	// We only allow ignoring of Cost if for considering new units to spawn
 		{
-			if (!_spawnProcess.isIgnoringCost() && (_spawnProcess.getResources()) < this.getCost()) return false;
+			if (!this.__SpawnProcess.isIgnoringCost() && (this.__SpawnProcess.getResources()) < this.getCost()) return false;
 		}
 		else	// Upgrading of units
 		{
-			if ((_spawnProcess.getResources() + _bonusResources) < this.getCost()) return false;
+			if ((this.__SpawnProcess.getResources() + _bonusResources) < this.getCost()) return false;
 		}
 
 		return true;
