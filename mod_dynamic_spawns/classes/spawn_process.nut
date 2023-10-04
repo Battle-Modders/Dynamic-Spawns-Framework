@@ -393,11 +393,20 @@
 	{
 		// ::logWarning( this.getTotal() + " total unit were spawned for the party " + this.getParty().getID());
 		// ::logWarning("- - - Spawn finished - - -");
+		local indentAdd = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+		local indent = "";
+		local obj = this.__MainSpawnProcess;
+		while (obj != null)
+		{
+			indent += indentAdd;
+			obj = obj.__MainSpawnProcess;
+		}
+
 		if (this.__MainSpawnProcess == null)
-			::logInfo("Party-Name: " + this.getParty().getID() + "; Resources remaining: " + this.getResources());
+			::logInfo("Party-Name: " + this.getParty().getID() + "; Resources remaining: " + this.getResources() + " = {");
 		else
 		{
-			::logInfo(format("-- %s: (%f%%)", this.getParty().getID(), 100.0 * this.getTotal() /this.__MainSpawnProcess.getTotal()));
+			::logInfo(format("%s-- %s: (%f%%) = {", indent, this.getParty().getID(), 100.0 * this.getTotal() /this.__MainSpawnProcess.getTotal()));
 		}
 
 		local printBlock = function( _block )
@@ -409,7 +418,7 @@
 				str += unit.getTroop() + ": " + this.SpawnInfo[_block.getID()].Units[unit.getID()].Count + ", ";
 			}
 
-			::logInfo(str.slice(0, -2));
+			::logInfo(indent + indentAdd + str.slice(0, -2));
 		}
 
 		foreach (subSpawnProcess in this.__SubSpawnProcesses)
@@ -433,10 +442,10 @@
 				if (unitInfo.Count == 0) continue;
 				staticString += unitID + ": " + unitInfo.Count + ", ";
 			}
-			::logInfo(staticString.slice(0, -2));
+			::logInfo(indent + indentAdd + staticString.slice(0, -2));
 		}
 
-		::logInfo("Total Units: " + this.getTotal());
-		::logInfo("\n");
+		::logInfo(indent + indentAdd + "Total Units: " + this.getTotal());
+		::logInfo(this.__MainSpawnProcess == null ? "}" : indent + "}");
 	}
 };
