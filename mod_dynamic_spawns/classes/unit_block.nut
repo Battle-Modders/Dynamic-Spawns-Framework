@@ -12,7 +12,6 @@
 
 	// During Spawnprocess only
 	__Units = null;		// Array of cloned Unit-Objects
-	__UnitsWeightedContainer = null;
 
 	constructor( _unitBlockDef )
 	{
@@ -43,25 +42,23 @@
 
 	function init()
 	{
+		this.__Units = ::DynamicSpawns.Class.WeightedArray();
+
 		if (this.UnitDefs instanceof ::MSU.Class.WeightedContainer)
 		{
-			this.__Units = [];
-			this.__UnitsWeightedContainer = ::MSU.Class.WeightedContainer();
 			foreach (unitDef, weight in this.UnitDefs)
 			{
 				local unit = ::DynamicSpawns.__getObjectFromDef(unitDef, ::DynamicSpawns.Units);
-				this.__Units.push(unit);
-				this.__UnitsWeightedContainer.add(unit, weight);
+				this.__Units.add(unit, weight);
 				this.__LookupMap[unit.getID()] <- unit;
 			}
 		}
 		else
 		{
-			this.__Units = array(this.UnitDefs.len());
 			foreach (i, unitDef in this.UnitDefs)
 			{
 				local unit = ::DynamicSpawns.__getObjectFromDef(unitDef, ::DynamicSpawns.Units);
-				this.__Units[i] = unit;
+				this.__Units.add(unit, 1)
 				this.__LookupMap[unit.getID()] <- unit;
 			}
 		}
