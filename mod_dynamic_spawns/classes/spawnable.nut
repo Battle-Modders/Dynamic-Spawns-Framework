@@ -90,6 +90,16 @@
 		this.__SpawnProcess = _spawnProcess.weakref();
 	}
 
+	function getSpawnProcess()
+	{
+		return this.__SpawnProcess;
+	}
+
+	function doCycle( _forceSpawn = true, _forceUpgrade = false )
+	{
+		return this.__SpawnProcess.doCycle(_forceSpawn, _forceUpgrade);
+	}
+
 	// Returns true if this can theortically spawn during this spawn proccess
 	// This is done by checking variables which never change during the spawn process
 	function isValid()

@@ -34,6 +34,13 @@
 		}
 	}
 
+	function doCycle( _forceSpawn = false, _forceUpgrade = false )
+	{
+		if (_forceSpawn) this.spawnUnit();
+		else if (_forceUpgrade) this.upgradeUnit();
+		return true;
+	}
+
 	function init()
 	{
 		if (this.UnitDefs instanceof ::MSU.Class.WeightedContainer)
