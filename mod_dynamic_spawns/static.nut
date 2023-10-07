@@ -108,22 +108,40 @@
  *
  * @Param _vanillaPartyList object from the vanilla table ::Const.World.Spawn
  *
+ * @Param _resources integer which is used to set resources before checking `isValid()` of party variants
+ *
  * @Return DSF-Party object if one exists for the given vanilla party list; null if none was set for it
  */
-::DynamicSpawns.Static.retrieveDynamicParty <- function( _vanillaPartyList )
+::DynamicSpawns.Static.retrieveDynamicParty <- function( _vanillaPartyList, _resources = -1 )
 {
 	if (typeof _vanillaPartyList != "array") return null;
 	if (_vanillaPartyList.len() == 0) return null;
-	if (!("DynamicParty" in _vanillaPartyList[0])) return null;
+	if (!("DynamicSpawnsPartyID" in _vanillaPartyList[0])) return null;
 
-	if (::DynamicSpawns.Static.isDynamicParty(_vanillaPartyList[0].DynamicParty))
+	return this.getRegisteredPartyVariant(_vanillaPartyList[0].DynamicSpawnsPartyID, _resources);
+}
+
+/** Return a dynamic party definition given a vanilla party definition
+ *
+ * @Param _vanillaPartyList object from the vanilla table ::Const.World.Spawn
+ *
+ * @Param _resources integer which is used to set resources before checking `isValid()` of party variants
+ *
+ * @Return DSF-Party object if one exists for the given vanilla party list; null if none was set for it
+ */
+::DynamicSpawns.Static.getRegisteredPartyVariant <- function( _partyID, _resources = -1 )
+{
+	local partyDef = ::DynamicSpawns.Parties.findById(_partyID);
+	if (partyDef instanceof ::MSU.Class.WeightedContainer)
 	{
-		return _vanillaPartyList[0].DynamicParty;
+		// partyDef becomes a string which is an ID of a registered party
+		// We assume that at least one variant must be always valid to spawn
+		partyDef = partyDef.map(function( _variantDef, _weight ) {
+			local spawnProcess = ::DynamicSpawns.Class.SpawnProcess(::DynamicSpawns.Static.getRegisteredPartyVariant(_variantDef.ID, _resources), _resources);
+			return [spawnProcess.getParty().isValid() ? _weight : 0, spawnProcess.getParty().ID];
+		}).roll();
 	}
-	else
-	{
-		return null;
-	}
+	return ::DynamicSpawns.__getObjectFromDef(partyDef, ::DynamicSpawns.Parties);
 }
 
 /** Check whether a dynamic party exists given a vanilla partyList

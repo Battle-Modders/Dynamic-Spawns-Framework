@@ -7,7 +7,7 @@
 local oldAssignTroops = ::Const.World.Common.assignTroops;
 ::Const.World.Common.assignTroops = function( _worldParty, _partyList, _resources, _weightMode = 1 )
 {
-	local dynamicParty = ::DynamicSpawns.Static.retrieveDynamicParty(_partyList);
+	local dynamicParty = ::DynamicSpawns.Static.retrieveDynamicParty(_partyList, _resources);
 	if (dynamicParty != null)    // a dynamicParty was found!
 	{
 		return ::DynamicSpawns.Static.assignTroops(_worldParty, dynamicParty, _resources);
@@ -22,7 +22,7 @@ local oldAssignTroops = ::Const.World.Common.assignTroops;
 local oldAddUnitsToCombat = ::Const.World.Common.addUnitsToCombat;
 ::Const.World.Common.addUnitsToCombat = function( _into, _partyList, _resources, _faction, _minibossify = 0 )
 {
-	local dynamicParty = ::DynamicSpawns.Static.retrieveDynamicParty(_partyList);
+	local dynamicParty = ::DynamicSpawns.Static.retrieveDynamicParty(_partyList, _resources);
 	if (dynamicParty != null)    // a dynamicParty was found!
 	{
 		return ::DynamicSpawns.Static.addUnitsToCombat(_into, dynamicParty, _resources, _faction, _minibossify);
