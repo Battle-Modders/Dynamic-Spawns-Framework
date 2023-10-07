@@ -14,16 +14,15 @@
 {
 	_resources *= ::MSU.Math.randf(0.8, 1.0);	// This accounts for vanilla choosing a random party composition allowing for picking slightly weaker aswell
 
-	local spawnProcess = ::new(::DynamicSpawns.Class.SpawnProcess);
-	spawnProcess.init({ID = _dynamicParty.getID()}, _resources);
+	local spawnProcess = ::DynamicSpawns.Class.SpawnProcess({ID = _dynamicParty.getID()}, _resources);
 	local spawnedUnits = spawnProcess.spawn();
 
 	local party = spawnProcess.getParty();
 	local body = party.getFigure(spawnProcess);
 
-	_worldParty.setMovementSpeed(party.m.MovementSpeedMult * ::Const.World.MovementSettings.Speed);
-	_worldParty.setVisibilityMult(party.m.VisibilityMult);
-	_worldParty.setVisionRadius(party.m.VisionMult * ::Const.World.Settings.Vision);
+	_worldParty.setMovementSpeed(party.MovementSpeedMult * ::Const.World.MovementSettings.Speed);
+	_worldParty.setVisibilityMult(party.VisibilityMult);
+	_worldParty.setVisionRadius(party.VisionMult * ::Const.World.Settings.Vision);
 	_worldParty.getSprite("body").setBrush(body);
 
 	foreach (unit in spawnedUnits)
@@ -49,8 +48,8 @@
 	_resources *= ::MSU.Math.randf(0.8, 1.0);	// This accounts for the vanilla function picking a random party between 0.7 and 1.0 cost
 
 	// ::logWarning("Spawning the party '" + this.m.ID + "' with '" + _resources + "' Resources");
-	local spawnProcess = ::new(::DynamicSpawns.Class.SpawnProcess);
-	spawnProcess.init({ID = _dynamicParty.getID()}, _resources, _worldParty.isLocation());
+	local spawnProcess = ::DynamicSpawns.Class.SpawnProcess({ID = _dynamicParty.getID()}, _resources, _worldParty.isLocation());
+	local spawnedUnits = spawnProcess.spawn();
 
 	foreach (unit in spawnProcess.spawn())
 	{
@@ -72,8 +71,7 @@
 {
 	_resources *= ::MSU.Math.randf(0.8, 1.0);	// This accounts for vanilla choosing a random party with cost between 0.7 and 1.0 of resources given
 
-	local spawnProcess = ::new(::DynamicSpawns.Class.SpawnProcess);
-	spawnProcess.init({ID = _dynamicParty.getID()}, _resources, false);
+	local spawnProcess = ::DynamicSpawns.Class.SpawnProcess({ID = _dynamicParty.getID()}, _resources, false);
 
 	foreach (unit in spawnProcess.spawn())
 	{
@@ -136,10 +134,7 @@
  */
 ::DynamicSpawns.Static.isDynamicParty <- function( _partyList )
 {
-	if (typeof _partyList != "table") return false;
-
-	// We just check for any random member from our Party-Class to be present here
-	return ("getUnitBlockDefs" in _partyList);
+	return _partyList instanceof ::DynamicSpawns.Class.Party;
 }
 
 /** Check all Parties, UnitBlocks and Units for consistency. Print Errors into the log if there are surface level problems
@@ -155,7 +150,7 @@
 	// Check all currently registered Parties
 	foreach (partyObj in ::DynamicSpawns.Parties.LookupMap)
 	{
-		if (partyObj.getUnitBlockDefs().len() == 0 && partyObj.m.StaticUnitIDs.len() == 0)
+		if (partyObj.getUnitBlockDefs().len() == 0 && partyObj.StaticUnitIDs.len() == 0)
 		{
 			::logError("The Party '" + partyObj.getID() + "' has no units or blocks defined for it. It will not produce any units!");
 			logsGenerated++;
@@ -175,7 +170,7 @@
 			::logWarning("The UnitBlock '" + unitBlockObj.getID() + "' has no units defined for it. It will never produce any units!");
 			logsGenerated++;
 		}
-		if (unitBlockObj.m.RatioMax <= 0.0)
+		if (unitBlockObj.RatioMax <= 0.0)
 		{
 			::logWarning("The UnitBlock '" + unitBlockObj.getID() + "' has a RatioMax of 0 or less! It will never produce any units!");
 			logsGenerated++;
