@@ -10,21 +10,52 @@
  */
 ::DynamicSpawns.Public.registerParty <- function( _partyDef )
 {
-	::DynamicSpawns.__setClass(::DynamicSpawns.Class.Party, _partyDef);
-	::DynamicSpawns.Parties.LookupMap[_partyDef.ID] <- _partyDef;
+	if ("Variants" in _partyDef)
+	{
+		if (_partyDef.len() > 2)
+		{
+			::logError("DynamicSpawns -- _partyDef with ID " + _partyDef.ID + " not registered. Error: PartyDefs with Variants cannot have any key except \'ID\' and \'Variants\'");
+			return;
+		}
 
-	local partyObj = _partyDef.Class(_partyDef);
+		local hasValidID = false;
+		foreach (variant, _ in _partyDef.Variants)
+		{
+			if (variant.ID == _partyDef.ID + "_0")
+			{
+				hasValidID = true;
+				break;
+			}
+		}
+		if (!hasValidID)
+		{
+			::logError("DynamicSpawns -- _partyDef with ID " + _partyDef.ID + " not registered. Error: PartyDefs with Variants must have one variant with the same ID as the party with \'_0\' appended to it. Required Variant ID: " + _partyDef.ID + "_0");
+			return;
+		}
+
+		::DynamicSpawns.Parties.LookupMap[_partyDef.ID] <- _partyDef.Variants;
+		foreach (variant, _ in _partyDef.Variants)
+		{
+			::DynamicSpawns.Public.registerParty(variant);
+		}
+
+		return;
+	}
+
+	::DynamicSpawns.Parties.LookupMap[_partyDef.ID] <- _partyDef;
+	::DynamicSpawns.__setClass(::DynamicSpawns.Class.Party, _partyDef);
+
 	// We also place a reference of our dynmic party in the vanilla spawn table so our hooks can redirect the spawn behaviors accordingly
-	if (partyObj.ID in ::Const.World.Spawn)
+	if (_partyDef.ID in ::Const.World.Spawn)
 	{
 		// We just insert our DynamicParty reference into the very first entry of that array. This is a dirty solution but the best one for now to stay backwards compatible with vanilla
-		::Const.World.Spawn[partyObj.ID][0].DynamicParty <- partyObj;		// We don't care if we insert a new object or overwrite an existing entry
+		::Const.World.Spawn[_partyDef.ID][0].DynamicSpawnsPartyID <- _partyDef.ID;		// We don't care if we insert a new object or overwrite an existing entry
 	}
 	else
 	{
-		::Const.World.Spawn[partyObj.ID] <- [
+		::Const.World.Spawn[_partyDef.ID] <- [
 			{
-				DynamicParty = partyObj
+				DynamicSpawnsPartyID = _partyDef.ID
 			}
 		];
 	}
