@@ -1,55 +1,62 @@
 // "Class" that manages the dynamic spawning given a Party-Class and additional variables
-this.spawn_process <- inherit(::MSU.BBClass.Empty, {
-	m = {
-		// Temporary Variables, They only exist and are valid during one spawning process
-		SpawnInfo = {},     // Table of Tables. For each UnitBlock and for each spawned units from that Block
-		UnitCount = 0,      // Amount of units spawned during this process. This does not include SubParties
+::DynamicSpawns.Class.SpawnProcess <- class
+{
+	// Temporary Variables, They only exist and are valid during one spawning process
+	SpawnInfo = null;     // Table of Tables. For each UnitBlock and for each spawned units from that Block
+	UnitCount = null;      // Amount of units spawned during this process. This does not include SubParties
 
-		Party = null,		// Cloned Party object, that is used for spawning
-		Resources = 0,		// Available resources during this run
-		StartingResources = 0,		// Resource that this spawnProcess started with
-		IdealSize = 6
-	}
+	Party = null;		// Cloned Party object, that is used for spawning
+	Resources = null;		// Available resources during this run
+	StartingResources = null;		// Resource that this spawnProcess started with
+	IdealSize = null;
 
-	function create()
+	constructor( _partyDef, _availableResources = -1, _isLocation = false, _customHardMin = null, _customHardMax = null )
 	{
-	}
+		this.SpawnInfo = {};
+		this.UnitCount = 0;
 
-	function init( _partyDef, _availableResources = -1, _isLocation = false, _customHardMin = null, _customHardMax = null )
-	{
-		this.m.SpawnInfo = {};
-		this.m.UnitCount = 0;
+		this.Resources = 0;
+		this.StartingResources = 0;
+		this.IdealSize = 6;
 
-		local originalParty = ::DynamicSpawns.Parties.LookupMap[_partyDef.ID];	// Only the original Party can create clones because clones do not have BlockDefs
-		this.m.Party = originalParty.getClone(_partyDef);	// SubParties might call .init with custom parameters
+		this.Party = ::DynamicSpawns.__getObjectFromDef(_partyDef, ::DynamicSpawns.Parties);
 
-		if (_customHardMin != null) this.m.Party.m.HardMin = _customHardMin;
-		if (_customHardMax != null) this.m.Party.m.HardMax = _customHardMax;
+		if (_customHardMin != null) this.Party.HardMin = _customHardMin;
+		if (_customHardMax != null) this.Party.HardMax = _customHardMax;
 
-		this.m.StartingResources = (_availableResources == -1) ? this.getParty().m.DefaultResources : _availableResources;
-		this.m.Resources = this.m.StartingResources;
+		this.StartingResources = (_availableResources == -1) ? this.getParty().DefaultResources : _availableResources;
+		this.Resources = this.StartingResources;
 
-		this.m.IdealSize = this.getParty().generateIdealSize(this, _isLocation);	// Locations currently have a 50% higher IdealSize compared to roaming parties
-		if (this.getIdealSize() <= 0) this.m.IdealSize = 1;	// To prevent division by zero later on. But realistically you should never have such a low idealSize here
+		this.IdealSize = this.getParty().generateIdealSize(this, _isLocation);	// Locations currently have a 50% higher IdealSize compared to roaming parties
+		if (this.getIdealSize() <= 0) this.IdealSize = 1;	// To prevent division by zero later on. But realistically you should never have such a low idealSize here
 
 		// Initialize SpawnInfo
-		this.m.SpawnInfo["StaticUnits"] <- {	// HardCoded entry just for static units
-			Total = 0
+		this.SpawnInfo["StaticUnits"] <- {	// HardCoded entry just for static units
+			Total = 0,
+			Units = {}
 		};
 		foreach (staticUnit in this.getParty().getStaticUnits())
 		{
-			this.m.SpawnInfo["StaticUnits"][staticUnit.getID()] <- 0;
+			this.SpawnInfo["StaticUnits"].Units[staticUnit.getID()] <- {
+				Unit = staticUnit,
+				Count = 0
+			};
 		}
 
 		foreach (unitBlock in this.getParty().getUnitBlocks())
 		{
-			this.m.SpawnInfo[unitBlock.getID()] <- {
-				Total = 0
+			this.SpawnInfo[unitBlock.getID()] <- {
+				UnitBlock = unitBlock,
+				Total = 0,
+				Units = {}
 			};
 
 			foreach (unit in unitBlock.getUnits())
 			{
-				this.m.SpawnInfo[unitBlock.getID()][unit.getID()] <- 0;
+				this.SpawnInfo[unitBlock.getID()].Units[unit.getID()] <- {
+					Unit = unit,
+					Count = 0
+				};
 			}
 		}
 
@@ -75,7 +82,6 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 
 		local spawnAffordableBlocks = ::MSU.Class.WeightedContainer();
 		local upgradeAffordableBlocks = ::MSU.Class.WeightedContainer();
-
 		// Every while spawns or upgrades only one unit
 		while (this.canDoAnotherCycle())	// Is True while Resources are positive or HardMin is not yet reached
 		{
@@ -98,7 +104,7 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 
 					// Weighted-Spawns: Every UnitBlock that doesn't surpass their RatioMax if they got the next spawn compete against each other for a random spawn
 					local totalCount = ::Math.max(this.getTotal() + 1, this.getParty().getHardMin());
-					local weight = unitBlock.m.RatioMax - (this.getBlockTotal(unitBlock.getID()) / totalCount.tofloat());
+					local weight = unitBlock.RatioMax - (this.getBlockTotal(unitBlock.getID()) / totalCount.tofloat());
 					if (weight <= 0)
 					{
 						if (this.getTotal() >= this.getIdealSize() * (1.0 + 1.0 - this.getParty().getUpgradeChance())) weight = 0; // TODO: Improve the logic on this line
@@ -173,8 +179,7 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 
 			if (::DynamicSpawns.Const.Logging) this.printPartyHeader(ret[i].getSubPartyDef().ID, ret[i].getTroop());
 
-			local spawnProcess = ::new(::DynamicSpawns.Class.SpawnProcess);
-			ret.extend(spawnProcess.init(ret[i].getSubPartyDef()).spawn());
+			ret.extend(::DynamicSpawns.Class.SpawnProcess(ret[i].getSubPartyDef()).spawn());
 		}
 
 		if (ret.len() == 0)		// This will lead to inconsistent states where parties on the world map have 0 troops in them and must be fixed as fast as possible
@@ -187,22 +192,22 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 
 	function getIdealSize()
 	{
-		return this.m.IdealSize;
+		return this.IdealSize;
 	}
 
 	function getResources()
 	{
-		return this.m.Resources;
+		return this.Resources;
 	}
 
 	function getStartingResources()
 	{
-		return this.m.StartingResources;
+		return this.StartingResources;
 	}
 
 	function getParty()
 	{
-		return this.m.Party;
+		return this.Party;
 	}
 
 	function getPlayerStrength()
@@ -218,7 +223,7 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 
 	function consumeResources( _amount )
 	{
-		this.m.Resources -= _amount;
+		this.Resources -= _amount;
 	}
 
 	function isIgnoringCost()
@@ -228,22 +233,22 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 
 	function getTotal()
 	{
-		return this.m.UnitCount;
+		return this.UnitCount;
 	}
 
 	function getBlockTotal( _unitBlockID )
 	{
-		return this.m.SpawnInfo[_unitBlockID].Total;
+		return this.SpawnInfo[_unitBlockID].Total;
 	}
 
 	function getUnitCount( _unitID, _unitBlockID = null )
 	{
-		if (_unitBlockID != null) return this.m.SpawnInfo[_unitBlockID][_unitID];
+		if (_unitBlockID != null) return this.SpawnInfo[_unitBlockID].Units[_unitID].Count;
 
 		local count = 0;
-		foreach (block in this.m.SpawnInfo)
+		foreach (block in this.SpawnInfo)
 		{
-			if (_unitID in block) count += block[_unitID];
+			if (_unitID in block.Units) count += block[_unitID].Count;
 		}
 
 		return count;
@@ -252,15 +257,15 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 	function getUnits( _unitBlockID = null )
 	{
 		local units = [];
-		foreach (blockID, block in this.m.SpawnInfo)
+		foreach (blockID, block in this.SpawnInfo)
 		{
 			if (_unitBlockID != null && blockID != _unitBlockID) continue;	// skip all blocks that I don't want (optional)
-			foreach (unitID, count in block)
+			foreach (unitID, unitInfo in block.Units)
 			{
 				if (unitID == "Total") continue;
-				for (local i = 0; i < count; i++)
+				for (local i = 0; i < unitInfo.Count; i++)
 				{
-					units.push(::DynamicSpawns.Units.findById(unitID));
+					units.push(unitInfo.Unit);
 				}
 			}
 		}
@@ -269,16 +274,16 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 
 	function incrementUnit( _unitID, _unitBlockID, _count = 1 )
 	{
-		this.m.SpawnInfo[_unitBlockID][_unitID] += _count;
-		this.m.SpawnInfo[_unitBlockID].Total += _count;
-		this.m.UnitCount += _count;
+		this.SpawnInfo[_unitBlockID].Units[_unitID].Count += _count;
+		this.SpawnInfo[_unitBlockID].Total += _count;
+		this.UnitCount += _count;
 	}
 
 	function decrementUnit( _unitID, _unitBlockID, _count = 1 )
 	{
-		this.m.SpawnInfo[_unitBlockID][_unitID] -= _count;
-		this.m.SpawnInfo[_unitBlockID].Total -= _count;
-		this.m.UnitCount -= _count;
+		this.SpawnInfo[_unitBlockID].Units[_unitID].Count -= _count;
+		this.SpawnInfo[_unitBlockID].Total -= _count;
+		this.UnitCount -= _count;
 	}
 
 	// Returns 'True' if we should keep doing another spawn/upgrade cycle in this spawn_process
@@ -305,11 +310,11 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 		::logInfo("Party-Name: " + this.getParty().getID() + "; Resources remaining: " + this.getResources());
 		local printBlock = function( _block )
 		{
-			local percentage = (this.getTotal() == 0) ? 0 : (100 * this.m.SpawnInfo[_block.getID()].Total / this.getTotal());
-			local str = (_block.getID().find("Static") != null ? "Static" : _block.getID()) + ": " + this.m.SpawnInfo[_block.getID()].Total + " (" + percentage + "%) - ";
+			local percentage = (this.getTotal() == 0) ? 0 : (100 * this.SpawnInfo[_block.getID()].Total / this.getTotal());
+			local str = (_block.getID().find("Static") != null ? "Static" : _block.getID()) + ": " + this.SpawnInfo[_block.getID()].Total + " (" + percentage + "%) - ";
 			foreach (unit in _block.getUnits())
 			{
-				str += unit.getTroop() + ": " + this.m.SpawnInfo[_block.getID()][unit.getID()] + ", ";
+				str += unit.getTroop() + ": " + this.SpawnInfo[_block.getID()].Units[unit.getID()].Count + ", ";
 			}
 
 			::logInfo(str.slice(0, -2));
@@ -321,15 +326,15 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 		}
 
 		// Hardcoded Print for StaticUnits
-		if ("StaticUnits" in this.m.SpawnInfo)
+		if ("StaticUnits" in this.SpawnInfo)
 		{
 			local percentage = (this.getTotal() == 0) ? 0 : (100 * this.getBlockTotal("StaticUnits") / this.getTotal());
 			local staticString = "Static: " + this.getBlockTotal("StaticUnits") + " (" + percentage + "%) - ";
-			foreach (key, value in this.m.SpawnInfo["StaticUnits"])
+			foreach (unitID, unitInfo in this.SpawnInfo["StaticUnits"].Units)
 			{
-				if (key == "Total") continue;
-				if (value == 0) continue;
-				staticString += key + ": " + value + ", ";
+				if (unitID == "Count") continue;
+				if (unitInfo.Count == 0) continue;
+				staticString += unitID + ": " + unitInfo.Count + ", ";
 			}
 			::logInfo(staticString.slice(0, -2));
 		}
@@ -337,4 +342,4 @@ this.spawn_process <- inherit(::MSU.BBClass.Empty, {
 		::logInfo("Total Units: " + this.getTotal());
 		::logInfo("\n");
 	}
-});
+};

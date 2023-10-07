@@ -10,18 +10,19 @@
  */
 ::DynamicSpawns.Public.registerParty <- function( _partyDef )
 {
-	local partyObj = ::new(::DynamicSpawns.Class.Party).init(_partyDef);
-	::DynamicSpawns.Parties.LookupMap[partyObj.m.ID] <- partyObj;
+	::DynamicSpawns.__setClass(::DynamicSpawns.Class.Party, _partyDef);
+	::DynamicSpawns.Parties.LookupMap[_partyDef.ID] <- _partyDef;
 
+	local partyObj = _partyDef.Class(_partyDef);
 	// We also place a reference of our dynmic party in the vanilla spawn table so our hooks can redirect the spawn behaviors accordingly
-	if (partyObj.m.ID in ::Const.World.Spawn)
+	if (partyObj.ID in ::Const.World.Spawn)
 	{
 		// We just insert our DynamicParty reference into the very first entry of that array. This is a dirty solution but the best one for now to stay backwards compatible with vanilla
-		::Const.World.Spawn[partyObj.m.ID][0].DynamicParty <- partyObj;		// We don't care if we insert a new object or overwrite an existing entry
+		::Const.World.Spawn[partyObj.ID][0].DynamicParty <- partyObj;		// We don't care if we insert a new object or overwrite an existing entry
 	}
 	else
 	{
-		::Const.World.Spawn[partyObj.m.ID] <- [
+		::Const.World.Spawn[partyObj.ID] <- [
 			{
 				DynamicParty = partyObj
 			}
@@ -38,8 +39,8 @@
  */
 ::DynamicSpawns.Public.registerUnitBlock <- function( _unitBlockDef )
 {
-	local unitBlockObj = ::new(::DynamicSpawns.Class.UnitBlock).init(_unitBlockDef);
-	::DynamicSpawns.UnitBlocks.LookupMap[unitBlockObj.m.ID] <- unitBlockObj;
+	::DynamicSpawns.__setClass(::DynamicSpawns.Class.UnitBlock, _unitBlockDef);
+	::DynamicSpawns.UnitBlocks.LookupMap[_unitBlockDef.ID] <- _unitBlockDef;
 }
 
 /**
@@ -51,8 +52,8 @@
  */
 ::DynamicSpawns.Public.registerUnit <- function( _unitDef )
 {
-	local unitObj = ::new(::DynamicSpawns.Class.Unit).init(_unitDef);
-	::DynamicSpawns.Units.LookupMap[unitObj.m.ID] <- unitObj;
+	::DynamicSpawns.__setClass(::DynamicSpawns.Class.Unit, _unitDef);
+	::DynamicSpawns.Units.LookupMap[_unitDef.ID] <- _unitDef;
 }
 
 /**
