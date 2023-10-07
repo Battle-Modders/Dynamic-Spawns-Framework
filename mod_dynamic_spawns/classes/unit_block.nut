@@ -1,101 +1,57 @@
 // A group of similar units that upgrade into one another
-this.unit_block <- inherit(::MSU.BBClass.Empty, {
-	m = {
+::DynamicSpawns.Class.UnitBlock <- class extends ::DynamicSpawns.Class.Spawnable
+{
 	// Required Parameter
-		ID = null,
-		UnitDefs = [],		// Array of Tables that require atleast 'ID' of the used Units. Other parameter will overwrite those in the referenced Units
+	UnitDefs = null;		// Array of Tables that require atleast 'ID' of the used Units. Other parameter will overwrite those in the referenced Units
 
 	// Optional Parameter
-		IsRandom = false,			// A random Block will not upgrade between its troops and instead pick a random one each time
-		DeterminesFigure = false,	// If true then the spawned troops from this Block are in the race for the final Figure of the spawned party
-
-		RatioMin = 0.00,				// If the ratio of already spawned units of this Block is below this value then the SpawnProcess will issue a ForceSpawn
-
-		// Guards for canSpawn()		// This UnitBlock is able to spawn ...
-		RatioMax = 1.00,				// ... if the RatioMax is not exceeded with that newly spawned unit
-		ReqPartySize = 0,         		// ... when the amount of already spawned troops in the current SpawnProcess is at least this value
-
-		// Guards for isValid()			// This UnitBlock is only able to spawn if ...
-		StartingResourceMin = 0,		// ... the StartingResources of the current SpawnProcess is at least this value
-		StartingResourceMax = 900000,	// ... the StartingResources of the current SpawnProcess is at most this value
-		DaysMin = 0,					// ... ::World.getTime().Days is at least this value
-		DaysMax = 900000				// ... ::World.getTime().Days is at most this value
+	IsRandom = null;			// A random Block will not upgrade between its troops and instead pick a random one each time
+	DeterminesFigure = null;	// If true then the spawned troops from this Block are in the race for the final Figure of the spawned party
 
 	// Private
-		LookupMap = {},
+	__LookupMap = null;
 
-		// During Spawnprocess only
-		Units = []		// Array of cloned Unit-Objects
+	// During Spawnprocess only
+	__Units = null;		// Array of cloned Unit-Objects
+
+	constructor( _unitBlockDef )
+	{
+		this.ID = "";
+		this.UnitDefs = [];
+		this.IsRandom = false;
+		this.DeterminesFigure = false;
+
+		this.__LookupMap = {};
+
+		this.copyDataFromDef(_unitBlockDef);
 	}
 
-	function create()
+	function init()
 	{
-	}
-
-	function init( _unitBlockDef )
-	{
-		this.m.ID = _unitBlockDef.ID;
-
-		foreach (key, value in _unitBlockDef)
+		this.__Units = array(this.UnitDefs.len());
+		foreach (i, unitDef in this.UnitDefs)
 		{
-			if (typeof value == "function")
-			{
-				this[key] = value;
-			}
-			else
-			{
-				this.m[key] = value;
-			}
+			local unit = ::DynamicSpawns.__getObjectFromDef(unitDef, ::DynamicSpawns.Units);
+			this.__Units[i] = unit;
+			this.__LookupMap[unit.getID()] <- unit;
 		}
+
 		return this;
-	}
-
-	// Returns a copy of this unitBlock (except that arrays and tables)
-	function getClone( _unitBlockDef = null )
-	{
-		local clonedBlock = ::new(::DynamicSpawns.Class.UnitBlock);
-
-		// Copy all member variables from this unitBlock to its clone
-		foreach (key, value in this.m)
-		{
-			// We skip arrays for now as they would only arrive as references which is not real cloning
-			if (typeof value == "array") continue;
-			// We skip tables for now as they would only arrive as references which is not real cloning
-			if (typeof value == "table") continue;
-
-			clonedBlock.m[key] = value;
-		}
-
-		// Copy all data provided by the _partyDef (e.g. custom HardMin/HardMax) into the clone
-		if (_unitBlockDef != null) clonedBlock.init(_unitBlockDef);
-
-		// Create clones of all Units needed for this
-		clonedBlock.m.Units = [];
-		foreach (unitDef in this.m.UnitDefs)
-		{
-			local unit = ::DynamicSpawns.Units.findById(unitDef.ID).getClone(unitDef);
-			clonedBlock.m.Units.push(unit);
-		}
-
-		// Add cloned units to the cloned objects LookupMap
-		clonedBlock.addUnits(clonedBlock.getUnits());
-
-		return clonedBlock;
 	}
 
 	function getID()
 	{
-		return this.m.ID;
+		return this.ID;
 	}
 
 	function getUnits()
 	{
-		return this.m.Units;
+		return this.__Units;
 	}
 
 	function getUnitDefs()
 	{
-		return this.m.UnitDefs;
+		return this.UnitDefs;
 	}
 
 	function getAverageCost()	// Average cost over all unit types in this block
@@ -107,14 +63,6 @@ this.unit_block <- inherit(::MSU.BBClass.Empty, {
 		}
 		if (this.getUnits().len() == 0) return cost;
 		return (cost / this.getUnits().len());
-	}
-
-	function addUnits( _units )
-	{
-		foreach (unit in _units)
-		{
-			this.m.LookupMap[unit.getID()] <- unit;
-		}
 	}
 
 	// Returns amount of unitTypes in this block that are stronger than the passed unit (in terms of cost)
@@ -141,20 +89,20 @@ this.unit_block <- inherit(::MSU.BBClass.Empty, {
 
 	function getUnit( _id )
 	{
-		return this.m.LookupMap[_id];
+		return this.__LookupMap[_id];
 	}
 
 	// Returns true if this Block is allowed to spawn another unit and atleast one of its units is also able to be spawned
 	// _spawnProcess = current spawnprocess reference that includes most important variables
 	function canSpawn( _spawnProcess )
 	{
-		if (_spawnProcess.getTotal() < this.m.ReqPartySize) return false;
+		if (_spawnProcess.getTotal() < this.ReqPartySize) return false;
 
 		// RatioMax is ignored if we do not satisfy the RatioMin yet
 		if (this.satisfiesRatioMin(_spawnProcess) && !this.isWithinRatioMax(_spawnProcess)) return false;
 
 		// Atleast one of our referenced units is able to spawn
-		foreach (unit in this.m.Units)
+		foreach (unit in this.__Units)
 		{
 			if (unit.canSpawn(_spawnProcess)) return true;
 		}
@@ -162,24 +110,12 @@ this.unit_block <- inherit(::MSU.BBClass.Empty, {
 		return false;
 	}
 
-	// Returns true if this Block can theortically spawn a unit during this spawn proccess
-	// This is done by checking variables which never change during the spawn process
-	function isValid( _spawnProcess )
-	{
-		if (::Math.round(_spawnProcess.getStartingResources()) < this.m.StartingResourceMin) return false;
-		if (::Math.round(_spawnProcess.getStartingResources()) > this.m.StartingResourceMax) return false;
-		if (_spawnProcess.getWorldDays() < this.m.DaysMin) return false;
-		if (_spawnProcess.getWorldDays() > this.m.DaysMax) return false;
-
-		return true;
-	}
-
 	// Returns true if the ratio of this unitblock would still be below its defined RatioMax if it was to spawn the next unit
 	// _spawnProcess = current spawnprocess reference that includes most important variables
 	function isWithinRatioMax( _spawnProcess )
 	{
 		local referencedTotal = ::Math.max(_spawnProcess.getTotal() + 1.0, _spawnProcess.getParty().getHardMin());
-		local maxAllowed = ::Math.round(this.m.RatioMax * referencedTotal);
+		local maxAllowed = ::Math.round(this.RatioMax * referencedTotal);
 		return (_spawnProcess.getBlockTotal(this.getID()) < maxAllowed);
 	}
 
@@ -193,7 +129,7 @@ this.unit_block <- inherit(::MSU.BBClass.Empty, {
 			referencedTotal = _spawnProcess.getParty().getHardMin();
 		}
 
-		local minRequired = ::Math.ceil(referencedTotal * this.m.RatioMin);	// Using ceil here will make any non-zero RatioMin always force atleast 1 of its units into the spawned party.
+		local minRequired = ::Math.ceil(referencedTotal * this.RatioMin);	// Using ceil here will make any non-zero RatioMin always force atleast 1 of its units into the spawned party.
 		// But the alternative is not consequent/good either. The solution is that you should always use the ReqPartySize or StartingResourceMin alongside that to prevent small parties from spawning exotic units.
 
 		return (_spawnProcess.getBlockTotal(this.getID()) >= minRequired);
@@ -202,7 +138,7 @@ this.unit_block <- inherit(::MSU.BBClass.Empty, {
 	function spawnUnit( _spawnProcess )
 	{
 		local chosenUnit = null;
-		if (this.m.IsRandom)	// Currently this is implemented non-weighted and purely random
+		if (this.IsRandom)	// Currently this is implemented non-weighted and purely random
 		{
 			local possibleSpawns = [];
 			foreach(unit in this.getUnits())
@@ -232,23 +168,23 @@ this.unit_block <- inherit(::MSU.BBClass.Empty, {
 
 	function upgradeUnit( _spawnProcess )
 	{
-		if (this.m.IsRandom) return;	// This should never happen because the canUpgrade check already returns false in these cases
+		if (this.IsRandom) return;	// This should never happen because the canUpgrade check already returns false in these cases
 
 		local ids = ::MSU.Class.WeightedContainer();
 
 		// Ignore the highest tier
-		for (local i = 0; i < this.m.Units.len() - 1; i++)
+		for (local i = 0; i < this.__Units.len() - 1; i++)
 		{
-			local id = this.m.Units[i].getID();
+			local id = this.__Units[i].getID();
 			local count = _spawnProcess.getUnitCount(id, this.getID());
 			if (count > 0)
 			{
-				for (local j = i + 1; j < this.m.Units.len(); j++)	// for loop because the next very unitType could have some requirements (like playerstrength) preventing spawn
+				for (local j = i + 1; j < this.__Units.len(); j++)	// for loop because the next very unitType could have some requirements (like playerstrength) preventing spawn
 				{
-					if (this.m.Units[j].canSpawn(_spawnProcess, this.m.Units[i].getCost()))
+					if (this.__Units[j].canSpawn(_spawnProcess, this.__Units[i].getCost()))
 					{
-						local weight = count + (this.m.Units.len() - i) * 3;	// weight higher for weaker troopTypes and those that already spawned a lot
-						ids.add({ID = id, UpgradeID = this.m.Units[j].getID()}, weight);
+						local weight = count + (this.__Units.len() - i) * 3;	// weight higher for weaker troopTypes and those that already spawned a lot
+						ids.add({ID = id, UpgradeID = this.__Units[j].getID()}, weight);
 						break;	// We are only interested in the closest possible upgrade path, not all of them
 					}
 				}
@@ -261,23 +197,23 @@ this.unit_block <- inherit(::MSU.BBClass.Empty, {
 			local roll = ids.roll();
 			_spawnProcess.decrementUnit(roll.ID, this.getID());
 			_spawnProcess.incrementUnit(roll.UpgradeID, this.getID());
-			_spawnProcess.consumeResources(this.m.LookupMap[roll.UpgradeID].getCost() - this.m.LookupMap[roll.ID].getCost());
-			if (!::DynamicSpawns.Const.Benchmark && ::DynamicSpawns.Const.DetailedLogging ) ::logInfo("**Upgrading - Block: " + this.getID() + " - Unit: " + this.m.LookupMap[roll.ID].getTroop() + " (Cost: " + this.m.LookupMap[roll.ID].getCost() + ") to " + this.m.LookupMap[roll.UpgradeID].getTroop() + " (Cost: " + this.m.LookupMap[roll.UpgradeID].getCost() + ")**\n");
+			_spawnProcess.consumeResources(this.__LookupMap[roll.UpgradeID].getCost() - this.__LookupMap[roll.ID].getCost());
+			if (!::DynamicSpawns.Const.Benchmark && ::DynamicSpawns.Const.DetailedLogging ) ::logInfo("**Upgrading - Block: " + this.getID() + " - Unit: " + this.__LookupMap[roll.ID].getTroop() + " (Cost: " + this.__LookupMap[roll.ID].getCost() + ") to " + this.__LookupMap[roll.UpgradeID].getTroop() + " (Cost: " + this.__LookupMap[roll.UpgradeID].getCost() + ")**\n");
 		}
 	}
 
 	// _spawnInfo is Array of Arrays which counts the spawned troops in this spawnprocess
 	function canUpgrade( _spawnProcess )
 	{
-		if (this.m.IsRandom == true) return false;		// A UnitBlock that is purely random does not support an upgrade system
+		if (this.IsRandom == true) return false;		// A UnitBlock that is purely random does not support an upgrade system
 
-		for (local i = 0; i < this.m.Units.len() - 1; i++)
+		for (local i = 0; i < this.__Units.len() - 1; i++)
 		{
-			if (_spawnProcess.getUnitCount(this.m.Units[i].getID(), this.getID()) > 0)
+			if (_spawnProcess.getUnitCount(this.__Units[i].getID(), this.getID()) > 0)
 			{
-				for (local j = i + 1; j < this.m.Units.len(); j++)	// This requires the unit list to be sorted by cost
+				for (local j = i + 1; j < this.__Units.len(); j++)	// This requires the unit list to be sorted by cost
 				{
-					if (this.m.Units[j].canSpawn(_spawnProcess, this.m.Units[i].getCost())) return true;
+					if (this.__Units[j].canSpawn(_spawnProcess, this.__Units[i].getCost())) return true;
 				}
 			}
 		}
@@ -287,10 +223,10 @@ this.unit_block <- inherit(::MSU.BBClass.Empty, {
 
 	function sort()
 	{
-		this.m.Units.sort(@(a, b) a.getCost() <=> b.getCost());
+		this.__Units.sort(@(a, b) a.getCost() <=> b.getCost());
 	}
 
-// Events
+	// Events
 
 	// This is will not be called if this UnitBlock is InValid and was removed by its Party during this spawn process
 	function onBeforeSpawnStart( _spawnProcess )
@@ -309,5 +245,4 @@ this.unit_block <- inherit(::MSU.BBClass.Empty, {
 	function onSpawnEnd( _spawnProcess )
 	{
 	}
-
-});
+};

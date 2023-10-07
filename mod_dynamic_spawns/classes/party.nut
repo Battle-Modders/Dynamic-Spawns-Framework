@@ -1,97 +1,68 @@
-this.party <- inherit(::MSU.BBClass.Empty, {
-	m = {
+::DynamicSpawns.Class.Party <- class extends ::DynamicSpawns.Class.Spawnable
+{
 	// Required Parameter
-		ID = null,
-		UnitBlockDefs = [],	// Array of Tables that require atleast 'ID' of the used UnitBlocks. Other parameter will overwrite those in the referenced UnitBLock
+	UnitBlockDefs = null;	// Array of Tables that require atleast 'ID' of the used UnitBlocks. Other parameter will overwrite those in the referenced UnitBLock
 
 	// Optional Parameter
-		UpgradeChance = 0.75,	// Chance that this Party will upgrade a unit instead of spawning a new unit when IdealSize is reached
-		StaticUnitIDs = [],		// Array of UnitIDs that are forced to spawn if the Resources allow it. Can have multiples of the same unit. They consume resources
-		DefaultResources = 0,	// If the SpawnProcess is started without ResourceAmount it will use the value defined here. E.g. when spawning SubParties
+	UpgradeChance = null;	// Chance that this Party will upgrade a unit instead of spawning a new unit when IdealSize is reached	
+	StaticUnitIDs = null;		// Array of UnitIDs that are forced to spawn if the Resources allow it. Can have multiples of the same unit. They consume resources
+	DefaultResources = null;	// If the SpawnProcess is started without ResourceAmount it will use the value defined here. E.g. when spawning SubParties
 
-		// Guards
-		HardMin = 0,		// Smallest army size that is allowed for this party to even make sense. Ressources are disregarded while trying to satisfy this. Could maybe be set to 1 be default
-		HardMax = 9000,		// Greatest army size that is allowed for this party to even make sense. All spawning (not upgrading) is stopped when this is reached
-
-		// Vanilla Properties of a Party
-		DefaultFigure = "",			// This Figure will be used if the spawned units couldnt provide a better fitting one
-		MovementSpeedMult = 1.0,	// How fast does this party move on the world map
-		VisibilityMult = 1.0,		// How hard is it to spot this party
-		VisionMult = 1.0,			// How far can this party see
+	// Vanilla Properties of a Party
+	DefaultFigure = null;			// This Figure will be used if the spawned units couldnt provide a better fitting one
+	MovementSpeedMult = null;	// How fast does this party move on the world map
+	VisibilityMult = null;		// How hard is it to spot this party
+	VisionMult = null;			// How far can this party see
 
 	// Private
-		// During Spawnprocess only
-		UnitBlocks = [],		// Array of cloned UnitBlock-Objects
-		StaticUnits = []		// Array of cloned Unit-Objects
-	},
+	// During Spawnprocess only
+	__UnitBlocks = null;		// Array of cloned UnitBlock-Objects
+	__StaticUnits = null;		// Array of cloned Unit-Objects
 
-	function create()
+	constructor( _partyDef )
 	{
+		this.ID = "";
+		this.UnitBlockDefs = [];
+
+		this.UpgradeChance = 0.75;
+		this.StaticUnitIDs = [];
+		this.DefaultResources = 0;
+
+		this.DefaultFigure = "";
+		this.MovementSpeedMult = 1.0;
+		this.VisibilityMult = 1.0;
+		this.VisionMult = 1.0;
+
+		this.__StaticUnits = [];
+
+		this.copyDataFromDef(_partyDef);
 	}
 
-	function init( _partyDef )
+	function init()
 	{
-		this.m.ID = _partyDef.ID;
-		// this.m.DefaultFigure = _partyDef.DefaultFigure;
-
-		foreach (key, value in _partyDef)
+		this.__UnitBlocks = array(this.UnitBlockDefs.len());
+		foreach (i, unitBlockDef in this.UnitBlockDefs)
 		{
-			if (typeof value == "function")
-			{
-				this[key] = value;
-			}
-			else
-			{
-				this.m[key] = value;
-			}
+			this.__UnitBlocks[i] = ::DynamicSpawns.__getObjectFromDef(unitBlockDef, ::DynamicSpawns.UnitBlocks);
+		}
+
+		this.__StaticUnits = array(this.StaticUnitIDs.len());
+		foreach (i, staticUnitID in this.StaticUnitIDs)
+		{
+			this.__StaticUnits[i] = ::DynamicSpawns.__getObjectFromDef(staticUnitID, ::DynamicSpawns.Units);
 		}
 
 		return this;
 	}
 
-	// Returns a copy of this party except Def-Arrays. Those must be provided by _partyDef is required
-	function getClone( _partyDef = null )
-	{
-		local clonedParty = ::new(::DynamicSpawns.Class.Party);
-
-		// Copy all member variables from this party to its clone
-		foreach (key, value in this.m)
-		{
-			// We skip arrays for now as they would only arrive as references which is not real cloning
-			if (typeof value == "array") continue;
-
-			clonedParty.m[key] = value;
-		}
-
-		// Copy all data provided by the _partyDef (e.g. custom HardMin/HardMax) into the clone
-		if (_partyDef != null) clonedParty.init(_partyDef);
-
-		// Create clones of all UnitBlocks needed for this
-		this.m.UnitBlocks = [];
-		foreach (unitBlockDef in this.m.UnitBlockDefs)
-		{
-			local unitBlock = ::DynamicSpawns.UnitBlocks.findById(unitBlockDef.ID).getClone(unitBlockDef);
-			clonedParty.m.UnitBlocks.push(unitBlock);
-		}
-
-		// Create clones of all Static units needed for this
-		foreach ( staticUnitID in this.m.StaticUnitIDs)
-		{
-			local staticUnit = ::DynamicSpawns.Units.findById(staticUnitID).getClone();
-			clonedParty.m.StaticUnits.push(staticUnit.getClone());
-		}
-
-		return clonedParty;
-	}
-
 	function getFigure( _spawnProcess )
 	{
-		local priciestFigure = this.m.DefaultFigure;
-		if (typeof this.m.DefaultFigure == "array") priciestFigure = this.m.DefaultFigure[::Math.rand(0, this.m.DefaultFigure.len() - 1)];
+		local priciestFigure = this.DefaultFigure;
+		if (typeof this.DefaultFigure == "array") priciestFigure = this.DefaultFigure[::Math.rand(0, this.DefaultFigure.len() - 1)];
 		local figurePrice = -9000;
 		foreach (unitBlock in this.getUnitBlocks())
 		{
-			if (unitBlock.m.DeterminesFigure == false) continue;
+			if (unitBlock.DeterminesFigure == false) continue;
 
 			foreach (unit in unitBlock.getUnits())
 			{
@@ -109,27 +80,25 @@ this.party <- inherit(::MSU.BBClass.Empty, {
 
 	function getID()
 	{
-		return this.m.ID;
+		return this.ID;
 	}
 
 	// returns an array of unitblock objects
 	function getUnitBlocks()
 	{
-		return this.m.UnitBlocks;
+		return this.__UnitBlocks;
 	}
 
 	// returns an array of def-tables
 	function getUnitBlockDefs()
 	{
-		return this.m.UnitBlockDefs;
+		return this.UnitBlockDefs;
 	}
 
 	function spawn( _resources, _customHardMin = -1, _customHardMax = -1 )
 	{
-		// ::logWarning("Spawning the party '" + this.m.ID + "' with '" + _resources + "' Resources");
-		local spawnProcess = ::new(::DynamicSpawns.Class.SpawnProcess);
-		spawnProcess.init({ID = this.getID()}, _resources, _customHardMin, _customHardMax);
-		return spawnProcess.spawn();
+		// ::logWarning("Spawning the party '" + this.ID + "' with '" + _resources + "' Resources");
+		return ::DynamicSpawns.Class.SpawnProcess({ID = this.getID()}, _resources, _customHardMin, _customHardMax).spawn();
 	}
 
 	// Returns an unsigned integer that will be used during this spawnProcess as IdealSize
@@ -152,22 +121,22 @@ this.party <- inherit(::MSU.BBClass.Empty, {
 
 	function getHardMin()
 	{
-		return this.m.HardMin;
+		return this.HardMin;
 	}
 
 	function getHardMax()
 	{
-		return this.m.HardMax;
+		return this.HardMax;
 	}
 
 	function getUpgradeChance()
 	{
-		return this.m.UpgradeChance;
+		return this.UpgradeChance;
 	}
 
 	function getStaticUnits()
 	{
-		return this.m.StaticUnits;
+		return this.__StaticUnits;
 	}
 
 	// Returns false if there is a reason why this party is not allowed to spawn anymore. This function only checks for a small subset of all possible reasons.
@@ -207,6 +176,4 @@ this.party <- inherit(::MSU.BBClass.Empty, {
 			unitBlock.onSpawnEnd( _spawnProcess );
 		}
 	}
-
-});
-
+};
