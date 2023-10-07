@@ -76,6 +76,8 @@
 	if (typeof _def == "string")
 	{
 		_def = _dataset.LookupMap[_def];
+		if (_def instanceof ::MSU.Class.WeightedContainer)
+			_def = ::DynamicSpawns.__getObjectFromDef(_def + "_0");
 		return _def.Class(_def).init();
 	}
 

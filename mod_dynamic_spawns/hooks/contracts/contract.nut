@@ -7,7 +7,7 @@
 	local oldAddUnitsToEntity = o.addUnitsToEntity;
 	o.addUnitsToEntity = function( _worldParty, _party, _resources )
 	{
-		local dynamicParty = ::DynamicSpawns.Static.retrieveDynamicParty(_party);
+		local dynamicParty = ::DynamicSpawns.Static.retrieveDynamicParty(_party, _resources);
 		if (dynamicParty != null)    // a dynamicParty was found!
 		{
 			// Minibossify depending on contract difficulty (copy of vanilla code)
