@@ -84,19 +84,20 @@
 	if (_def instanceof _dataset.BaseClass)
 		return (clone _def).init();
 
-	if ("ID" in _def)
+	if ("BaseID" in _def)
 	{
-		local baseDef = _dataset.LookupMap[_def.ID];
+		local baseDef = _dataset.LookupMap[_def.BaseID];
 		::DynamicSpawns.__setClass(baseDef.Class, _def);
 		local ret = _def.Class(baseDef);
 		ret.copyDataFromDef(_def);
+		if (ret.ID == baseDef.ID) ret.ID += ret + "";
 		return ret.init();
 	}
 	else
 	{
 		::DynamicSpawns.__setClass(_dataset.BaseClass, _def);
 		local ret = _def.Class(_def);
-		ret.ID = ret + "";
+		if (ret.ID == "") ret.ID = ret + "";
 		return ret.init();
 	}
 }
