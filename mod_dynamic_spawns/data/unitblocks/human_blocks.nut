@@ -1,82 +1,82 @@
 local unitBlocks = [
 	{
 		ID = "Mercenary.Frontline",
-		UnitDefs = [{ ID = "Human.MercenaryLOW" }, { ID = "Human.Mercenary" }]
+		UnitDefs = [{ BaseID = "Human.MercenaryLOW" }, { BaseID = "Human.Mercenary" }]
 	},
 	{
 		ID = "Mercenary.Ranged",
-		UnitDefs = [{ ID = "Human.MercenaryRanged" }]
+		UnitDefs = [{ BaseID = "Human.MercenaryRanged" }]
 	},
 	{
 		ID = "Mercenary.Elite",
 		UnitDefs = ::MSU.Class.WeightedContainer([
-			[1, { ID = "Human.MasterArcher" }],
-			[1, { ID = "Human.HedgeKnight" }],
-			[1, { ID = "Human.Swordmaster" }]
+			[1, { BaseID = "Human.MasterArcher" }],
+			[1, { BaseID = "Human.HedgeKnight" }],
+			[1, { BaseID = "Human.Swordmaster" }]
 		]),
 		StartingResourceMin = 286	// In Vanilla MasterArcher appear in a group of 286 cost
 	},
 	{
 		ID = "Human.BountyHunter",
-		UnitDefs = [{ ID = "Human.BountyHunter" }]
+		UnitDefs = [{ BaseID = "Human.BountyHunter" }]
 	},
 	{
 		ID = "Human.BountyHunterRanged",
-		UnitDefs = [{ ID = "Human.BountyHunterRanged" }]
+		UnitDefs = [{ BaseID = "Human.BountyHunterRanged" }]
 	},
 	{
 		ID = "Human.Wardogs",
-		UnitDefs = [{ ID = "Human.Wardog" }]
+		UnitDefs = [{ BaseID = "Human.Wardog" }]
 	},
 	{
 		ID = "Human.Slaves",
-		UnitDefs = [{ ID = "Human.Slave" }]
+		UnitDefs = [{ BaseID = "Human.Slave" }]
 	},
 
 // Civilians
 	{
 		ID = "Human.CultistAmbush",
-		UnitDefs = [{ ID = "Human.CultistAmbush" }]
+		UnitDefs = [{ BaseID = "Human.CultistAmbush" }]
 	},
 	{
 		ID = "Human.Peasants",
-		UnitDefs = [{ ID = "Human.Peasant" }]
+		UnitDefs = [{ BaseID = "Human.Peasant" }]
 	},
 	{
 		ID = "Human.SouthernPeasants",
-		UnitDefs = [{ ID = "Human.SouthernPeasant" }]
+		UnitDefs = [{ BaseID = "Human.SouthernPeasant" }]
 	},
 	{
 		ID = "Human.PeasantsArmed",
-		UnitDefs = [{ ID = "Human.PeasantArmed" }]
+		UnitDefs = [{ BaseID = "Human.PeasantArmed" }]
 	},
 
 // Caravans
 	{
 		ID = "Human.CaravanDonkeys",
-		UnitDefs = [{ ID = "Human.CaravanDonkey" }]
+		UnitDefs = [{ BaseID = "Human.CaravanDonkey" }]
 	},
 	{
 		ID = "Human.CaravanHands",
-		UnitDefs = [{ ID = "Human.CaravanHand" }]
+		UnitDefs = [{ BaseID = "Human.CaravanHand" }]
 	},
 	{
 		ID = "Human.CaravanGuards",
-		UnitDefs = [{ ID = "Human.CaravanGuard" }, { ID = "Human.Mercenary" }]		// In Vanilla they also allow ranged mercenaries here
+		UnitDefs = [{ BaseID = "Human.CaravanGuard" }, { BaseID = "Human.Mercenary" }]		// In Vanilla they also allow ranged mercenaries here
 	},
 
 // Militia
 	{
 		ID = "Human.MilitiaFrontline",
-		UnitDefs = [{ ID = "Human.Militia" }, { ID = "Human.MilitiaVeteran" }]
+		UnitDefs = [{ BaseID = "Human.Militia" }, { BaseID = "Human.MilitiaVeteran" }]
 	},
 	{
 		ID = "Human.MilitiaRanged",
-		UnitDefs = [{ ID = "Human.MilitiaRanged" }]
+		UnitDefs = [{ BaseID = "Human.MilitiaRanged" }]
 	},
 	{
 		ID = "Human.MilitiaCaptain",
-		UnitDefs = [{ ID = "Human.MilitiaCaptain" }],
+		UnitDefs = [{ BaseID = "Human.MilitiaCaptain" }],
 		StartingResourceMin = 144	// In Vanilla they appear in a group of 144 cost
 	}
 ]

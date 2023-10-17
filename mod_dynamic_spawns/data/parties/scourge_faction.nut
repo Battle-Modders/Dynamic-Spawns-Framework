@@ -7,13 +7,13 @@ local parties = [
 		VisibilityMult = 1.0,
 		VisionMult = 1.0,
 		UnitBlockDefs = [
-			{ ID = "Zombie.Frontline", 	RatioMin = 0.00, RatioMax = 1.00, DeterminesFigure = true},
-			{ ID = "Zombie.Ghost", 		RatioMin = 0.00, RatioMax = 0.12, ReqPartySize = 18},
-			{ ID = "Beast.Ghouls", 		RatioMin = 0.00, RatioMax = 0.20, ReqPartySize = 20},	// Vanilla does not spawn T3 Ghouls. We allow it here
-			{ ID = "Undead.Frontline", 	RatioMin = 0.15, RatioMax = 1.00, DeterminesFigure = true},
-			{ ID = "Undead.Backline", 	RatioMin = 0.09, RatioMax = 0.35, DeterminesFigure = true},
-			{ ID = "Scourge.Boss", 		RatioMin = 0.00, RatioMax = 0.12, DeterminesFigure = true, ReqPartySize = 17, StartingResourceMin = 350},
-			{ ID = "Undead.Vampire", 	RatioMin = 0.00, RatioMax = 0.11, DeterminesFigure = true, ReqPartySize = 18},
+			{ BaseID = "Zombie.Frontline", 	RatioMin = 0.00, RatioMax = 1.00, DeterminesFigure = true},
+			{ BaseID = "Zombie.Ghost", 		RatioMin = 0.00, RatioMax = 0.12, ReqPartySize = 18},
+			{ BaseID = "Beast.Ghouls", 		RatioMin = 0.00, RatioMax = 0.20, ReqPartySize = 20},	// Vanilla does not spawn T3 Ghouls. We allow it here
+			{ BaseID = "Undead.Frontline", 	RatioMin = 0.15, RatioMax = 1.00, DeterminesFigure = true},
+			{ BaseID = "Undead.Backline", 	RatioMin = 0.09, RatioMax = 0.35, DeterminesFigure = true},
+			{ BaseID = "Scourge.Boss", 		RatioMin = 0.00, RatioMax = 0.12, DeterminesFigure = true, ReqPartySize = 17, StartingResourceMin = 350},
+			{ BaseID = "Undead.Vampire", 	RatioMin = 0.00, RatioMax = 0.11, DeterminesFigure = true, ReqPartySize = 18},
 		]
 	}
 ]

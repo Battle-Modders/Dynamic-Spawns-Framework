@@ -1,48 +1,48 @@
 local unitBlocks = [
 	{
 		ID = "Southern.Frontline",
-		//UnitDefs = [{ ID = "Conscript" }, { ID = "Conscript++" }]
-		UnitDefs = [{ ID = "Southern.Conscript" }]
+		//UnitDefs = [{ BaseID = "Conscript" }, { BaseID = "Conscript++" }]
+		UnitDefs = [{ BaseID = "Southern.Conscript" }]
 	},
 	{
 		ID = "Southern.Backline",
-		//UnitDefs = [{ ID = "Conscript_Polearm" }, { ID = "Conscript_Polearm++" }]
-		UnitDefs = [{ ID = "Southern.Conscript_Polearm" }]
+		//UnitDefs = [{ BaseID = "Conscript_Polearm" }, { BaseID = "Conscript_Polearm++" }]
+		UnitDefs = [{ BaseID = "Southern.Conscript_Polearm" }]
 	},
 	{
 		ID = "Southern.Assassins",
-		// UnitDefs = [{ ID = "Assassin" }, { ID = "Assassin++" }]
-		UnitDefs = [{ ID = "Southern.Assassin" }]
+		// UnitDefs = [{ BaseID = "Assassin" }, { BaseID = "Assassin++" }]
+		UnitDefs = [{ BaseID = "Southern.Assassin" }]
 	},
 	{
 		ID = "Southern.Officers",
-		//UnitDefs = [{ ID = "Officer" }, { ID = "Officer++" }]
-		UnitDefs = [{ ID = "Southern.Officer" }],
+		//UnitDefs = [{ BaseID = "Officer" }, { BaseID = "Officer++" }]
+		UnitDefs = [{ BaseID = "Southern.Officer" }],
 		StartingResourceMin = 250	// In Vanilla they appear in a group of 250 cost
 	},
 	{
 		ID = "Southern.Ranged",
-		//UnitDefs = [{ ID = "Gunner" }, { ID = "Gunner++" }]
-		UnitDefs = [{ ID = "Southern.Gunner" }]
+		//UnitDefs = [{ BaseID = "Gunner" }, { BaseID = "Gunner++" }]
+		UnitDefs = [{ BaseID = "Southern.Gunner" }]
 	},
 	{
 		ID = "Southern.Siege",
-		UnitDefs = [{ ID = "Southern.Mortar" }],
+		UnitDefs = [{ BaseID = "Southern.Mortar" }],
 		StartingResourceMin = 340	// In Vanilla they appear in a group of 340 cost
 	},
 	{
 		ID = "Southern.Engineer",
-		UnitDefs = [{ ID = "Southern.Engineer" }]
+		UnitDefs = [{ BaseID = "Southern.Engineer" }]
 	},
 	{
 		ID = "Southern.Slaves",
-		UnitDefs = [{ ID = "Southern.Slave" }]
+		UnitDefs = [{ BaseID = "Southern.Slave" }]
 	},
 
 // Caravan
 	{
 		ID = "Southern.CaravanDonkeys",
-		UnitDefs = [{ ID = "Southern.CaravanDonkey" }]
+		UnitDefs = [{ BaseID = "Southern.CaravanDonkey" }]
 	}
 ]
 
