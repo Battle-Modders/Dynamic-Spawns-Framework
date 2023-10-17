@@ -79,7 +79,7 @@
 	{
 		foreach (key, value in _def)
 		{
-			if (key == "Class") continue;
+			if (key == "Class" || key == "BaseID") continue;
 			this[key] = value;
 		}
 	}
