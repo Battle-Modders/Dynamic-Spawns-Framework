@@ -69,21 +69,21 @@ local units = [
 		Troop = "Necromancer",
 		Figure = ["figure_necromancer_01", "figure_necromancer_02"],
 		Cost = 30 + 12,
-		SubPartyDef = { ID = "SubPartyNomad", HardMin = 1, HardMax = 1 }
+		SubPartyDef = { BaseID = "SubPartyNomad", HardMin = 1, HardMax = 1 }
 	},
 	{
 		ID = "Undead.NecromancerNN",
 		Troop = "Necromancer",
 		Figure = ["figure_necromancer_01", "figure_necromancer_02"],
 		Cost = 30 + 12 + 12,
-		SubPartyDef = { ID = "SubPartyNomad", HardMin = 2, HardMax = 2 }
+		SubPartyDef = { BaseID = "SubPartyNomad", HardMin = 2, HardMax = 2 }
 	},
 	{
 		ID = "Undead.NecromancerNNN",
 		Troop = "Necromancer",
 		Figure = ["figure_necromancer_01", "figure_necromancer_02"],
 		Cost = 30 + 12 + 12 + 12,
-		SubPartyDef = { ID = "SubPartyNomad", HardMin = 3, HardMax = 3 }
+		SubPartyDef = { BaseID = "SubPartyNomad", HardMin = 3, HardMax = 3 }
 	}
 
 // Bodyguards for Necromancer

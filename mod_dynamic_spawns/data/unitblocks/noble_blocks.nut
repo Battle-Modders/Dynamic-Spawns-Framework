@@ -1,35 +1,35 @@
 local unitBlocks = [
 	{
 		ID = "Noble.Frontline",
-		UnitDefs = [{ ID = "Noble.Footman" }]
+		UnitDefs = [{ BaseID = "Noble.Footman" }]
 	},
 	{
 		ID = "Noble.Backline",
-		UnitDefs = [{ ID = "Noble.Billman" }]
+		UnitDefs = [{ BaseID = "Noble.Billman" }]
 	},
 	{
 		ID = "Noble.Ranged",
-		UnitDefs = [{ ID = "Noble.Arbalester" }]
+		UnitDefs = [{ BaseID = "Noble.Arbalester" }]
 	},
 	{
 		ID = "Noble.Flank",
-		UnitDefs = [{ ID = "Noble.ArmoredWardog" }]
+		UnitDefs = [{ BaseID = "Noble.ArmoredWardog" }]
 	},
 	{
 		ID = "Noble.Support",
-		UnitDefs = [{ ID = "Noble.StandardBearer" }],
+		UnitDefs = [{ BaseID = "Noble.StandardBearer" }],
 		StartingResourceMin = 200	// In Vanilla they appear in a group of 240 cost
 	},
 	{
 		ID = "Noble.Officer",
-		UnitDefs = [{ ID = "Noble.Sergeant" }],
+		UnitDefs = [{ BaseID = "Noble.Sergeant" }],
 		StartingResourceMin = 200	// In Vanilla they appear in a group of 235 cost in noble caravans
 	},
 	{
 		ID = "Noble.Elite",
 		UnitDefs = ::MSU.Class.WeightedContainer([
-			[1, { ID = "Noble.Zweihander" }],
-			[1, { ID = "Noble.Knight" }]
+			[1, { BaseID = "Noble.Zweihander" }],
+			[1, { BaseID = "Noble.Knight" }]
 		]),
 		StartingResourceMin = 325	// In Vanilla they appear in a group of 235 cost in noble caravans
 	},
@@ -37,7 +37,7 @@ local unitBlocks = [
 // Caravan
 	{
 		ID = "Noble.Donkeys",
-		UnitDefs = [{ ID = "Noble.CaravanDonkey" }]
+		UnitDefs = [{ BaseID = "Noble.CaravanDonkey" }]
 	}
 ]
 

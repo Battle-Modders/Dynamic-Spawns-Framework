@@ -7,8 +7,8 @@ local parties = [
 		VisibilityMult = 1.0,
 		VisionMult = 1.0,
 		UnitBlockDefs = [
-			{ ID = "Orc.Young", 	RatioMin = 0.00, RatioMax = 1.00, DeterminesFigure = true},
-			{ ID = "Orc.Warrior", 	RatioMin = 0.00, RatioMax = 0.09, StartingResourceMin = 150}
+			{ BaseID = "Orc.Young", 	RatioMin = 0.00, RatioMax = 1.00, DeterminesFigure = true},
+			{ BaseID = "Orc.Warrior", 	RatioMin = 0.00, RatioMax = 0.09, StartingResourceMin = 150}
 		]
 	},
 	{	// This is currently the same as OrcRoamers. I couldn't spot differences in Vanilla
@@ -19,8 +19,8 @@ local parties = [
 		VisibilityMult = 1.0,
 		VisionMult = 1.0,
 		UnitBlockDefs = [
-			{ ID = "Orc.Young", 	RatioMin = 0.00, RatioMax = 1.00, DeterminesFigure = true},
-			{ ID = "Orc.Warrior", 	RatioMin = 0.00, RatioMax = 0.09, StartingResourceMin = 150}
+			{ BaseID = "Orc.Young", 	RatioMin = 0.00, RatioMax = 1.00, DeterminesFigure = true},
+			{ BaseID = "Orc.Warrior", 	RatioMin = 0.00, RatioMax = 0.09, StartingResourceMin = 150}
 		]
 	},
 	{
@@ -31,11 +31,11 @@ local parties = [
 		VisibilityMult = 1.0,
 		VisionMult = 1.0,
 		UnitBlockDefs = [
-			{ ID = "Orc.Young", 	RatioMin = 0.15, RatioMax = 1.00, DeterminesFigure = true, StartingResourceMax = 250},
-			{ ID = "Orc.Young", 	RatioMin = 0.00, RatioMax = 0.65, DeterminesFigure = true, StartingResourceMin = 250},	// Lategame Parties will have less Young in them
-			{ ID = "Orc.Berserker", RatioMin = 0.00, RatioMax = 0.45, DeterminesFigure = true, StartingResourceMin = 125},
-			{ ID = "Orc.Warrior", 	RatioMin = 0.00, RatioMax = 0.80, DeterminesFigure = true, StartingResourceMin = 150},
-			{ ID = "Orc.Boss", 		RatioMin = 0.00, RatioMax = 0.08, DeterminesFigure = true, StartingResourceMin = 210}		// Vanilla never spawns more than one Boss here
+			{ BaseID = "Orc.Young", 	RatioMin = 0.15, RatioMax = 1.00, DeterminesFigure = true, StartingResourceMax = 250},
+			{ BaseID = "Orc.Young", 	RatioMin = 0.00, RatioMax = 0.65, DeterminesFigure = true, StartingResourceMin = 250},	// Lategame Parties will have less Young in them
+			{ BaseID = "Orc.Berserker", RatioMin = 0.00, RatioMax = 0.45, DeterminesFigure = true, StartingResourceMin = 125},
+			{ BaseID = "Orc.Warrior", 	RatioMin = 0.00, RatioMax = 0.80, DeterminesFigure = true, StartingResourceMin = 150},
+			{ BaseID = "Orc.Boss", 		RatioMin = 0.00, RatioMax = 0.08, DeterminesFigure = true, StartingResourceMin = 210}		// Vanilla never spawns more than one Boss here
 		]
 	},
 	{
@@ -46,10 +46,10 @@ local parties = [
 		VisibilityMult = 1.0,
 		VisionMult = 1.0,
 		UnitBlockDefs = [
-			{ ID = "Orc.Young", 	RatioMin = 0.15, RatioMax = 1.00},
-			{ ID = "Orc.Berserker", RatioMin = 0.00, RatioMax = 0.45, StartingResourceMin = 125},
-			{ ID = "Orc.Warrior", 	RatioMin = 0.00, RatioMax = 0.80, StartingResourceMin = 150},
-			{ ID = "Orc.Boss", 		RatioMin = 0.00, RatioMax = 0.08, StartingResourceMin = 210}		// Vanilla never spawns more than one Boss here
+			{ BaseID = "Orc.Young", 	RatioMin = 0.15, RatioMax = 1.00},
+			{ BaseID = "Orc.Berserker", RatioMin = 0.00, RatioMax = 0.45, StartingResourceMin = 125},
+			{ BaseID = "Orc.Warrior", 	RatioMin = 0.00, RatioMax = 0.80, StartingResourceMin = 150},
+			{ BaseID = "Orc.Boss", 		RatioMin = 0.00, RatioMax = 0.08, StartingResourceMin = 210}		// Vanilla never spawns more than one Boss here
 		]
 	},
 	{
@@ -60,10 +60,10 @@ local parties = [
 		VisibilityMult = 1.0,
 		VisionMult = 1.0,
 		UnitBlockDefs = [
-			{ ID = "Orc.Young", 	RatioMin = 0.15, RatioMax = 0.80},
-			{ ID = "Orc.Berserker", RatioMin = 0.00, RatioMax = 0.50},
-			{ ID = "Orc.Warrior", 	RatioMin = 0.00, RatioMax = 0.80},
-			{ ID = "Orc.Boss", 		RatioMin = 0.01, RatioMax = 0.05}				// Vanilla never spawns more than one Boss here
+			{ BaseID = "Orc.Young", 	RatioMin = 0.15, RatioMax = 0.80},
+			{ BaseID = "Orc.Berserker", RatioMin = 0.00, RatioMax = 0.50},
+			{ BaseID = "Orc.Warrior", 	RatioMin = 0.00, RatioMax = 0.80},
+			{ BaseID = "Orc.Boss", 		RatioMin = 0.01, RatioMax = 0.05}				// Vanilla never spawns more than one Boss here
 		]
 	},
 	{	// In Vanilla these never spawn OrcYoungLOW but here they do
@@ -74,7 +74,7 @@ local parties = [
 		VisibilityMult = 1.0,
 		VisionMult = 1.0,
 		UnitBlockDefs = [
-			{ ID = "Orc.Young", 		DeterminesFigure = true }
+			{ BaseID = "Orc.Young", 		DeterminesFigure = true }
 		]
 	},
 	{	// In Vanilla these never spawn OrcYoungLOW but here they do
@@ -85,8 +85,8 @@ local parties = [
 		VisibilityMult = 1.0,
 		VisionMult = 1.0,
 		UnitBlockDefs = [
-			{ ID = "Orc.Young", 		DeterminesFigure = true },
-			{ ID = "Orc.Berserker", 	DeterminesFigure = true }
+			{ BaseID = "Orc.Young", 		DeterminesFigure = true },
+			{ BaseID = "Orc.Berserker", 	DeterminesFigure = true }
 		]
 	},
 	{
@@ -97,7 +97,7 @@ local parties = [
 		VisibilityMult = 1.0,
 		VisionMult = 1.0,
 		UnitBlockDefs = [
-			{ ID = "Orc.Berserker" }
+			{ BaseID = "Orc.Berserker" }
 		]
 	}
 ]

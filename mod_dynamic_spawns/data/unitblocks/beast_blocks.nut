@@ -2,88 +2,88 @@ local unitBlocks = [
 	// Purebred Beasts
 	{
 		ID = "Beast.Direwolves",
-		UnitDefs = [{ ID = "Beast.Direwolf" }, { ID = "Beast.DirewolfHIGH" }]
+		UnitDefs = [{ BaseID = "Beast.Direwolf" }, { BaseID = "Beast.DirewolfHIGH" }]
 	},
 	{
 		ID = "Beast.GhoulLowOnly",
-		UnitDefs = [{ ID = "Beast.GhoulLOW" }]
+		UnitDefs = [{ BaseID = "Beast.GhoulLOW" }]
 	},
 	{
 		ID = "Beast.Ghouls",
-		UnitDefs = [{ ID = "Beast.GhoulLOW" }, { ID = "Beast.Ghoul", StartingResourceMin = 125 }, { ID = "Beast.GhoulHIGH", StartingResourceMin = 175 }]
+		UnitDefs = [{ BaseID = "Beast.GhoulLOW" }, { BaseID = "Beast.Ghoul", StartingResourceMin = 125 }, { BaseID = "Beast.GhoulHIGH", StartingResourceMin = 175 }]
 	},
 	{
 		ID = "Beast.Lindwurms",
-		UnitDefs = [{ ID = "Beast.Lindwurm" }]
+		UnitDefs = [{ BaseID = "Beast.Lindwurm" }]
 	},
 	{
 		ID = "Beast.Unholds",
-		UnitDefs = [{ ID = "Beast.Unhold" }]
+		UnitDefs = [{ BaseID = "Beast.Unhold" }]
 	},
 	{
 		ID = "Beast.UnholdsFrost",
-		UnitDefs = [{ ID = "Beast.UnholdFrost" }]
+		UnitDefs = [{ BaseID = "Beast.UnholdFrost" }]
 	},
 	{
 		ID = "Beast.UnholdsBog",
-		UnitDefs = [{ ID = "Beast.UnholdBog" }]
+		UnitDefs = [{ BaseID = "Beast.UnholdBog" }]
 	},
 	{
 		ID = "Beast.Spiders",
-		UnitDefs = [{ ID = "Beast.Spider" }]
+		UnitDefs = [{ BaseID = "Beast.Spider" }]
 	},
 	{
 		ID = "Beast.Alps",
-		UnitDefs = [{ ID = "Beast.Alp" }]
+		UnitDefs = [{ BaseID = "Beast.Alp" }]
 	},
 	{
 		ID = "Beast.Schrats",
-		UnitDefs = [{ ID = "Beast.Schrat" }]
+		UnitDefs = [{ BaseID = "Beast.Schrat" }]
 	},
 	// Vanilla Kraken skipped at this point
 	{
 		ID = "Beast.Hyenas",
-		UnitDefs = [{ ID = "Beast.Hyena" }, { ID = "Beast.HyenaHIGH" }]
+		UnitDefs = [{ BaseID = "Beast.Hyena" }, { BaseID = "Beast.HyenaHIGH" }]
 	},
 	{
 		ID = "Beast.Serpents",
-		UnitDefs = [{ ID = "Beast.Serpent" }]
+		UnitDefs = [{ BaseID = "Beast.Serpent" }]
 	},
 	{
 		ID = "Beast.SandGolems",
-		UnitDefs = [{ ID = "Beast.SandGolem" }, { ID = "Beast.SandGolemMEDIUM" }, { ID = "Beast.SandGolemHIGH" }]
+		UnitDefs = [{ BaseID = "Beast.SandGolem" }, { BaseID = "Beast.SandGolemMEDIUM" }, { BaseID = "Beast.SandGolemHIGH" }]
 	},
 
 // Mixed Beasts
 	{
 		ID = "Beast.HexenNoBodyguards",
-		UnitDefs = [{ ID = "Beast.Hexe" }]
+		UnitDefs = [{ BaseID = "Beast.Hexe" }]
 	},
 	{
 		ID = "Beast.HexenWithBodyguards",
-		UnitDefs = [{ ID = "Beast.Hexe" }, { ID = "Beast.HexeOneSpider" }, { ID = "Beast.HexeTwoSpider" }, { ID = "Beast.HexeOneDirewolf" }, { ID = "Beast.HexeTwoDirewolf" }]
+		UnitDefs = [{ BaseID = "Beast.Hexe" }, { BaseID = "Beast.HexeOneSpider" }, { BaseID = "Beast.HexeTwoSpider" }, { BaseID = "Beast.HexeOneDirewolf" }, { BaseID = "Beast.HexeTwoDirewolf" }]
 	},
 	{
 		ID = "Beast.HexenNoSpiders",
-		UnitDefs = [{ ID = "Beast.Hexe" }, { ID = "Beast.HexeOneDirewolf" }, { ID = "Beast.HexeTwoDirewolf" }]
+		UnitDefs = [{ BaseID = "Beast.Hexe" }, { BaseID = "Beast.HexeOneDirewolf" }, { BaseID = "Beast.HexeTwoDirewolf" }]
 	},
 	{
 		ID = "Beast.HexenBandits",    // Spawn in HexenFights
-		UnitDefs = [{ ID = "Bandit.Raider" }]
+		UnitDefs = [{ BaseID = "Bandit.Raider" }]
 	},
 	{
 		ID = "Beast.HexenBanditsRanged",    // Spawn in HexenFights. In Vanilla they only ever spawn a single marksman alongside several raiders. Never more
-		UnitDefs = [{ ID = "Bandit.Marksman" }]
+		UnitDefs = [{ BaseID = "Bandit.Marksman" }]
 	},
 
 // Bodyguards
 	{
 		ID = "Beast.SpiderBodyguards",
-		UnitDefs = [{ ID = "Beast.SpiderBodyguard" }]
+		UnitDefs = [{ BaseID = "Beast.SpiderBodyguard" }]
 	},
 	{
 		ID = "Beast.DirewolfBodyguards",
-		UnitDefs = [{ ID = "Beast.DirewolfBodyguard" }]
+		UnitDefs = [{ BaseID = "Beast.DirewolfBodyguard" }]
 	}
 ]
 

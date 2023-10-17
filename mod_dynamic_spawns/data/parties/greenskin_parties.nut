@@ -7,14 +7,14 @@ local parties = [
 		VisibilityMult = 1.0,
 		VisionMult = 1.0,
 		UnitBlockDefs = [
-			{ ID = "Greenskin.GoblinsFoot", RatioMin = 0.00, RatioMax = 0.50, DeterminesFigure = true},
-			{ ID = "Goblin.Flank", 			RatioMin = 0.00, RatioMax = 0.50, DeterminesFigure = true},
-			{ ID = "Goblin.Boss", 			RatioMin = 0.00, RatioMax = 0.13, StartingResourceMin = 350, DeterminesFigure = true},
+			{ BaseID = "Greenskin.GoblinsFoot", RatioMin = 0.00, RatioMax = 0.50, DeterminesFigure = true},
+			{ BaseID = "Goblin.Flank", 			RatioMin = 0.00, RatioMax = 0.50, DeterminesFigure = true},
+			{ BaseID = "Goblin.Boss", 			RatioMin = 0.00, RatioMax = 0.13, StartingResourceMin = 350, DeterminesFigure = true},
 
-			{ ID = "Orc.Young", 			RatioMin = 0.00, RatioMax = 0.80, DeterminesFigure = true},
-			{ ID = "Orc.Warrior", 			RatioMin = 0.00, RatioMax = 0.50, DeterminesFigure = true},
-			{ ID = "Orc.Berserker", 		RatioMin = 0.00, RatioMax = 0.33, DeterminesFigure = true},
-			{ ID = "Orc.Boss", 				RatioMin = 0.00, RatioMax = 0.07, StartingResourceMin = 350, DeterminesFigure = true}
+			{ BaseID = "Orc.Young", 			RatioMin = 0.00, RatioMax = 0.80, DeterminesFigure = true},
+			{ BaseID = "Orc.Warrior", 			RatioMin = 0.00, RatioMax = 0.50, DeterminesFigure = true},
+			{ BaseID = "Orc.Berserker", 		RatioMin = 0.00, RatioMax = 0.33, DeterminesFigure = true},
+			{ BaseID = "Orc.Boss", 				RatioMin = 0.00, RatioMax = 0.07, StartingResourceMin = 350, DeterminesFigure = true}
 		]
 	}
 ]

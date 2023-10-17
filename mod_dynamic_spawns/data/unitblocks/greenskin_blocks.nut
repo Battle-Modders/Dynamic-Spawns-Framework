@@ -2,8 +2,8 @@ local unitBlocks = [
 	{
 		ID = "Greenskin.GoblinsFoot",
 		UnitDefs = ::MSU.Class.WeightedContainer([
-			[1, { ID = "Goblin.Skirmisher" }],
-			[1, { ID = "Goblin.Ambusher" }]
+			[1, { BaseID = "Goblin.Skirmisher" }],
+			[1, { BaseID = "Goblin.Ambusher" }]
 		])
 	}
 ]
