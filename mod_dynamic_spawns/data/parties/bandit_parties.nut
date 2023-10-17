@@ -8,9 +8,9 @@ local parties = [
 		VisibilityMult = 1.0,
 		VisionMult = 1.0,
 		UnitBlockDefs = [
-			{ ID = "Bandit.Frontline", RatioMin = 0.00, RatioMax = 0.50},
-			{ ID = "Bandit.Ranged", RatioMin = 0.45, RatioMax = 1.00},
-			{ ID = "Bandit.Dogs", RatioMin = 0.00, RatioMax = 0.45}
+			{ BaseID = "Bandit.Frontline", RatioMin = 0.00, RatioMax = 0.50},
+			{ BaseID = "Bandit.Ranged", RatioMin = 0.45, RatioMax = 1.00},
+			{ BaseID = "Bandit.Dogs", RatioMin = 0.00, RatioMax = 0.45}
 		]
 	},
 	{
@@ -21,9 +21,9 @@ local parties = [
 		VisibilityMult = 1.0,
 		VisionMult = 1.0,
 		UnitBlockDefs = [
-			{ ID = "Bandit.Frontline", RatioMin = 0.50, RatioMax = 1.00, DeterminesFigure = true},
-			{ ID = "Bandit.Ranged", RatioMin = 0.00, RatioMax = 0.40},
-			{ ID = "Bandit.Dogs", RatioMin = 0.00, RatioMax = 0.20}
+			{ BaseID = "Bandit.Frontline", RatioMin = 0.50, RatioMax = 1.00, DeterminesFigure = true},
+			{ BaseID = "Bandit.Ranged", RatioMin = 0.00, RatioMax = 0.40},
+			{ BaseID = "Bandit.Dogs", RatioMin = 0.00, RatioMax = 0.20}
 		]
 	},
 	{
@@ -34,10 +34,10 @@ local parties = [
 		VisibilityMult = 1.0,
 		VisionMult = 1.0,
 		UnitBlockDefs = [
-			{ ID = "Bandit.Frontline", RatioMin = 0.50, RatioMax = 1.00, DeterminesFigure = true},
-			{ ID = "Bandit.Ranged", RatioMin = 0.00, RatioMax = 0.35},
-			{ ID = "Bandit.Elite", RatioMin = 0.00, RatioMax = 0.35},
-			{ ID = "Bandit.Boss", RatioMin = 0.00, RatioMax = 0.11, StartingResourceMin = 150, DeterminesFigure = true},
+			{ BaseID = "Bandit.Frontline", RatioMin = 0.50, RatioMax = 1.00, DeterminesFigure = true},
+			{ BaseID = "Bandit.Ranged", RatioMin = 0.00, RatioMax = 0.35},
+			{ BaseID = "Bandit.Elite", RatioMin = 0.00, RatioMax = 0.35},
+			{ BaseID = "Bandit.Boss", RatioMin = 0.00, RatioMax = 0.11, StartingResourceMin = 150, DeterminesFigure = true},
 		]
 	},
 	{
@@ -48,10 +48,10 @@ local parties = [
 		VisibilityMult = 1.0,
 		VisionMult = 1.0,
 		UnitBlockDefs = [
-			{ ID = "Bandit.Frontline", RatioMin = 0.50, RatioMax = 1.00},
-			{ ID = "Bandit.Ranged", RatioMin = 0.00, RatioMax = 0.25},
-			{ ID = "Bandit.Elite", RatioMin = 0.00, RatioMax = 0.35},
-			{ ID = "Bandit.Boss", RatioMin = 0.0, RatioMax = 0.11, StartingResourceMin = 150}
+			{ BaseID = "Bandit.Frontline", RatioMin = 0.50, RatioMax = 1.00},
+			{ BaseID = "Bandit.Ranged", RatioMin = 0.00, RatioMax = 0.25},
+			{ BaseID = "Bandit.Elite", RatioMin = 0.00, RatioMax = 0.35},
+			{ BaseID = "Bandit.Boss", RatioMin = 0.0, RatioMax = 0.11, StartingResourceMin = 150}
 		]
 	},
 	{
@@ -62,10 +62,10 @@ local parties = [
 		VisibilityMult = 1.0,
 		VisionMult = 1.0,
 		UnitBlockDefs = [
-			{ ID = "Bandit.Frontline", RatioMin = 0.50, RatioMax = 1.00},
-			{ ID = "Bandit.Ranged", RatioMin = 0.00, RatioMax = 0.25},
-			{ ID = "Bandit.Elite", RatioMin = 0.00, RatioMax = 0.35},
-			{ ID = "Bandit.Boss", RatioMin = 0.01, RatioMax = 0.11}				// One boss is always guaranteed
+			{ BaseID = "Bandit.Frontline", RatioMin = 0.50, RatioMax = 1.00},
+			{ BaseID = "Bandit.Ranged", RatioMin = 0.00, RatioMax = 0.25},
+			{ BaseID = "Bandit.Elite", RatioMin = 0.00, RatioMax = 0.35},
+			{ BaseID = "Bandit.Boss", RatioMin = 0.01, RatioMax = 0.11}				// One boss is always guaranteed
 		]
 	},
 	{
@@ -76,7 +76,7 @@ local parties = [
 		VisibilityMult = 1.0,
 		VisionMult = 1.0,
 		UnitBlockDefs = [
-			{ ID = "Bandit.DisguisedDirewolf" }
+			{ BaseID = "Bandit.DisguisedDirewolf" }
 		]
 	}
 ]

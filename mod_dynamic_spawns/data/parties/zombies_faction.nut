@@ -7,7 +7,7 @@ local parties = [
 		VisibilityMult = 1.0,
 		VisionMult = 0.8,
 		UnitBlockDefs = [
-			{ ID = "Zombie.Frontline", 	RatioMin = 0.00, RatioMax = 1.00, DeterminesFigure = true}
+			{ BaseID = "Zombie.Frontline", 	RatioMin = 0.00, RatioMax = 1.00, DeterminesFigure = true}
 		]
 	},
 	{
@@ -18,7 +18,7 @@ local parties = [
 		VisibilityMult = 0.75,
 		VisionMult = 1.0,
 		UnitBlockDefs = [
-			{ ID = "Zombie.Ghost" }
+			{ BaseID = "Zombie.Ghost" }
 		]
 	},
 	{
@@ -29,8 +29,8 @@ local parties = [
 		VisibilityMult = 1.0,
 		VisionMult = 0.8,
 		UnitBlockDefs = [
-			{ ID = "Zombie.Frontline", 		RatioMin = 0.00, RatioMax = 1.00, DeterminesFigure = true},
-			{ ID = "Beast.GhoulLowOnly", 	RatioMin = 0.10, RatioMax = 0.30},
+			{ BaseID = "Zombie.Frontline", 		RatioMin = 0.00, RatioMax = 1.00, DeterminesFigure = true},
+			{ BaseID = "Beast.GhoulLowOnly", 	RatioMin = 0.10, RatioMax = 0.30},
 		]
 	},
 	{
@@ -41,8 +41,8 @@ local parties = [
 		VisibilityMult = 1.0,
 		VisionMult = 0.8,
 		UnitBlockDefs = [
-			{ ID = "Zombie.Frontline", 		RatioMin = 0.00, RatioMax = 1.00, DeterminesFigure = true},
-			{ ID = "Zombie.Ghost", 			RatioMin = 0.12, RatioMax = 0.35},
+			{ BaseID = "Zombie.Frontline", 		RatioMin = 0.00, RatioMax = 1.00, DeterminesFigure = true},
+			{ BaseID = "Zombie.Ghost", 			RatioMin = 0.12, RatioMax = 0.35},
 		]
 	},
 	{
@@ -53,9 +53,9 @@ local parties = [
 		VisibilityMult = 1.0,
 		VisionMult = 1.0,
 		UnitBlockDefs = [
-			{ ID = "Zombie.Frontline", 						RatioMin = 0.50, RatioMax = 1.00},
-			{ ID = "Zombie.Ghost", 							RatioMin = 0.00, RatioMax = 0.20},
-			{ ID = "Zombie.NecromancerWithBodyguards", 		RatioMin = 0.04, RatioMax = 0.09, DeterminesFigure = true},
+			{ BaseID = "Zombie.Frontline", 						RatioMin = 0.50, RatioMax = 1.00},
+			{ BaseID = "Zombie.Ghost", 							RatioMin = 0.00, RatioMax = 0.20},
+			{ BaseID = "Zombie.NecromancerWithBodyguards", 		RatioMin = 0.04, RatioMax = 0.09, DeterminesFigure = true},
 		]
 	},
 	{
@@ -66,9 +66,9 @@ local parties = [
 		VisibilityMult = 1.0,
 		VisionMult = 1.0,
 		UnitBlockDefs = [
-			{ ID = "Zombie.Southern", 					RatioMin = 0.65, RatioMax = 1.00},
-			{ ID = "Zombie.NecromancerWithNomads", 		RatioMin = 0.04, RatioMax = 0.09, DeterminesFigure = true},
-			{ ID = "Zombie.Elite", 						RatioMin = 0.00, RatioMax = 0.12, StartingResourceMin = 200},
+			{ BaseID = "Zombie.Southern", 					RatioMin = 0.65, RatioMax = 1.00},
+			{ BaseID = "Zombie.NecromancerWithNomads", 		RatioMin = 0.04, RatioMax = 0.09, DeterminesFigure = true},
+			{ BaseID = "Zombie.Elite", 						RatioMin = 0.00, RatioMax = 0.12, StartingResourceMin = 200},
 		]
 	},
 	{	// Only un-armored zombies
@@ -79,7 +79,7 @@ local parties = [
 		VisibilityMult = 1.0,
 		VisionMult = 0.8,
 		UnitBlockDefs = [
-			{ ID = "Zombie.Light" }
+			{ BaseID = "Zombie.Light" }
 		]
 	},
 
@@ -88,30 +88,30 @@ local parties = [
 		ID = "SubPartyYeoman",
 		HardMin = 1,
 		StaticUnitDefs = [
-			{ ID = "Undead.YeomanBodyguard" }
+			{ BaseID = "Undead.YeomanBodyguard" }
 		]
 	},
 	{
 		ID = "SubPartyKnight",
 		HardMin = 1,
 		StaticUnitDefs = [
-			{ ID = "Undead.FallenHeroBodyguard" }
+			{ BaseID = "Undead.FallenHeroBodyguard" }
 		]
 	},
 	{
 		ID = "SubPartyYeomanKnight",
 		HardMin = 2,
 		StaticUnitDefs = [
-			{ ID = "Undead.YeomanBodyguard" },
-			{ ID = "Undead.FallenHeroBodyguard" }
+			{ BaseID = "Undead.YeomanBodyguard" },
+			{ BaseID = "Undead.FallenHeroBodyguard" }
 		]
 	},
 	{
 		ID = "SubPartyKnightKnight",
 		HardMin = 2,
 		StaticUnitDefs = [
-			{ ID = "Undead.FallenHeroBodyguard" },
-			{ ID = "Undead.FallenHeroBodyguard" }
+			{ BaseID = "Undead.FallenHeroBodyguard" },
+			{ BaseID = "Undead.FallenHeroBodyguard" }
 		]
 	},
 	{	// The amount is set from outside

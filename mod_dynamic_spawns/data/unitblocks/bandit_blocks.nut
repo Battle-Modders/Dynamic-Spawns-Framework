@@ -2,34 +2,34 @@ local unitBlocks = [
 	{
 		ID = "Bandit.Frontline",
 		UnitDefs = [
-			{ ID = "Bandit.Thug", StartingResourceMax = 320 }, 	// Thugs stop spawning alltogether by the time that Hedgeknights appear
-			{ ID = "Bandit.RaiderLOW", StartingResourceMin = 100, StartingResourceMax = 175 },
-			{ ID = "Bandit.Raider", StartingResourceMin = 175, }]
+			{ BaseID = "Bandit.Thug", StartingResourceMax = 320 }, 	// Thugs stop spawning alltogether by the time that Hedgeknights appear
+			{ BaseID = "Bandit.RaiderLOW", StartingResourceMin = 100, StartingResourceMax = 175 },
+			{ BaseID = "Bandit.Raider", StartingResourceMin = 175, }]
 	},
 	{
 		ID = "Bandit.Ranged",
-		UnitDefs = [{ ID = "Bandit.Poacher" }, { ID = "Bandit.Marksman", StartingResourceMin = 100 }]
+		UnitDefs = [{ BaseID = "Bandit.Poacher" }, { BaseID = "Bandit.Marksman", StartingResourceMin = 100 }]
 	},
 	{
 		ID = "Bandit.Dogs",
-		UnitDefs = [{ ID = "Human.Wardog" }]
+		UnitDefs = [{ BaseID = "Human.Wardog" }]
 	},
 	{
 		ID = "Bandit.Elite",
 		StartingResourceMin = 320,
 		UnitDefs = ::MSU.Class.WeightedContainer([
-			[1, { ID = "Human.MasterArcher" }],
-			[1, { ID = "Human.HedgeKnight" }],
-			[1, { ID = "Human.Swordmaster" }]
+			[1, { BaseID = "Human.MasterArcher" }],
+			[1, { BaseID = "Human.HedgeKnight" }],
+			[1, { BaseID = "Human.Swordmaster" }]
 		])
 	},
 	{
 		ID = "Bandit.Boss",
-		UnitDefs = [{ ID = "Bandit.Leader" }]
+		UnitDefs = [{ BaseID = "Bandit.Leader" }]
 	},
 	{
 		ID = "Bandit.DisguisedDirewolf",
-		UnitDefs = [{ ID = "Bandit.RaiderWolf" }]
+		UnitDefs = [{ BaseID = "Bandit.RaiderWolf" }]
 	}
 ]
 
