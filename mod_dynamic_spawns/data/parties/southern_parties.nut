@@ -9,12 +9,12 @@ local parties = [
 		VisibilityMult = 1.0,
 		VisionMult = 1.0,
 		UnitBlockDefs = [
-			{ ID = "Southern.Frontline",    RatioMin = 0.50, RatioMax = 0.90, DeterminesFigure = true},			// Vanilla: doesn't care about size
-			{ ID = "Southern.Backline",     RatioMin = 0.10, RatioMax = 0.40 },				// Vanilla: doesn't care about size
-			{ ID = "Southern.Ranged",       RatioMin = 0.00, RatioMax = 0.30 },		// Vanilla: doesn't care about size
-			{ ID = "Southern.Assassins",    RatioMin = 0.00, RatioMax = 0.13, ReqPartySize = 7 },		// Vanilla: Start spawning at 8+
-			{ ID = "Southern.Officers",     RatioMin = 0.00, RatioMax = 0.08, ReqPartySize = 5, DeterminesFigure = true},		// Vanilla: Start spawning at 15+
-			{ ID = "Southern.Siege",        RatioMin = 0.00, RatioMax = 0.07, ReqPartySize = 16 }		// Vanilla: Start spawning at 19+
+			{ BaseID = "Southern.Frontline",    RatioMin = 0.50, RatioMax = 0.90, DeterminesFigure = true},			// Vanilla: doesn't care about size
+			{ BaseID = "Southern.Backline",     RatioMin = 0.10, RatioMax = 0.40 },				// Vanilla: doesn't care about size
+			{ BaseID = "Southern.Ranged",       RatioMin = 0.00, RatioMax = 0.30 },		// Vanilla: doesn't care about size
+			{ BaseID = "Southern.Assassins",    RatioMin = 0.00, RatioMax = 0.13, ReqPartySize = 7 },		// Vanilla: Start spawning at 8+
+			{ BaseID = "Southern.Officers",     RatioMin = 0.00, RatioMax = 0.08, ReqPartySize = 5, DeterminesFigure = true},		// Vanilla: Start spawning at 15+
+			{ BaseID = "Southern.Siege",        RatioMin = 0.00, RatioMax = 0.07, ReqPartySize = 16 }		// Vanilla: Start spawning at 19+
 		]
 	},
 	{
@@ -25,14 +25,14 @@ local parties = [
 		VisibilityMult = 1.0,
 		VisionMult = 0.25,
 		StaticUnitDefs = [
-			{ ID = "Southern.CaravanDonkey" }
+			{ BaseID = "Southern.CaravanDonkey" }
 		],
 		UnitBlockDefs = [
-			{ ID = "Southern.Frontline",        RatioMin = 0.15, RatioMax = 1.00 },
-			{ ID = "Southern.Slaves",           RatioMin = 0.00, RatioMax = 0.25 },
-			{ ID = "Southern.Backline",         RatioMin = 0.10, RatioMax = 0.40 },
-			{ ID = "Southern.Officers",         RatioMin = 0.00, RatioMax = 0.08, ReqPartySize = 14 },
-			{ ID = "Southern.CaravanDonkeys",   RatioMin = 0.01, RatioMax = 0.12, ReqPartySize = 14 }   // Vanilla: Second starts spawning at 14, then 16+
+			{ BaseID = "Southern.Frontline",        RatioMin = 0.15, RatioMax = 1.00 },
+			{ BaseID = "Southern.Slaves",           RatioMin = 0.00, RatioMax = 0.25 },
+			{ BaseID = "Southern.Backline",         RatioMin = 0.10, RatioMax = 0.40 },
+			{ BaseID = "Southern.Officers",         RatioMin = 0.00, RatioMax = 0.08, ReqPartySize = 14 },
+			{ BaseID = "Southern.CaravanDonkeys",   RatioMin = 0.01, RatioMax = 0.12, ReqPartySize = 14 }   // Vanilla: Second starts spawning at 14, then 16+
 		]
 		// In Vanilla this party is also able to spawn just with mercenaries. But this is so rare that I chose to not try to mirror that behavior here
 	},
@@ -44,12 +44,12 @@ local parties = [
 		VisibilityMult = 1.0,
 		VisionMult = 0.25,
 		StaticUnitDefs = [
-			{ ID = "Southern.CaravanDonkey" }
+			{ BaseID = "Southern.CaravanDonkey" }
 		],
 		UnitBlockDefs = [
-			{ ID = "Southern.Frontline",        RatioMin = 0.35, RatioMax = 1.00 },
-			// { ID = "Southern.Slaves",           RatioMin = 0.00, RatioMax = 0.25 },     // This is new. I find Slaves seen as a trade good a nice touch for player escorted southern caravans
-			{ ID = "Southern.CaravanDonkeys",   RatioMin = 0.35, RatioMax = 0.50, ReqPartySize = 3 }
+			{ BaseID = "Southern.Frontline",        RatioMin = 0.35, RatioMax = 1.00 },
+			// { BaseID = "Southern.Slaves",           RatioMin = 0.00, RatioMax = 0.25 },     // This is new. I find Slaves seen as a trade good a nice touch for player escorted southern caravans
+			{ BaseID = "Southern.CaravanDonkeys",   RatioMin = 0.35, RatioMax = 0.50, ReqPartySize = 3 }
 		]
 		// In Vanilla this party is also able to spawn just with mercenaries. But this is so rare that I chose to not try to mirror that behavior here
 	},
@@ -61,7 +61,7 @@ local parties = [
 		VisibilityMult = 1.0,
 		VisionMult = 1.0,
 		UnitBlockDefs = [
-			{ ID = "Southern.Slaves",           RatioMin = 0.00, RatioMax = 1.00 }
+			{ BaseID = "Southern.Slaves",           RatioMin = 0.00, RatioMax = 1.00 }
 		]
 	},
 	{
@@ -72,7 +72,7 @@ local parties = [
 		VisibilityMult = 1.0,
 		VisionMult = 1.0,
 		UnitBlockDefs = [
-			{ ID = "Human.Slaves",           RatioMin = 0.00, RatioMax = 1.00 }
+			{ BaseID = "Human.Slaves",           RatioMin = 0.00, RatioMax = 1.00 }
 		]
 	},
 	{
@@ -83,7 +83,7 @@ local parties = [
 		VisibilityMult = 1.0,
 		VisionMult = 1.0,
 		UnitBlockDefs = [
-			{ ID = "Southern.Assassins",           RatioMin = 0.00, RatioMax = 1.00 }
+			{ BaseID = "Southern.Assassins",           RatioMin = 0.00, RatioMax = 1.00 }
 		]
 	},
 
@@ -93,7 +93,7 @@ local parties = [
 		HardMin = 2,
 		HardMax = 2,
 		UnitBlockDefs = [
-			{ ID = "Southern.Engineer"}
+			{ BaseID = "Southern.Engineer"}
 		]
 	}
 ]

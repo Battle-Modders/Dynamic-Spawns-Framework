@@ -1,35 +1,35 @@
 local unitBlocks = [
 	{
 		ID = "Barbarian.Frontline",
-		UnitDefs = [{ ID = "Barbarian.Thrall" }, { ID = "Barbarian.Marauder", StartingResourceMin = 125 }, { ID = "Barbarian.Chosen", StartingResourceMin = 200 }]
+		UnitDefs = [{ BaseID = "Barbarian.Thrall" }, { BaseID = "Barbarian.Marauder", StartingResourceMin = 125 }, { BaseID = "Barbarian.Chosen", StartingResourceMin = 200 }]
 	},
 	{
 		ID = "Barbarian.Support",
-		UnitDefs = [{ ID = "Barbarian.Drummer" }],
+		UnitDefs = [{ BaseID = "Barbarian.Drummer" }],
 		StartingResourceMin = 200	// In Vanilla they start appearing in a group of 210 cost alongside 15 thralls
 
 	},
 	{
 		ID = "Barbarian.Dogs",
-		UnitDefs = [{ ID = "Barbarian.Warhound" }]
+		UnitDefs = [{ BaseID = "Barbarian.Warhound" }]
 	},
 	{
 		ID = "Barbarian.Beastmaster",
-		UnitDefs = [{ ID = "Barbarian.BeastmasterU" }, { ID = "Barbarian.BeastmasterF" }, { ID = "Barbarian.BeastmasterUU" }, { ID = "Barbarian.BeastmasterFF" }],
+		UnitDefs = [{ BaseID = "Barbarian.BeastmasterU" }, { BaseID = "Barbarian.BeastmasterF" }, { BaseID = "Barbarian.BeastmasterUU" }, { BaseID = "Barbarian.BeastmasterFF" }],
 		StartingResourceMin = 200	// In Vanilla they appear in a group of 195 cost
 	},
 	{
 		ID = "Barbarian.HunterFrontline",
-		UnitDefs = [{ ID = "Barbarian.Thrall" }]
+		UnitDefs = [{ BaseID = "Barbarian.Thrall" }]
 	},
 
 	{
 		ID = "Barbarian.Unholds",
-		UnitDefs = [{ ID = "Barbarian.Unhold" }]
+		UnitDefs = [{ BaseID = "Barbarian.Unhold" }]
 	},
 	{
 		ID = "Barbarian.UnholdsFrost",
-		UnitDefs = [{ ID = "Barbarian.UnholdFrost" }]
+		UnitDefs = [{ BaseID = "Barbarian.UnholdFrost" }]
 	}
 ]
 
