@@ -39,6 +39,7 @@ local units = [
 		Troop = "Necromancer",
 		Figure = ["figure_necromancer_01", "figure_necromancer_02"],
 		Cost = 30 + 12,
+		StartingResourceMin = 100, // In Vanilla they appear in a group of 100 cost
 		SubPartyDef = {ID = "SubPartyYeoman"}
 	},
 	{
@@ -46,6 +47,7 @@ local units = [
 		Troop = "Necromancer",
 		Figure = ["figure_necromancer_01", "figure_necromancer_02"],
 		Cost = 30 + 24,
+		StartingResourceMin = 320, // In Vanilla they appear in a group of 320 cost
 		SubPartyDef = {ID = "SubPartyKnight"}
 	},
 	{
@@ -53,6 +55,7 @@ local units = [
 		Troop = "Necromancer",
 		Figure = ["figure_necromancer_01", "figure_necromancer_02"],
 		Cost = 30 + 12 + 24,
+		StartingResourceMin = 360, // In Vanilla they appear in a group of 415 cost
 		SubPartyDef = {ID = "SubPartyYeomanKnight"}
 	},
 	{
@@ -60,6 +63,7 @@ local units = [
 		Troop = "Necromancer",
 		Figure = ["figure_necromancer_01", "figure_necromancer_02"],
 		Cost = 30 + 24 + 24,
+		StartingResourceMin = 420, // In Vanilla they appear in a group of 415 cost
 		SubPartyDef = {ID = "SubPartyKnightKnight"}
 	},
 
@@ -69,6 +73,7 @@ local units = [
 		Troop = "Necromancer",
 		Figure = ["figure_necromancer_01", "figure_necromancer_02"],
 		Cost = 30 + 12,
+		StartingResourceMin = 110,
 		SubPartyDef = { ID = "SubPartyNomad", HardMin = 1, HardMax = 1 }
 	},
 	{
@@ -76,6 +81,7 @@ local units = [
 		Troop = "Necromancer",
 		Figure = ["figure_necromancer_01", "figure_necromancer_02"],
 		Cost = 30 + 12 + 12,
+		StartingResourceMin = 130,
 		SubPartyDef = { ID = "SubPartyNomad", HardMin = 2, HardMax = 2 }
 	},
 	{
@@ -83,6 +89,7 @@ local units = [
 		Troop = "Necromancer",
 		Figure = ["figure_necromancer_01", "figure_necromancer_02"],
 		Cost = 30 + 12 + 12 + 12,
+		StartingResourceMin = 170,
 		SubPartyDef = { ID = "SubPartyNomad", HardMin = 3, HardMax = 3 }
 	}
 
@@ -125,31 +132,36 @@ local units = [
 		ID = "Undead.SkeletonMedium",
 		Troop = "SkeletonMedium",
 		Figure = "figure_skeleton_02",
-		Cost = 20
+		StartingResourceMin = 125,
+		Cost = 20,
 	},
 	{
 		ID = "Undead.SkeletonMediumPolearm",
 		Troop = "SkeletonMediumPolearm",
 		Figure = "figure_skeleton_02",
+		StartingResourceMin = 125,
 		Cost = 25
 	},
 	{
 		ID = "Undead.SkeletonHeavy",
 		Troop = "SkeletonHeavy",
 		Figure = "figure_skeleton_03",
+		StartingResourceMin = 175,
 		Cost = 35
 	},
 	{
 		ID = "Undead.SkeletonHeavyPolearm",
 		Troop = "SkeletonHeavyPolearm",
 		Figure = "figure_skeleton_03",
+		StartingResourceMin = 175,
 		Cost = 35
 	},
 	{
 		ID = "Undead.SkeletonPriest",
 		Troop = "SkeletonPriest",
 		Figure = "figure_skeleton_04",
-		Cost = 40
+		Cost = 40,
+		StartingResourceMin = 225
 	},
 	{
 		ID = "Undead.SkeletonPriestH",

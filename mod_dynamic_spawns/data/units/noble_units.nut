@@ -23,24 +23,28 @@ local units = [
 		ID = "Noble.StandardBearer",
 		Troop = "StandardBearer",
 		Cost = 20,
-		Figure = "figure_noble_02"
+		Figure = "figure_noble_02",
+		StartingResourceMin = 200	// In Vanilla they appear in a group of 240 cost
 	},
 	{
 		ID = "Noble.Sergeant",
 		Troop = "Sergeant",
 		Cost = 25,
-		Figure = "figure_noble_02"
+		Figure = "figure_noble_02",
+		StartingResourceMin = 200	// In Vanilla they appear in a group of 235 cost in noble caravans
 	},
 	{
 		ID = "Noble.Zweihander",
 		Troop = "Greatsword",
-		Cost = 25
+		Cost = 25,
+		StartingResourceMin = 325	// In Vanilla they appear in a group of 235 cost in noble caravans
 	},
 	{
 		ID = "Noble.Knight",
 		Troop = "Knight",
 		Cost = 35,
-		Figure = "figure_noble_03"
+		Figure = "figure_noble_03",
+		StartingResourceMin = 325	// In Vanilla they appear in a group of 235 cost in noble caravans
 	},
 
 	{   // This already exists under human_units but noble caravans use a different figure

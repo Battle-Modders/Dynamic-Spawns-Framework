@@ -33,19 +33,22 @@ local units = [
 		ID = "Nomad.DesertStalker",
 		Troop = "DesertStalker",
 		Figure = "figure_nomad_05",
-		Cost = 40
+		Cost = 40,
+		StartingResourceMin = 350	// In Vanilla Executioner appear in a group of 350 cost
 	},
 	{
 		ID = "Nomad.Executioner",
 		Troop = "Executioner",
 		Figure = "figure_nomad_05",
-		Cost = 40
+		Cost = 40,
+		StartingResourceMin = 350	// In Vanilla Executioner appear in a group of 350 cost
 	},
 	{
 		ID = "Nomad.DesertDevil",
 		Troop = "DesertDevil",
 		Figure = "figure_nomad_05",
-		Cost = 40
+		Cost = 40,
+		StartingResourceMin = 350	// In Vanilla Executioner appear in a group of 350 cost
 	}
 ]
 

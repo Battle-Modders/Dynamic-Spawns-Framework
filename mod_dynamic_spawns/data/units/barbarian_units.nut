@@ -49,12 +49,14 @@ local units = [
 	{
 		ID = "Barbarian.BeastmasterU",
 		Troop = "BarbarianBeastmaster",	// Usually it's 1 Beastmaster for 1-2 Unholds. In one case vanilla spawns 3 Unholds for one Beastmaster. And in one case Vanilla spawns 3 Beastmaster for 4 Unholds. I would disregard these.
+		StartingResourceMin = 200, // In Vanilla they appear in a group of 195 cost,
 		Cost = 15 + 55,
 		SubPartyDef = {ID = "OneUnhold"}
 	},
 	{
 		ID = "Barbarian.BeastmasterUU",
 		Troop = "BarbarianBeastmaster",	// Usually it's 1 Beastmaster for 1-2 Unholds. In one case vanilla spawns 3 Unholds for one Beastmaster. And in one case Vanilla spawns 3 Beastmaster for 4 Unholds. I would disregard these.
+		StartingResourceMin = 400,
 		Cost = 15 + 55 + 55,
 		SubPartyDef = {ID = "TwoUnhold"}
 	},
@@ -62,11 +64,13 @@ local units = [
 		ID = "Barbarian.BeastmasterF",
 		Troop = "BarbarianBeastmaster",	// Usually it's 1 Beastmaster for 1-2 Unholds. In one case vanilla spawns 3 Unholds for one Beastmaster. And in one case Vanilla spawns 3 Beastmaster for 4 Unholds. I would disregard these.
 		Cost = 15 + 75,
+		StartingResourceMin = 200, // In Vanilla they appear in a group of 195 cost
 		SubPartyDef = {ID = "OneFrostUnhold"}
 	},
 	{
 		ID = "Barbarian.BeastmasterFF",
 		Troop = "BarbarianBeastmaster",	// Usually it's 1 Beastmaster for 1-2 Unholds. In one case vanilla spawns 3 Unholds for one Beastmaster. And in one case Vanilla spawns 3 Beastmaster for 4 Unholds. I would disregard these.
+		StartingResourceMin = 430,
 		Cost = 15 + 75 + 75,
 		SubPartyDef = {ID = "TwoFrostUnhold"}
 	}
