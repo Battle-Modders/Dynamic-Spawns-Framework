@@ -5,6 +5,7 @@
 
 	// Optional Parameter
 	UpgradeChance = null;	// Chance that this Party will upgrade a unit instead of spawning a new unit when IdealSize is reached
+	IdealSize = null;
 	StaticUnitDefs = null;	// Array of unitdefs that are forced to spawn if the Resources allow it. Can have multiples of the same unit. They consume resources
 	DefaultResources = null;	// If the SpawnProcess is started without ResourceAmount it will use the value defined here. E.g. when spawning SubParties
 
@@ -107,6 +108,9 @@
 	// Returns an unsigned integer that will be used during this spawnProcess as IdealSize
 	function generateIdealSize( _spawnProcess, _isLocation )
 	{
+		if (this.IdealSize != null)
+			return this.IdealSize;
+
 		local idealSize = this.getReferencedBrotherAmount();
 		if (_isLocation) idealSize *= 1.5;
 		return ::Math.ceil(idealSize);
