@@ -133,7 +133,7 @@
 	function spawn( _resources, _customHardMin = -1, _customHardMax = -1 )
 	{
 		// ::logWarning("Spawning the party '" + this.ID + "' with '" + _resources + "' Resources");
-		return ::DynamicSpawns.Class.SpawnProcess({ID = this.getID()}, _resources, _customHardMin, _customHardMax).spawn();
+		return ::DynamicSpawns.Class.SpawnProcess(this, _resources, _customHardMin, _customHardMax).spawn();
 	}
 
 	// Returns an unsigned integer that will be used during this spawnProcess as IdealSize

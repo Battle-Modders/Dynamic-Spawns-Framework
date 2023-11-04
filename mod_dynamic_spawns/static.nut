@@ -14,7 +14,7 @@
 {
 	_resources *= ::MSU.Math.randf(0.8, 1.0);	// This accounts for vanilla choosing a random party composition allowing for picking slightly weaker aswell
 
-	local spawnProcess = ::DynamicSpawns.Class.SpawnProcess({ID = _dynamicParty.getID()}, _resources);
+	local spawnProcess = ::DynamicSpawns.Class.SpawnProcess(_dynamicParty, _resources);
 	local spawnedUnits = spawnProcess.spawn();
 
 	local party = spawnProcess.getParty();
@@ -48,7 +48,7 @@
 	_resources *= ::MSU.Math.randf(0.8, 1.0);	// This accounts for the vanilla function picking a random party between 0.7 and 1.0 cost
 
 	// ::logWarning("Spawning the party '" + this.m.ID + "' with '" + _resources + "' Resources");
-	local spawnProcess = ::DynamicSpawns.Class.SpawnProcess({ID = _dynamicParty.getID()}, _resources, _worldParty.isLocation());
+	local spawnProcess = ::DynamicSpawns.Class.SpawnProcess(_dynamicParty, _resources, _worldParty.isLocation());
 	local spawnedUnits = spawnProcess.spawn();
 
 	foreach (unit in spawnProcess.spawn())
@@ -71,7 +71,7 @@
 {
 	_resources *= ::MSU.Math.randf(0.8, 1.0);	// This accounts for vanilla choosing a random party with cost between 0.7 and 1.0 of resources given
 
-	local spawnProcess = ::DynamicSpawns.Class.SpawnProcess({ID = _dynamicParty.getID()}, _resources, false);
+	local spawnProcess = ::DynamicSpawns.Class.SpawnProcess(_dynamicParty, _resources, false);
 
 	foreach (unit in spawnProcess.spawn())
 	{
