@@ -93,8 +93,8 @@
 	else
 	{
 		::DynamicSpawns.__setClass(_dataset.BaseClass, _def);
-		local ret = _def.Class(_def).init();
+		local ret = _def.Class(_def);
 		ret.ID = ret + "";
-		return ret;
+		return ret.init();
 	}
 }

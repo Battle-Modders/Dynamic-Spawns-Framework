@@ -10,6 +10,11 @@
 	StartingResources = null;		// Resource that this spawnProcess started with
 	IdealSize = null;
 
+	__SpawnAffordableBlocks = null;
+	__UpgradeAffordableBlocks = null;
+	__SubSpawnProcesses = null;
+	__MainSpawnProcess = null;
+
 	constructor( _partyDef, _availableResources = -1, _isLocation = false, _customHardMin = null, _customHardMax = null )
 	{
 		this.SpawnInfo = {};
@@ -19,7 +24,11 @@
 		this.StartingResources = 0;
 		this.IdealSize = 6;
 
-		this.Party = ::DynamicSpawns.__getObjectFromDef(_partyDef, ::DynamicSpawns.Parties);
+		this.__SpawnAffordableBlocks = ::MSU.Class.WeightedContainer();
+		this.__UpgradeAffordableBlocks = ::MSU.Class.WeightedContainer();
+		this.__SubSpawnProcesses = {};
+
+		this.Party = typeof _partyDef == "table" ? ::DynamicSpawns.__getObjectFromDef(_partyDef, ::DynamicSpawns.Parties) : _partyDef;
 
 		if (_customHardMin != null) this.Party.HardMin = _customHardMin;
 		if (_customHardMax != null) this.Party.HardMax = _customHardMax;
@@ -29,6 +38,13 @@
 
 		this.IdealSize = this.getParty().generateIdealSize(this, _isLocation);	// Locations currently have a 50% higher IdealSize compared to roaming parties
 		if (this.getIdealSize() <= 0) this.IdealSize = 1;	// To prevent division by zero later on. But realistically you should never have such a low idealSize here
+
+		foreach (subparty in this.getParty().getSubParties())
+		{
+			local subSpawnProcess = ::DynamicSpawns.Class.SpawnProcess(subparty, this.Resources);
+			this.__SubSpawnProcesses[subparty.getID()] <- subSpawnProcess;
+			subSpawnProcess.__MainSpawnProcess = this.weakref();
+		}
 
 		// Initialize SpawnInfo
 		this.SpawnInfo["StaticUnits"] <- {	// HardCoded entry just for static units
@@ -63,6 +79,208 @@
 		return this;
 	}
 
+	function getCategoryTotal( _id )
+	{
+		return this.__SubSpawnProcesses[_id].getTotal();
+	}
+
+	function doSubSpawnCycle( _force = false )
+	{
+		this.__SpawnAffordableBlocks.clear();
+		this.__UpgradeAffordableBlocks.clear();
+
+		local ratioSpawn = false;	// A ratioSpawn is a forced spawn for a block because its RatioMin is not satisfied anymore
+		foreach (subParty in this.getParty().getSubParties())
+		{
+			if (_force || subParty.canSpawn(this.__SubSpawnProcesses[subParty.getID()]))
+			{
+				// ::logWarning("The Category " + subParty.getID() + " is able to spawn!");
+				if (subParty.satisfiesRatioMin(this) == false)	// An unsatisfied RatioMin results into an immediate forced Spawn
+				{
+					// ::logWarning("Force Spawn!");
+					this.__SubSpawnProcesses[subParty.getID()].doCycle(true);
+					ratioSpawn = true;
+					break;
+				}
+
+				// Weighted-Spawns: Every UnitBlock that doesn't surpass their RatioMax if they got the next spawn compete against each other for a random spawn
+				local totalCount = ::Math.max(this.getTotal() + 1, this.getParty().getHardMin());
+				local weight = subParty.RatioMax - (this.getCategoryTotal(subParty.getID()) / totalCount.tofloat());
+				if (weight <= 0)
+				{
+					if (this.getTopPartyTotal() >= this.getIdealSize() * (1.0 + 1.0 - this.getParty().getUpgradeChance())) weight = 0; // TODO: Improve the logic on this line
+					else weight = 0.00000001;
+				}
+				this.__SpawnAffordableBlocks.add(subParty, weight);
+			}
+
+			if (this.getAboveIdealSize() >= 0 && subParty.canUpgrade(this.__SubSpawnProcesses[subParty.getID()]))
+			{
+				local upgradeWeight = subParty.getUpgradeWeight(this.__SubSpawnProcesses[subParty.getID()]) ;
+				this.__UpgradeAffordableBlocks.add(subParty, upgradeWeight);	// Weight = maximum amount of times this block can currently upgrade troops (favors blocks with many tiers)
+			}
+		}
+
+		if (ratioSpawn)
+			return true;
+
+		if (this.__SpawnAffordableBlocks.len() == 0 && this.__UpgradeAffordableBlocks.len() == 0) // Usually happens after ratioSpawn happened
+			return false;
+
+		if (!::DynamicSpawns.Const.Benchmark && ::DynamicSpawns.Const.DetailedLogging )
+		{
+			if (this.__SpawnAffordableBlocks.len() > 0)
+			{
+				local str = "-- SpawnAffordableCategories: ";
+				this.__SpawnAffordableBlocks.apply(function(_unitBlock, _weight) {
+					str += _unitBlock.getID() + " (" + _weight + "), ";
+					return _weight;
+				});
+				::logWarning(str.slice(0, -2));
+			}
+
+			if (this.__UpgradeAffordableBlocks.len() > 0)
+			{
+				local str = "-- UpgradeAffordableCategories: ";
+				this.__UpgradeAffordableBlocks.apply(function(_unitBlock, _weight) {
+					str += _unitBlock.getID() + " (" + _weight + "), ";
+					return _weight;
+				});
+				::logWarning(str.slice(0, -2) + "\n");
+			}
+		}
+
+		if (this.__UpgradeAffordableBlocks.len() > 0 && (this.__SpawnAffordableBlocks.len() == 0 || ::MSU.Math.randf( 0.0, 1.0 ) < (this.getParty().getUpgradeChance() * this.getTotal() / this.getIdealSize())))
+		{
+			// ::logWarning("Upgrade: - Resources: " + this.getResources() + " : TotalCount = " + this.getTotal());
+			local subParty = this.__UpgradeAffordableBlocks.roll();
+			if (subParty != null)
+			{
+				local ret = this.__SubSpawnProcesses[subParty.getID()].doCycle(true);
+				if (!ret) ::logInfo(subParty.getID() + ": returned " + ret + " during upgrading");
+				return ret;
+			}
+			else if (this.__SpawnAffordableBlocks.len() == 0)
+			{
+				return false;
+			}
+		}
+		else if (this.__SpawnAffordableBlocks.len() > 0)
+		{
+			// ::logWarning("Spawn: - Resources: " + this.getResources() + " : TotalCount = " + this.getTotal());
+			local subParty = this.__SpawnAffordableBlocks.roll();
+			if (subParty != null)
+			{
+				local ret = this.__SubSpawnProcesses[subParty.getID()].doCycle(true);
+				if (!ret) ::logInfo(subParty.getID() + ": returned " + ret + " during spawning");
+				return ret;
+			}
+			else if (this.__UpgradeAffordableBlocks.len() == 0) return false;
+		}
+	}
+
+	function getAboveIdealSize()
+	{
+		return this.__MainSpawnProcess != null ? this.__MainSpawnProcess.getAboveIdealSize() : this.getTotal() - this.getIdealSize();
+	}
+
+	function getRatioToIdealSize()
+	{
+		return this.__MainSpawnProcess != null ? this.__MainSpawnProcess.getRatioToIdealSize() : this.getTotal().tofloat() / this.getIdealSize();
+	}
+
+	function doCycle( _force = false )
+	{
+		if (this.__SubSpawnProcesses.len() != 0)
+			return this.doSubSpawnCycle(_force);
+
+		this.__SpawnAffordableBlocks.clear();
+		this.__UpgradeAffordableBlocks.clear();
+
+		local ratioSpawn = false;	// A ratioSpawn is a forced spawn for a block because its RatioMin is not satisfied anymore
+		foreach (unitBlock in this.getParty().getUnitBlocks())
+		{
+			if (_force || (this.getParty().canSpawn(this) && unitBlock.canSpawn(this)))
+			{
+				// ::logWarning("The Block " + unitBlock.getID() + " is able to spawn!");
+				if (unitBlock.satisfiesRatioMin(this) == false)	// An unsatisfied RatioMin results into an immediate forced Spawn
+				{
+					// ::logWarning("Force Spawn!");
+					unitBlock.spawnUnit(this);
+					ratioSpawn = true;
+					break;
+				}
+
+				// Weighted-Spawns: Every UnitBlock that doesn't surpass their RatioMax if they got the next spawn compete against each other for a random spawn
+				local totalCount = ::Math.max(this.getTotal() + 1, this.getParty().getHardMin());
+				local weight = unitBlock.RatioMax - (this.getBlockTotal(unitBlock.getID()) / totalCount.tofloat());
+				if (weight <= 0)
+				{
+					if (this.getTopPartyTotal() >= this.getIdealSize() * (1.0 + 1.0 - this.getParty().getUpgradeChance())) weight = 0; // TODO: Improve the logic on this line
+					else weight = 0.00000001;
+				}
+				this.__SpawnAffordableBlocks.add(unitBlock, weight);
+			}
+
+			if (this.getAboveIdealSize() >= 0 && unitBlock.canUpgrade(this))
+			{
+				local upgradeWeight = unitBlock.getUpgradeWeight(this) ;
+				this.__UpgradeAffordableBlocks.add(unitBlock, upgradeWeight);	// Weight = maximum amount of times this block can currently upgrade troops (favors blocks with many tiers)
+			}
+		}
+		if (ratioSpawn)
+			return true;
+
+		if (this.__SpawnAffordableBlocks.len() == 0 && this.__UpgradeAffordableBlocks.len() == 0) // Usually happens after ratioSpawn happened
+			return false;
+
+		if (!::DynamicSpawns.Const.Benchmark && ::DynamicSpawns.Const.DetailedLogging )
+		{
+			if (this.__SpawnAffordableBlocks.len() > 0)
+			{
+				local str = "SpawnAffordableBlocks: ";
+				this.__SpawnAffordableBlocks.apply(function(_unitBlock, _weight) {
+					str += _unitBlock.getID() + " (" + _weight + "), ";
+					return _weight;
+				});
+				::logWarning(str.slice(0, -2));
+			}
+
+			if (this.__UpgradeAffordableBlocks.len() > 0)
+			{
+				local str = "UpgradeAffordableBlocks: ";
+				this.__UpgradeAffordableBlocks.apply(function(_unitBlock, _weight) {
+					str += _unitBlock.getID() + " (" + _weight + "), ";
+					return _weight;
+				});
+				::logWarning(str.slice(0, -2) + "\n");
+			}
+		}
+
+		if (this.__UpgradeAffordableBlocks.len() > 0 && (this.__SpawnAffordableBlocks.len() == 0 || ::MSU.Math.randf( 0.0, 1.0 ) < (this.getParty().getUpgradeChance() * this.getRatioToIdealSize())))
+		{
+			// ::logWarning("Upgrade: - Resources: " + this.getResources() + " : TotalCount = " + this.getTotal());
+			local unitBlock = this.__UpgradeAffordableBlocks.roll();
+			if (unitBlock != null)
+			{
+				unitBlock.upgradeUnit(this);
+				return true;
+			}
+			else if (this.__SpawnAffordableBlocks.len() == 0) return false;
+		}
+		else if (this.__SpawnAffordableBlocks.len() > 0)
+		{
+			// ::logWarning("Spawn: - Resources: " + this.getResources() + " : TotalCount = " + this.getTotal());
+			local unitBlock = this.__SpawnAffordableBlocks.roll();
+			if (unitBlock != null)
+			{
+				unitBlock.spawnUnit(this);
+				return true;
+			}
+			else if (this.__UpgradeAffordableBlocks.len() == 0) return false;
+		}
+	}
+
 	function spawn()
 	{
 		// This will remove all unnecessary Unitblocks/Units to improve performance
@@ -79,98 +297,24 @@
 				this.consumeResources(unit.getCost());
 			}
 		}
-
-		local spawnAffordableBlocks = ::MSU.Class.WeightedContainer();
-		local upgradeAffordableBlocks = ::MSU.Class.WeightedContainer();
 		// Every while spawns or upgrades only one unit
 		while (this.canDoAnotherCycle())	// Is True while Resources are positive or HardMin is not yet reached
 		{
-			spawnAffordableBlocks.clear();
-			upgradeAffordableBlocks.clear();
+			if (!this.getParty().canSpawn(this) && !this.getParty().canUpgrade(this))
+				break;
 
-			local ratioSpawn = false;	// A ratioSpawn is a forced spawn for a block because its RatioMin is not satisfied anymore
-			foreach (unitBlock in this.getParty().getUnitBlocks())
-			{
-				if (this.getParty().canSpawn(this) && unitBlock.canSpawn(this))
-				{
-					// ::logWarning("The Block " + unitBlock.getID() + " is able to spawn!");
-					if (unitBlock.satisfiesRatioMin(this) == false)	// An unsatisfied RatioMin results into an immediate forced Spawn
-					{
-						// ::logWarning("Force Spawn!");
-						unitBlock.spawnUnit(this);
-						ratioSpawn = true;
-						break;
-					}
-
-					// Weighted-Spawns: Every UnitBlock that doesn't surpass their RatioMax if they got the next spawn compete against each other for a random spawn
-					local totalCount = ::Math.max(this.getTotal() + 1, this.getParty().getHardMin());
-					local weight = unitBlock.RatioMax - (this.getBlockTotal(unitBlock.getID()) / totalCount.tofloat());
-					if (weight <= 0)
-					{
-						if (this.getTotal() >= this.getIdealSize() * (1.0 + 1.0 - this.getParty().getUpgradeChance())) weight = 0; // TODO: Improve the logic on this line
-						else weight = 0.00000001;
-					}
-					spawnAffordableBlocks.add(unitBlock, weight);
-				}
-
-				if (this.getTotal() >= this.getIdealSize() && unitBlock.canUpgrade(this))
-				{
-					local upgradeWeight = unitBlock.getUpgradeWeight(this) ;
-					upgradeAffordableBlocks.add(unitBlock, upgradeWeight);	// Weight = maximum amount of times this block can currently upgrade troops (favors blocks with many tiers)
-				}
-			}
-			if (ratioSpawn) continue;
-
-			if (spawnAffordableBlocks.len() == 0 && upgradeAffordableBlocks.len() == 0) break;	// Usually happens after ratioSpawn happened
-
-			if (!::DynamicSpawns.Const.Benchmark && ::DynamicSpawns.Const.DetailedLogging )
-			{
-				if (spawnAffordableBlocks.len() > 0)
-				{
-					local str = "spawnAffordableBlocks: ";
-					spawnAffordableBlocks.apply(function(_unitBlock, _weight) {
-						str += _unitBlock.getID() + " (" + _weight + "), ";
-						return _weight;
-					});
-					::logWarning(str.slice(0, -2));
-				}
-
-				if (upgradeAffordableBlocks.len() > 0)
-				{
-					local str = "upgradeAffordableBlocks: ";
-					upgradeAffordableBlocks.apply(function(_unitBlock, _weight) {
-						str += _unitBlock.getID() + " (" + _weight + "), ";
-						return _weight;
-					});
-					::logWarning(str.slice(0, -2) + "\n");
-				}
-			}
-
-			if (upgradeAffordableBlocks.len() > 0 && ::MSU.Math.randf( 0.0, 1.0 ) < (this.getParty().getUpgradeChance() * this.getTotal() / this.getIdealSize()))
-			{
-				// ::logWarning("Upgrade: - Resources: " + this.getResources() + " : TotalCount = " + this.getTotal());
-				local unitBlock = upgradeAffordableBlocks.roll();
-				if (unitBlock != null)
-				{
-					unitBlock.upgradeUnit(this);
-				}
-				else if (spawnAffordableBlocks.len() == 0) break;
-			}
-			else if (spawnAffordableBlocks.len() > 0)
-			{
-				// ::logWarning("Spawn: - Resources: " + this.getResources() + " : TotalCount = " + this.getTotal());
-				local unitBlock = spawnAffordableBlocks.roll();
-				if (unitBlock != null)
-				{
-					unitBlock.spawnUnit(this);
-				}
-				else if (upgradeAffordableBlocks.len() == 0) break;
-			}
+			if (!this.doCycle())
+				break;
 		}
 
 		if (::DynamicSpawns.Const.Logging) this.printLog();
 
 		ret.extend(this.getUnits());
+
+		foreach (subSpawnProcess in this.__SubSpawnProcesses)
+		{
+			ret.extend(subSpawnProcess.getUnits());
+		}
 
 		// Spawn SubParties
 		for (local i = ret.len() - 1; i >= 0; i--)		// Backwards counting as this array is growing during this process
@@ -192,12 +336,12 @@
 
 	function getIdealSize()
 	{
-		return this.IdealSize;
+		return this.__MainSpawnProcess != null ? this.__MainSpawnProcess.getIdealSize() : this.IdealSize;
 	}
 
 	function getResources()
 	{
-		return this.Resources;
+		return this.__MainSpawnProcess != null ? this.__MainSpawnProcess.getResources() : this.Resources;
 	}
 
 	function getStartingResources()
@@ -223,7 +367,10 @@
 
 	function consumeResources( _amount )
 	{
-		this.Resources -= _amount;
+		if (this.__MainSpawnProcess != null)
+			this.__MainSpawnProcess.consumeResources(_amount);
+		else
+			this.Resources -= _amount;
 	}
 
 	function isIgnoringCost()
@@ -231,9 +378,19 @@
 		return (this.getTotal() < this.getParty().getHardMin());
 	}
 
+	function getTopPartyTotal()
+	{
+		return this.__MainSpawnProcess != null ? this.__MainSpawnProcess.getTopPartyTotal() : this.getTotal();
+	}
+
 	function getTotal()
 	{
-		return this.UnitCount;
+		local ret = this.UnitCount;
+		foreach (subSpawnProcess in this.__SubSpawnProcesses)
+		{
+			ret += subSpawnProcess.getTotal();
+		}
+		return ret;
 	}
 
 	function getBlockTotal( _unitBlockID )
@@ -307,7 +464,13 @@
 	{
 		// ::logWarning( this.getTotal() + " total unit were spawned for the party " + this.getParty().getID());
 		// ::logWarning("- - - Spawn finished - - -");
-		::logInfo("Party-Name: " + this.getParty().getID() + "; Resources remaining: " + this.getResources());
+		if (this.__MainSpawnProcess == null)
+			::logInfo("Party-Name: " + this.getParty().getID() + "; Resources remaining: " + this.getResources());
+		else
+		{
+			::logInfo(format("-- %s: (%f%%)", this.getParty().getID(), 100.0 * this.getTotal() /this.__MainSpawnProcess.getTotal()));
+		}
+
 		local printBlock = function( _block )
 		{
 			local percentage = (this.getTotal() == 0) ? 0 : (100 * this.SpawnInfo[_block.getID()].Total / this.getTotal());
@@ -318,6 +481,11 @@
 			}
 
 			::logInfo(str.slice(0, -2));
+		}
+
+		foreach (subSpawnProcess in this.__SubSpawnProcesses)
+		{
+			subSpawnProcess.printLog();
 		}
 
 		foreach (unitBlock in this.getParty().getUnitBlocks())
