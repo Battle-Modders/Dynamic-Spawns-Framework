@@ -37,7 +37,7 @@
 		this.StartingResources = (_availableResources == -1) ? this.getParty().DefaultResources : _availableResources;
 		this.Resources = this.StartingResources;
 
-		this.IdealSize = this.getParty().generateIdealSize(this, _isLocation);	// Locations currently have a 50% higher IdealSize compared to roaming parties
+		this.IdealSize = this.getParty().generateIdealSize(_isLocation);	// Locations currently have a 50% higher IdealSize compared to roaming parties
 		if (this.getIdealSize() <= 0) this.IdealSize = 1;	// To prevent division by zero later on. But realistically you should never have such a low idealSize here
 
 		foreach (subparty in this.getParty().getSubParties())

@@ -137,7 +137,7 @@
 	}
 
 	// Returns an unsigned integer that will be used during this spawnProcess as IdealSize
-	function generateIdealSize( _spawnProcess, _isLocation )
+	function generateIdealSize( _isLocation = false )
 	{
 		local idealSize = this.getReferencedBrotherAmount();
 		if (_isLocation) idealSize *= 1.5;
