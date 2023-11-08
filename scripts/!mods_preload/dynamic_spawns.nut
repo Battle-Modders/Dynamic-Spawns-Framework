@@ -1,5 +1,5 @@
 ::DynamicSpawns <- {
-	Version = "0.2.0",
+	Version = "0.2.1",
 	ID = "mod_dynamic_spawns",
 	Name = "Dynamic Spawns",
 	GitHubURL = "https://github.com/Battle-Modders/Dynamic-Spawns-Framework",
