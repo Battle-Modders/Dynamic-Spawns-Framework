@@ -49,7 +49,6 @@
 
 	// ::logWarning("Spawning the party '" + this.m.ID + "' with '" + _resources + "' Resources");
 	local spawnProcess = ::DynamicSpawns.Class.SpawnProcess(_dynamicParty, _resources, _worldParty.isLocation());
-	local spawnedUnits = spawnProcess.spawn();
 
 	foreach (unit in spawnProcess.spawn())
 	{
