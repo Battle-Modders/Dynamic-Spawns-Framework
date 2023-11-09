@@ -167,12 +167,12 @@
 	function spawnUnit()
 	{
 		local chosenUnit = null;
-		if (this.isRandom())	// Currently this is implemented non-weighted and purely random
+		if (this.isRandom())
 		{
 			local possibleSpawns = ::MSU.Class.WeightedContainer();
-			foreach(unit, weight in this.__UnitsWeightedContainer)
+			foreach(unit in this.getUnits())
 			{
-				if (unit.canSpawn()) possibleSpawns.add(unit, weight);
+				if (unit.canSpawn()) possibleSpawns.add(unit, this.getUnits().getWeight(unit));
 			}
 			chosenUnit = possibleSpawns.roll();
 		}
