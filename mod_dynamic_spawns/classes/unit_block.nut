@@ -128,6 +128,7 @@
 	function canSpawn()
 	{
 		if (this.__SpawnProcess.getTotal() < this.ReqPartySize) return false;
+		if (this.__SpawnProcess.getBlockTotal(this.getID()) >= this.getHardMax()) return false;
 
 		// RatioMax is ignored if we do not satisfy the RatioMin yet
 		if (this.satisfiesRatioMin() && !this.isWithinRatioMax()) return false;

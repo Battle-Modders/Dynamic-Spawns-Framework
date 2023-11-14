@@ -78,6 +78,9 @@
 
 	function canSpawn( _bonusResources = 0 )		// _bonusResources are used if you want to upgrade unit-A into unit-B. In those cases you have the resources from unit-A available in addition
 	{
+		if (this.__SpawnProcess.getUnitCount(this.getID()) >= this.getHardMax())
+			return false;
+
 		if (_bonusResources == 0)	// We only allow ignoring of Cost if for considering new units to spawn
 		{
 			if (!this.__SpawnProcess.isIgnoringCost() && (this.__SpawnProcess.getResources()) < this.getCost()) return false;
