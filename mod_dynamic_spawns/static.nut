@@ -47,7 +47,7 @@
 {
 	_resources *= ::MSU.Math.randf(0.8, 1.0);	// This accounts for the vanilla function picking a random party between 0.7 and 1.0 cost
 
-	// ::logWarning("Spawning the party '" + this.m.ID + "' with '" + _resources + "' Resources");
+	// ::logWarning("Spawning the party \"" + this.m.ID + "\" with \"" + _resources + "\" Resources");
 	local spawnProcess = ::DynamicSpawns.Class.SpawnProcess(_dynamicParty, _resources, _worldParty.isLocation());
 
 	foreach (unit in spawnProcess.spawn())
@@ -152,58 +152,4 @@
 ::DynamicSpawns.Static.isDynamicParty <- function( _partyList )
 {
 	return _partyList instanceof ::DynamicSpawns.Class.Party;
-}
-
-/** Check all Parties, UnitBlocks and Units for consistency. Print Errors into the log if there are surface level problems
- *
- * @Return amount of warnings or errors generated
- */
-::DynamicSpawns.Static.consistencyCheck <- function()
-{
-	local logsGenerated = 0;
-
-	::logInfo("Checking " + ::DynamicSpawns.Parties.LookupMap.len() + " parties, " + ::DynamicSpawns.UnitBlocks.LookupMap.len() + " blocks and " + ::DynamicSpawns.Units.LookupMap.len() + " units for consistency...");
-
-	// Check all currently registered Parties
-	foreach (partyObj in ::DynamicSpawns.Parties.LookupMap)
-	{
-		if (partyObj.getUnitBlockDefs().len() == 0 && partyObj.StaticUnitIDs.len() == 0)
-		{
-			::logError("The Party '" + partyObj.getID() + "' has no units or blocks defined for it. It will not produce any units!");
-			logsGenerated++;
-		}
-		if (partyObj.getHardMax() <= 0)
-		{
-			::logError("The Party '" + partyObj.getID() + "' has HardMax of 0! It will not produce any units!");
-			logsGenerated++;
-		}
-	}
-
-	// Check all currently registered Unit Blocks
-	foreach (unitBlockObj in ::DynamicSpawns.UnitBlocks.LookupMap)
-	{
-		if (unitBlockObj.getUnitDefs().len() == 0)
-		{
-			::logWarning("The UnitBlock '" + unitBlockObj.getID() + "' has no units defined for it. It will never produce any units!");
-			logsGenerated++;
-		}
-		if (unitBlockObj.RatioMax <= 0.0)
-		{
-			::logWarning("The UnitBlock '" + unitBlockObj.getID() + "' has a RatioMax of 0 or less! It will never produce any units!");
-			logsGenerated++;
-		}
-	}
-
-	// Check all currently registered Units
-	foreach (unitObj in ::DynamicSpawns.Units.LookupMap)
-	{
-		local entityType = unitObj.getTroop();
-		if (entityType == null)
-		{
-			::logWarning("The Unit '" + unitObj.getID() + "' has no Troop defined for it. It will never produce any units!");
-			logsGenerated++;
-		}
-	}
-
-	return logsGenerated;
 }
