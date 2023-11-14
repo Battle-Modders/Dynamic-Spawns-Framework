@@ -333,7 +333,7 @@
 		local count = 0;
 		foreach (block in this.SpawnInfo)
 		{
-			if (_unitID in block.Units) count += block[_unitID].Count;
+			if (_unitID in block.Units) count += block.Units[_unitID].Count;
 		}
 
 		return count;
