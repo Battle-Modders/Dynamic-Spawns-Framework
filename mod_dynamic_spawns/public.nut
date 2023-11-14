@@ -38,11 +38,12 @@
 		{
 			::DynamicSpawns.Public.registerParty(variant);
 		}
-
-		return;
+	}
+	else
+	{
+		::DynamicSpawns.Parties.LookupMap[_partyDef.ID] <- _partyDef;
 	}
 
-	::DynamicSpawns.Parties.LookupMap[_partyDef.ID] <- _partyDef;
 	::DynamicSpawns.__setClass(::DynamicSpawns.Class.Party, _partyDef);
 
 	// We also place a reference of our dynmic party in the vanilla spawn table so our hooks can redirect the spawn behaviors accordingly
