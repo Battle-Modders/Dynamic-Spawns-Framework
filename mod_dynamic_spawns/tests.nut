@@ -121,3 +121,19 @@
 	}
 	return logsGenerated;
  }
+
+::DynamicSpawns.Tests.spawnWorldParty <- function( _spawn, _resources, _tile = null, _factionType = null )
+{
+	if (_tile == null)
+	{
+		local playerTile = ::World.State.getPlayer().getTile();
+		_tile = ::World.getTileSquare(playerTile.SquareCoords.X - 2, playerTile.SquareCoords.Y - 2);
+	}
+	if (_faction == null)
+		_faction = ::Const.FactionType.Bandits;
+
+	::World.FactionManager.getFactionOfType(_faction).spawnEntity(spawnTile, "DynamicSpawns Test", false, _spawn, _resources);
+
+	::World.setPlayerPos(::World.State.getPlayer().getPos());
+	::World.setPlayerVisionRadius(::World.State.getPlayer().getVisionRadius());
+}
