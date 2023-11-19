@@ -362,6 +362,7 @@
 		this.SpawnInfo[_unitBlockID].Units[_unitID].Count += _count;
 		this.SpawnInfo[_unitBlockID].Total += _count;
 		this.UnitCount += _count;
+		return this.UnitCount;
 	}
 
 	function decrementUnit( _unitID, _unitBlockID, _count = 1 )
@@ -369,6 +370,7 @@
 		this.SpawnInfo[_unitBlockID].Units[_unitID].Count -= _count;
 		this.SpawnInfo[_unitBlockID].Total -= _count;
 		this.UnitCount -= _count;
+		return this.UnitCount;
 	}
 
 	// Returns 'True' if we should keep doing another spawn/upgrade cycle in this spawn_process
