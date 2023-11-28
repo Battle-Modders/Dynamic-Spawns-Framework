@@ -7,6 +7,7 @@
 
 	RatioMin = 0.00;
 	RatioMax = 1.00;
+	ExclusionChance = 0.0;
 
 	HardMin = 0;
 	HardMax = 9000;
@@ -307,6 +308,11 @@
 		return this.RatioMax;
 	}
 
+	function getExclusionChance()
+	{
+		return this.ExclusionChance;
+	}
+
 	function getPartySizeMin()
 	{
 		return this.PartySizeMin;
@@ -369,8 +375,15 @@
 		}
 		for (local i = this.__DynamicSpawnables.len() - 1; i >= 0; i--)
 		{
-			if (this.__DynamicSpawnables[i].isValid()) this.__DynamicSpawnables[i].onBeforeSpawnStart();
-			else this.__DynamicSpawnables.remove(i);
+			local spawnable = this.__DynamicSpawnables[i];
+			if (::MSU.Math.randf(0.0, 1.0) < spawnable.getExclusionChance() || !spawnable.isValid())
+			{
+				this.__DynamicSpawnables.remove(i);
+			}
+			else
+			{
+				spawnable.onBeforeSpawnStart();
+			}
 		}
 	}
 
