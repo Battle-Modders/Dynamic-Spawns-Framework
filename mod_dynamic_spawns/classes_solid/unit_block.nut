@@ -4,6 +4,7 @@
 ::DynamicSpawns.Class.UnitBlock <- class extends ::DynamicSpawns.Class.Spawnable
 {
 	DeterminesFigure = false; // Temporary variable to test with current Reforged unitblockdefs
+	TierWidth = 2; // Specifies the maximum number of tiers that can simultaneously have spawned units
 	__WeightedDynamicSpawnables = null;
 
 	function init()
@@ -82,13 +83,15 @@
 	{
 		local choices = ::MSU.Class.WeightedContainer();
 
+		local tiers = 0;
 		// Ignore the highest tier
-		for (local i = 0; i < this.__DynamicSpawnables.len() - 1; i++)
+		for (local i = 0; i < this.__DynamicSpawnables.len() - 1 && tiers < this.TierWidth - 1; i++)
 		{
 			local unit = this.__DynamicSpawnables[i];
 			local count = unit.getTotal();
 			if (count > 0)
 			{
+				tiers++;
 				for (local j = i + 1; j < this.__DynamicSpawnables.len(); j++)	// for loop because the next very unitType could have some requirements (like playerstrength) preventing spawn
 				{
 					if (this.__DynamicSpawnables[j].canSpawn(unit.getCost()))
@@ -112,9 +115,14 @@
 		}
 		else
 		{
-			foreach (unit in this.__DynamicSpawnables)
+			local function satisfiesTierWidth( _index )
 			{
-				if (unit.canSpawn())
+				_index += this.TierWidth;
+				return _index >= this.__DynamicSpawnables.len() || this.__DynamicSpawnables[_index].getTotal() == 0;
+			}
+			foreach (i, unit in this.__DynamicSpawnables)
+			{
+				if (satisfiesTierWidth(i) && unit.canSpawn())
 				{
 					return unit;
 				}
