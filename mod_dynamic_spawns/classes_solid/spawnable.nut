@@ -94,6 +94,11 @@
 		return this.__Party;
 	}
 
+	function getParentSpawnable()
+	{
+		return this.__ParentSpawnable;
+	}
+
 	function setParty( _party )
 	{
 		if (_party != null && this.__Party != null)
@@ -197,7 +202,7 @@
 
 	function isWithinRatioMax()
 	{
-		local referencedTotal = ::Math.max(this.getParty().getTotal() + 1, this.getParty().getHardMin());
+		local referencedTotal = ::Math.max(this.getParentSpawnable().getTotal() + 1, this.getParentSpawnable().getHardMin());
 		return this.getTotal() < ::Math.round(referencedTotal * this.getRatioMax());
 	}
 
@@ -207,19 +212,19 @@
 		if (ratio == 0.0)
 			return true;
 
-		local partyTotal = this.getParty().getTotal();
+		local parentTotal = this.getParentSpawnable().getTotal();
 
-		if (partyTotal == 0)
+		if (parentTotal == 0)
 			return false;
 
-		return this.getTotal() >= ::Math.ceil(partyTotal * ratio); // Using ceil here will make any non-zero RatioMin always force atleast 1 of its units into the spawned party.
+		return this.getTotal() >= ::Math.ceil(parentTotal * ratio); // Using ceil here will make any non-zero RatioMin always force atleast 1 of its units into the spawned party.
 		// But the alternative is not consequent/good either. The solution is that you should always use the PartySizeMin or StartingResourceMin alongside that to prevent small parties from spawning exotic units.
 	}
 
 	function getSpawnWeight()
 	{
 		// Weighted-Spawns: All Spawnables that won't surpass their RatioMax if they were to get the next spawn, compete against each other for a random spawn
-		local referencedTotal = ::Math.max(this.getParty().getTotal() + 1, this.getParty().getHardMin());
+		local referencedTotal = ::Math.max(this.getParentSpawnable().getTotal() + 1, this.getParentSpawnable().getHardMin());
 		local weight = this.getRatioMax() - this.getTotal() / referencedTotal.tofloat();
 		if (weight < 0)
 		{
