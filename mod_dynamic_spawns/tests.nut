@@ -128,10 +128,10 @@
 			local playerTile = ::World.State.getPlayer().getTile();
 			_tile = ::World.getTileSquare(playerTile.SquareCoords.X - 2, playerTile.SquareCoords.Y - 2);
 		}
-		if (_faction == null)
-			_faction = ::Const.FactionType.Bandits;
+		if (_factionType == null)
+			_factionType = ::Const.FactionType.Bandits;
 
-		::World.FactionManager.getFactionOfType(_faction).spawnEntity(spawnTile, "DynamicSpawns Test", false, _spawn, _resources);
+		::World.FactionManager.getFactionOfType(_factionType).spawnEntity(_tile, "DynamicSpawns Test", false, _spawn, _resources);
 
 		::World.setPlayerPos(::World.State.getPlayer().getPos());
 		::World.setPlayerVisionRadius(::World.State.getPlayer().getVisionRadius());
