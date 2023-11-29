@@ -1,37 +1,26 @@
 ::mods_hookBaseClass("contracts/contract", function(o)
 {
-	while(!("EmployerID" in o.m)) o = o[o.SuperName]; // find the base class
+	o = o[o.SuperName];
 
 	// Generate additional troops, given a _party and _resources, and add those to a _worldParty.
 	// Note: This hook will potentially skip hooks from other mods when they execute their code at the end of this vanilla function
-	local oldAddUnitsToEntity = o.addUnitsToEntity;
+	local addUnitsToEntity = o.addUnitsToEntity;
 	o.addUnitsToEntity = function( _worldParty, _party, _resources )
 	{
 		local dynamicParty = ::DynamicSpawns.Static.retrieveDynamicParty(_party, _resources);
-		if (dynamicParty != null)    // a dynamicParty was found!
+		if (dynamicParty != null)
 		{
-			// Minibossify depending on contract difficulty (copy of vanilla code)
-			local minibossify = -99;	// super weak contracts actively prevent spawning of champions
-			if (this.getDifficultyMult() >= 1.15)
-			{
-				minibossify = 5;
-			}
-			else if (this.getDifficultyMult() >= 0.85)
-			{
-				minibossify = 0;
-			}
+			dynamicParty.__IsLocation = _worldParty.isLocation();
+			dynamicParty.spawn(_resources);
 
-			if (_worldParty.isLocation())
-			{
-				_worldParty.resetDefenderSpawnDay();
-			}
+			_party = [
+				{
+					Cost = _resources,
+					Troops = dynamicParty.getTroops()
+				}
+			];
+		}
 
-			dynamicParty.__IsLocation = true;
-			return ::DynamicSpawns.Static.addUnitsToEntity(_worldParty, dynamicParty, _resources, minibossify);
-		}
-		else
-		{
-			return oldAddUnitsToEntity(_worldParty, _party, _resources);
-		}
+		return addUnitsToEntity(_worldParty, _party, _resources);
 	}
 });
