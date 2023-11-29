@@ -1,5 +1,5 @@
 ::mods_hookExactClass("entity/world/location", function(o) {
-	local oldCreateDefenders = o.createDefenders;
+	local createDefenders = o.createDefenders;
 	o.createDefenders = function()
 	{
 		// This is 1 to 1 copy of vanilla resource scaling
@@ -19,27 +19,32 @@
 			resources = resources * 0.75;
 		}
 
-		if (::Time.getVirtualTimeF() - this.m.LastSpawnTime <= 60.0)
-		{
-			this.m.DefenderSpawnDay = ::World.getTime().Days - 7;
-		}
-		else
-		{
-			this.m.DefenderSpawnDay = ::World.getTime().Days;
-		}
-
 		local dynamicParty = ::DynamicSpawns.Static.retrieveDynamicParty(this.m.DefenderSpawnList, resources);
-		dynamicParty.__IsLocation = true; // TODO: Not so happy with this, should think of something better
-		if (dynamicParty != null)    // a dynamicParty was found!
+		if (dynamicParty != null)
 		{
 			this.m.Troops = [];		// Whatever was in this camp before is getting wiped
 
+			if (::Time.getVirtualTimeF() - this.m.LastSpawnTime <= 60.0)
+			{
+				this.m.DefenderSpawnDay = ::World.getTime().Days - 7;
+			}
+			else
+			{
+				this.m.DefenderSpawnDay = ::World.getTime().Days;
+			}
+
+			dynamicParty.__IsLocation = true; // TODO: Not so happy with this, should think of something better
 			// The above calculations are a copy of vanilla code
-			return ::DynamicSpawns.Static.addUnitsToEntity(this, dynamicParty, resources);
+			foreach (troop in dynamicParty.spawn(resources).getTroops())
+			{
+				::Const.World.Common.addTroop(this, troop, false);
+			}
+
+			this.updateStrength();
 		}
 		else
 		{
-			return oldCreateDefenders();
+			return createDefenders();
 		}
 	}
 });
