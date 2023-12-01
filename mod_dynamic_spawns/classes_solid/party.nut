@@ -249,7 +249,27 @@
 
 	function getTroops()
 	{
-		return this.getUnits().map(@(unit) {Type = ::Const.World.Spawn.Troops[unit.getTroop()], Num = 1});
+		local ret = [];
+		local troops = [];
+		foreach (unit in this.getUnits())
+		{
+			local troop = unit.getTroop();
+			local idx = troops.find(troop);
+			if (idx == null)
+			{
+				troops.push(troop);
+				ret.push({
+					Type = ::Const.World.Spawn.Troops[troop],
+					Num = 1
+				});
+			}
+			else
+			{
+				ret[idx].Num++;
+			}
+		}
+
+		return ret;
 	}
 
 	function getFigure()
