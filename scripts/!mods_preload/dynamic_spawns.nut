@@ -18,7 +18,8 @@
 		Logging = false,
 		DetailedLogging = false,
 		Iterations = 3,
-		Benchmark = false
+		Benchmark = false,
+		MainMenuIdealSize = 12
 	};
 
 	::include("mod_dynamic_spawns/load.nut");
