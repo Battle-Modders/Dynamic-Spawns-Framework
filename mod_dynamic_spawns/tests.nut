@@ -121,15 +121,13 @@
 		return logsGenerated;
 	}
 
-	function spawnWorldParty( _spawn, _resources, _tile = null, _factionType = null )
+	function spawnWorldParty( _spawn, _resources, _tile = null, _factionType = ::Const.FactionType.Bandits )
 	{
 		if (_tile == null)
 		{
 			local playerTile = ::World.State.getPlayer().getTile();
 			_tile = ::World.getTileSquare(playerTile.SquareCoords.X - 2, playerTile.SquareCoords.Y - 2);
 		}
-		if (_factionType == null)
-			_factionType = ::Const.FactionType.Bandits;
 
 		::World.FactionManager.getFactionOfType(_factionType).spawnEntity(_tile, "DynamicSpawns Test", false, _spawn, _resources);
 
