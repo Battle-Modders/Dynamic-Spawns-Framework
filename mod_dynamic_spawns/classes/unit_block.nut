@@ -12,6 +12,7 @@
 
 	// During Spawnprocess only
 	__Units = null;		// Array of cloned Unit-Objects
+	__WeakestSpawnedUnitID = "";	// Id of the weakest unit of this block that currently exists
 
 	constructor( _unitBlockDef )
 	{
@@ -31,6 +32,7 @@
 		{
 			unit.setSpawnProcess(_spawnProcess);
 		}
+		this.__WeakestSpawnedUnitID = "";
 	}
 
 	function doCycle( _forceSpawn = false, _forceUpgrade = false )
@@ -209,23 +211,38 @@
 			local count = this.__SpawnProcess.getUnitCount(id, this.getID());
 			if (count > 0)
 			{
+				local foundUpgradePath = false;
 				for (local j = i + 1; j < this.__Units.len(); j++)	// for loop because the next very unitType could have some requirements (like playerstrength) preventing spawn
 				{
 					if (this.__Units[j].canSpawn(this.__Units[i].getCost()))
 					{
 						local weight = count + (this.__Units.len() - i) * 3;	// weight higher for weaker troopTypes and those that already spawned a lot
 						ids.add({ID = id, UpgradeID = this.__Units[j].getID()}, weight);
+						foundUpgradePath = true;
 						break;	// We are only interested in the closest possible upgrade path, not all of them
 					}
 				}
-
+				if (foundUpgradePath) break;	// We are only allowed to upgrade the weakest currently spawned troop
 			}
 		}
 
 		if (ids.len() > 0)
 		{
 			local roll = ids.roll();
-			this.__SpawnProcess.decrementUnit(roll.ID, this.getID());
+			if (this.__SpawnProcess.decrementUnit(roll.ID, this.getID()) && this.__WeakestSpawnedUnitID == roll.ID)
+			{
+				// We just upgraded away the last unit of a tier. That tier can now be removed from ever spawning further troops
+				foreach(index, unit in this.getUnits())
+				{
+					if (unit.getID() == roll.ID)
+					{
+						this.getUnits().remove(index);
+						break;
+					}
+				}
+
+				this.__WeakestSpawnedUnitID = roll.UpgradeID;	// This assumes that we do not skip any tiers while upgrading
+			}
 			this.__SpawnProcess.incrementUnit(roll.UpgradeID, this.getID());
 			this.__SpawnProcess.consumeResources(this.__LookupMap[roll.UpgradeID].getCost() - this.__LookupMap[roll.ID].getCost());
 			if (!::DynamicSpawns.Const.Benchmark && ::DynamicSpawns.Const.DetailedLogging ) ::logInfo("**Upgrading - Block: " + this.getID() + " - Unit: " + this.__LookupMap[roll.ID].getTroop() + " (Cost: " + this.__LookupMap[roll.ID].getCost() + ") to " + this.__LookupMap[roll.UpgradeID].getTroop() + " (Cost: " + this.__LookupMap[roll.UpgradeID].getCost() + ")**\n");
@@ -245,6 +262,7 @@
 				{
 					if (this.__Units[j].canSpawn(this.__Units[i].getCost())) return true;
 				}
+				break;	// We are only allowed to upgrade the weakest currently spawned troop
 			}
 		}
 
