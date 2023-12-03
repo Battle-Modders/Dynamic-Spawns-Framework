@@ -372,12 +372,8 @@
 		return ret;
 	}
 
-	function onBeforeSpawnStart()
+	function excludeSpawnables()
 	{
-		foreach (spawnable in this.__StaticSpawnables)
-		{
-			spawnable.onBeforeSpawnStart();
-		}
 		for (local i = this.__DynamicSpawnables.len() - 1; i >= 0; i--)
 		{
 			local spawnable = this.__DynamicSpawnables[i];
@@ -387,33 +383,60 @@
 			}
 			else
 			{
-				spawnable.onBeforeSpawnStart();
+				spawnable.excludeSpawnables();
 			}
 		}
 	}
 
-	function onSpawnEnd()
+	function callOnBeforeSpawnStart()
 	{
+		this.onBeforeSpawnStart();
 		foreach (spawnable in this.__StaticSpawnables)
 		{
-			spawnable.onSpawnEnd();
+			spawnable.callOnBeforeSpawnStart();
 		}
 		foreach (spawnable in this.__DynamicSpawnables)
 		{
-			spawnable.onSpawnEnd();
+			spawnable.callOnBeforeSpawnStart();
 		}
+	}
+
+	function callOnSpawnEnd()
+	{
+		this.onSpawnEnd();
+		foreach (spawnable in this.__StaticSpawnables)
+		{
+			spawnable.callOnSpawnEnd();
+		}
+		foreach (spawnable in this.__DynamicSpawnables)
+		{
+			spawnable.callOnSpawnEnd();
+		}
+	}
+
+	function callOnCycle()
+	{
+		this.onCycle();
+		foreach (spawnable in this.__StaticSpawnables)
+		{
+			spawnable.callOnCycle();
+		}
+		foreach (spawnable in this.__DynamicSpawnables)
+		{
+			spawnable.callOnCycle();
+		}
+	}
+
+	function onBeforeSpawnStart()
+	{
+	}
+
+	function onSpawnEnd()
+	{
 	}
 
 	function onCycle()
 	{
-		foreach (spawnable in this.__StaticSpawnables)
-		{
-			spawnable.onCycle();
-		}
-		foreach (spawnable in this.__DynamicSpawnables)
-		{
-			spawnable.onCycle();
-		}
 	}
 
 	function printToLog()

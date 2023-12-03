@@ -50,7 +50,8 @@
 			::logWarning(format("%sStarting spawn of party %s with resources: %.1f", ::DynamicSpawns.getIndent(), this.getID(), this.getStartingResources()));
 		}
 
-		this.onBeforeSpawnStart();
+		this.excludeSpawnables();
+		this.callOnBeforeSpawnStart();
 
 		base.spawn();
 		while (this.canDoAnotherCycle())
@@ -93,10 +94,10 @@
 				throw "tried to run a cycle with no spawnable or upgradeable";
 			}
 
-			this.onCycle();
+			this.callOnCycle();
 		}
 
-		this.onSpawnEnd();
+		this.callOnSpawnEnd();
 
 		this.printToLog();
 
