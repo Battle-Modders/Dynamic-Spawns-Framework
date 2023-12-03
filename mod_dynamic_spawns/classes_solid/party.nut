@@ -94,7 +94,7 @@
 				throw "tried to run a cycle with no spawnable or upgradeable";
 			}
 
-			this.callOnCycle();
+			this.callOnCycle(this);
 		}
 
 		this.callOnSpawnEnd();

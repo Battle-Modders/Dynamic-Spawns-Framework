@@ -414,16 +414,16 @@
 		}
 	}
 
-	function callOnCycle()
+	function callOnCycle( _cycler )
 	{
-		this.onCycle();
+		this.onCycle(_cycler);
 		foreach (spawnable in this.__StaticSpawnables)
 		{
-			spawnable.callOnCycle();
+			spawnable.callOnCycle(_cycler);
 		}
 		foreach (spawnable in this.__DynamicSpawnables)
 		{
-			spawnable.callOnCycle();
+			spawnable.callOnCycle(_cycler);
 		}
 	}
 
@@ -435,7 +435,7 @@
 	{
 	}
 
-	function onCycle()
+	function onCycle( _cycler )
 	{
 	}
 
