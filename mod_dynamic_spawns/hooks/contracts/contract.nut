@@ -26,6 +26,7 @@
 				_worldParty.resetDefenderSpawnDay();
 			}
 
+			dynamicParty.__IsLocation = true;
 			return ::DynamicSpawns.Static.addUnitsToEntity(_worldParty, dynamicParty, _resources, minibossify);
 		}
 		else

@@ -14,18 +14,15 @@
 {
 	_resources *= ::MSU.Math.randf(0.8, 1.0);	// This accounts for vanilla choosing a random party composition allowing for picking slightly weaker aswell
 
-	local spawnProcess = ::DynamicSpawns.Class.SpawnProcess(_dynamicParty, _resources);
-	local spawnedUnits = spawnProcess.spawn();
+	_dynamicParty.spawn(_resources);
+	local body = _dynamicParty.getFigure();
 
-	local party = spawnProcess.getParty();
-	local body = party.getFigure(spawnProcess);
-
-	_worldParty.setMovementSpeed(party.MovementSpeedMult * ::Const.World.MovementSettings.Speed);
-	_worldParty.setVisibilityMult(party.VisibilityMult);
-	_worldParty.setVisionRadius(party.VisionMult * ::Const.World.Settings.Vision);
+	_worldParty.setMovementSpeed(_dynamicParty.MovementSpeedMult * ::Const.World.MovementSettings.Speed);
+	_worldParty.setVisibilityMult(_dynamicParty.VisibilityMult);
+	_worldParty.setVisionRadius(_dynamicParty.VisionMult * ::Const.World.Settings.Vision);
 	_worldParty.getSprite("body").setBrush(body);
 
-	foreach (unit in spawnedUnits)
+	foreach (unit in _dynamicParty.getUnits())
 	{
 		::Const.World.Common.addTroop(_worldParty, {Type = ::Const.World.Spawn.Troops[unit.getTroop()]}, false, _minibossify);
 	}
@@ -46,11 +43,7 @@
 ::DynamicSpawns.Static.addUnitsToEntity <- function( _worldParty, _dynamicParty, _resources, _miniBossify = 0 )
 {
 	_resources *= ::MSU.Math.randf(0.8, 1.0);	// This accounts for the vanilla function picking a random party between 0.7 and 1.0 cost
-
-	// ::logWarning("Spawning the party \"" + this.m.ID + "\" with \"" + _resources + "\" Resources");
-	local spawnProcess = ::DynamicSpawns.Class.SpawnProcess(_dynamicParty, _resources, _worldParty.isLocation());
-
-	foreach (unit in spawnProcess.spawn())
+	foreach (unit in _dynamicParty.spawn(_resources).getUnits())
 	{
 		::Const.World.Common.addTroop(_worldParty, {Type = ::Const.World.Spawn.Troops[unit.getTroop()]}, false, _miniBossify);
 	}
@@ -70,9 +63,7 @@
 {
 	_resources *= ::MSU.Math.randf(0.8, 1.0);	// This accounts for vanilla choosing a random party with cost between 0.7 and 1.0 of resources given
 
-	local spawnProcess = ::DynamicSpawns.Class.SpawnProcess(_dynamicParty, _resources, false);
-
-	foreach (unit in spawnProcess.spawn())
+	foreach (unit in _dynamicParty.spawn(_resources).getUnits())
 	{
 		local troopTemplate = ::Const.World.Spawn.Troops[unit.getTroop()];
 		local unit = clone troopTemplate;
@@ -111,7 +102,7 @@
  *
  * @Return DSF-Party object if one exists for the given vanilla party list; null if none was set for it
  */
-::DynamicSpawns.Static.retrieveDynamicParty <- function( _vanillaPartyList, _resources = -1 )
+::DynamicSpawns.Static.retrieveDynamicParty <- function( _vanillaPartyList, _resources = null )
 {
 	if (typeof _vanillaPartyList != "array") return null;
 	if (_vanillaPartyList.len() == 0) return null;
@@ -128,7 +119,7 @@
  *
  * @Return DSF-Party object if one exists for the given vanilla party list; null if none was set for it
  */
-::DynamicSpawns.Static.getRegisteredPartyVariant <- function( _partyID, _resources = -1 )
+::DynamicSpawns.Static.getRegisteredPartyVariant <- function( _partyID, _resources = null )
 {
 	local partyDef = ::DynamicSpawns.Parties.findById(_partyID);
 	if (partyDef instanceof ::MSU.Class.WeightedContainer)
@@ -136,8 +127,9 @@
 		// partyDef becomes a string which is an ID of a registered party
 		// We assume that at least one variant must be always valid to spawn
 		partyDef = partyDef.map(function( _variantDef, _weight ) {
-			local spawnProcess = ::DynamicSpawns.Class.SpawnProcess(::DynamicSpawns.Static.getRegisteredPartyVariant(_variantDef.ID, _resources), _resources);
-			return [spawnProcess.getParty().isValid() ? _weight : 0, spawnProcess.getParty().ID];
+			local party = ::DynamicSpawns.Static.getRegisteredPartyVariant(_variantDef.ID, _resources);
+			party.setupResources(_resources);
+			return [party.isValid() ? _weight : 0, party.getID()];
 		}).roll();
 	}
 	return ::DynamicSpawns.__getObjectFromDef(partyDef, ::DynamicSpawns.Parties);

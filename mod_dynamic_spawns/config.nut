@@ -1,3 +1,14 @@
+::DynamicSpawns.getIndent <- function()
+{
+	local ret = "";
+	for (local i = 0; i < ::DynamicSpawns.Indent; i++)
+	{
+		ret += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+	}
+	return ret;
+}
+::DynamicSpawns.Indent <- -1;
+
 ::DynamicSpawns.UnitBlocks <- {
 	LookupMap = {},
 	BaseClass = ::DynamicSpawns.Class.UnitBlock,

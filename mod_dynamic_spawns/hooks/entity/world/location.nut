@@ -29,6 +29,7 @@
 		}
 
 		local dynamicParty = ::DynamicSpawns.Static.retrieveDynamicParty(this.m.DefenderSpawnList, resources);
+		dynamicParty.__IsLocation = true; // TODO: Not so happy with this, should think of something better
 		if (dynamicParty != null)    // a dynamicParty was found!
 		{
 			this.m.Troops = [];		// Whatever was in this camp before is getting wiped
