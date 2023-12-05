@@ -126,7 +126,7 @@
 		local ret = this.getTotal();
 		if (this.__ParentSpawnable != null)
 			ret += 3 * (this.__ParentSpawnable.__DynamicSpawnables.len() - 1 - this.__ParentSpawnable.__DynamicSpawnables.find(this));
-		return ret;
+		return ret * (1.0 / ::Math.pow(this.getCost(), 2));
 	}
 
 	function getTroop()

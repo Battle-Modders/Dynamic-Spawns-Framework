@@ -232,8 +232,7 @@
 		local ret = 0;
 		foreach (spawnable in this.__DynamicSpawnables)
 		{
-			local weight = spawnable.getUpgradeWeight();
-			if (weight > ret) ret = weight;
+			ret += spawnable.getUpgradeWeight();
 		}
 		return ret;
 	}

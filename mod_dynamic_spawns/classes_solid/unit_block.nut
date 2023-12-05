@@ -127,27 +127,6 @@
 		return this.__WeightedDynamicSpawnables != null;
 	}
 
-	function getStrongerUnitTypeCount( _unit )
-	{
-		local count = 0;
-		foreach (unit in this.__DynamicSpawnables)
-		{
-			if (unit.getCost() > _unit.getCost()) count++;
-		}
-		return count;
-	}
-
-	function getUpgradeWeight()
-	{
-		local weight = 0;
-		foreach (unit in this.__DynamicSpawnables)
-		{
-			if (unit.getTotal() != 0)
-				weight += this.getStrongerUnitTypeCount(unit);
-		}
-		return weight;
-	}
-
 	function canSpawn()
 	{
 		if (!base.canSpawn())
