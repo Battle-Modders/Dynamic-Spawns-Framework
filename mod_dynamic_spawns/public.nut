@@ -41,6 +41,24 @@
 	}
 	else
 	{
+		// Temporary "fix" to convert old defs to new style
+		if (!("StaticDefs" in _partyDef)) _partyDef.StaticDefs <- {Units = [], UnitBlocks = [], Parties = []};
+		if (!("DynamicDefs" in _partyDef)) _partyDef.DynamicDefs <- {Units = [], UnitBlocks = [], Parties = []};
+		if ("StaticUnitDefs" in _partyDef)
+		{
+			_partyDef.StaticDefs.Units = _partyDef.StaticUnitDefs;
+			delete _partyDef.StaticUnitDefs;
+		}
+		if ("UnitBlockDefs" in _partyDef)
+		{
+			_partyDef.DynamicDefs.UnitBlocks = _partyDef.UnitBlockDefs;
+			delete _partyDef.UnitBlockDefs;
+		}
+		if ("Categories" in _partyDef)
+		{
+			_partyDef.DynamicDefs.Parties = _partyDef.Categories;
+			delete _partyDef.Categories;
+		}
 		::DynamicSpawns.Parties.LookupMap[_partyDef.ID] <- _partyDef;
 	}
 
@@ -71,6 +89,16 @@
  */
 ::DynamicSpawns.Public.registerUnitBlock <- function( _unitBlockDef )
 {
+	// Temporary "fix" to convert old defs to new style
+	if ("UnitDefs" in _unitBlockDef)
+	{
+		_unitBlockDef.DynamicDefs <- { Units = _unitBlockDef.UnitDefs }
+		delete _unitBlockDef.UnitDefs;
+	}
+	if ("DeterminesFigure" in _unitBlockDef)
+	{
+		delete _unitBlockDef.DeterminesFigure;
+	}
 	::DynamicSpawns.__setClass(::DynamicSpawns.Class.UnitBlock, _unitBlockDef);
 	::DynamicSpawns.UnitBlocks.LookupMap[_unitBlockDef.ID] <- _unitBlockDef;
 }
@@ -84,6 +112,12 @@
  */
 ::DynamicSpawns.Public.registerUnit <- function( _unitDef )
 {
+	// Temporary "fix" to convert old defs to new style
+	if ("SubPartyDef" in _unitDef)
+	{
+		_unitDef.StaticDefs <- { Parties = [ _unitDef.SubPartyDef ] }
+		delete _unitDef.SubPartyDef;
+	}
 	::DynamicSpawns.__setClass(::DynamicSpawns.Class.Unit, _unitDef);
 	::DynamicSpawns.Units.LookupMap[_unitDef.ID] <- _unitDef;
 }
