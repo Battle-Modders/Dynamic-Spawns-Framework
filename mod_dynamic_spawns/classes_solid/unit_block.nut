@@ -3,7 +3,6 @@
 // - It will have no type other than Units as its DynamicSpawnables
 ::DynamicSpawns.Class.UnitBlock <- class extends ::DynamicSpawns.Class.Spawnable
 {
-	DeterminesFigure = false; // Temporary variable to test with current Reforged unitblockdefs
 	TierWidth = 2; // Specifies the maximum number of tiers that can simultaneously have spawned units
 	__WeightedDynamicSpawnables = null;
 

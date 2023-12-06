@@ -254,28 +254,38 @@
 
 	function getFigure()
 	{
-		local ret = "";
-		local cost = -9999;
-		foreach (unit in this.getSpawnedUnits())
+		local getUnitsWithFigure;
+		getUnitsWithFigure = function( _spawnable )
 		{
-			local figure = unit.getFigure();
-			if (figure == "")
-				continue;
-
-			local unitCost = unit.getCost();
-			if (unitCost > cost)
+			local units = [];
+			local spawnables = clone _spawnable.__DynamicSpawnables;
+			spawnables.extend(_spawnable.__StaticSpawnables);
+			foreach (s in spawnables)
 			{
-				cost = unitCost;
-				ret = figure;
+				if (!s.determinesFigure())
+					continue;
+
+				if (s instanceof ::DynamicSpawns.Class.Unit)
+				{
+					if (s.getFigure() != "")
+						units.push(s);
+				}
+				else
+					units.extend(getUnitsWithFigure(s));
 			}
+			return units;
 		}
 
-		if (ret == "")
+		local units = getUnitsWithFigure(this);
+		if (units.len() != 0)
 		{
-			ret = typeof this.DefaultFigure == "array" ? this.DefaultFigure[::Math.rand(0, this.DefaultFigure.len() - 1)] : this.DefaultFigure;
-			if (ret == "")
-				::logError(format("Provide a DefaultFigure for this party (%s) or make sure Units with a defined Figure actually spawn", this.getLogName()));
+			units.sort(@(a, b) a.getCost() <=> b.getCost());
+			return units.top().getFigure();
 		}
+
+		local ret = typeof this.DefaultFigure == "array" ? this.DefaultFigure[::Math.rand(0, this.DefaultFigure.len() - 1)] : this.DefaultFigure;
+		if (ret == "")
+				::logError(format("Provide a DefaultFigure for this party (%s) or make sure Spawnables with DeterminesFigure actually spawn units with a defined Figure", this.getLogName()));
 
 		return ret;
 	}

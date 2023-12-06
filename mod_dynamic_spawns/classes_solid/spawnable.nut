@@ -8,6 +8,7 @@
 	RatioMin = 0.00;
 	RatioMax = 1.00;
 	ExclusionChance = 0.0;
+	DeterminesFigure = true;
 
 	HardMin = 0;
 	HardMax = 9000;
@@ -286,6 +287,11 @@
 			return false;
 
 		return true;
+	}
+
+	function determinesFigure()
+	{
+		return this.DeterminesFigure;
 	}
 
 	function getID()
