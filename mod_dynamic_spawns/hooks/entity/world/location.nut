@@ -37,7 +37,10 @@
 			// The above calculations are a copy of vanilla code
 			foreach (troop in dynamicParty.spawn(resources).getTroops())
 			{
-				::Const.World.Common.addTroop(this, troop, false);
+				for (local i = 0; i < troop.Num; i++)
+				{
+					::Const.World.Common.addTroop(this, troop, false);
+				}
 			}
 
 			this.updateStrength();
