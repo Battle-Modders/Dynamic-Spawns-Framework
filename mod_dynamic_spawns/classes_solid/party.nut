@@ -35,6 +35,14 @@
 		return this;
 	}
 
+	function setParty( _party )
+	{
+		if (_party != null && this.__Party != null)
+			return;
+
+		this.__Party = _party == null ? null : _party.weakref();
+	}
+
 	function spawn( _resources = null )
 	{
 		this.setupResources(_resources);
