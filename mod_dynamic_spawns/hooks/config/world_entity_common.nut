@@ -26,7 +26,16 @@ local assignTroops = ::Const.World.Common.assignTroops;
 	}
 	else
 	{
-		::logWarning("No dynamic party definition found for this vanilla party!");
+		local name;
+		foreach (key, value in ::Const.World.Spawn)
+		{
+			if (value == _partyList)
+			{
+				name = key;
+				break;
+			}
+		}
+		::logWarning("No dynamic party definition found for this vanilla party: " + name);
 		::MSU.Log.printStackTrace();
 	}
 
