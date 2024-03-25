@@ -287,7 +287,7 @@
 
 				if (s instanceof ::DynamicSpawns.Class.Unit)
 				{
-					if (s.getFigure() != "")
+					if (s.getFigure() != "" && s.getTotal() != 0)
 						units.push(s);
 				}
 				else
