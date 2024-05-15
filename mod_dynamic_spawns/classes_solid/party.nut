@@ -35,6 +35,16 @@
 		return this;
 	}
 
+	// Overwrite the parent function so that for parties the `setParty` does not chain down to the spawnables within the party.
+	// For those spawnables we want them to still belong to this party, not the new party to whom this party is being set to belong to.
+	function setParty( _party )
+	{
+		if (_party != null && this.__Party != null)
+			return;
+
+		this.__Party = _party == null ? null : _party.weakref();
+	}
+
 	function spawn( _resources = null )
 	{
 		this.setupResources(_resources);
