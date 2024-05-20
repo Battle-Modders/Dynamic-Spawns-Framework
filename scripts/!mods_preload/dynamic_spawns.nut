@@ -6,9 +6,9 @@
 	Class = {}
 };
 
-::mods_registerMod(::DynamicSpawns.ID, ::DynamicSpawns.Version, ::DynamicSpawns.Name);
-::mods_queue(::DynamicSpawns.ID, "mod_msu", function() {
-
+::DynamicSpawns.MH <- ::Hooks.register(::DynamicSpawns.ID, ::DynamicSpawns.Version, ::DynamicSpawns.Name);
+::DynamicSpawns.MH.require("mod_msu");
+::DynamicSpawns.MH.queue(">mod_msu", function() {
 	::DynamicSpawns.Mod <- ::MSU.Class.Mod(::DynamicSpawns.ID, ::DynamicSpawns.Version, ::DynamicSpawns.Name);
 
 	::DynamicSpawns.Mod.Registry.addModSource(::MSU.System.Registry.ModSourceDomain.GitHub, ::DynamicSpawns.GitHubURL);

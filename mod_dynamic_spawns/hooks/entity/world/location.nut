@@ -1,6 +1,5 @@
-::mods_hookExactClass("entity/world/location", function(o) {
-	local createDefenders = o.createDefenders;
-	o.createDefenders = function()
+::DynamicSpawns.MH.hook("scripts/entity/world/location", function(q) {
+	q.createDefenders = @(__original) function()
 	{
 		// This is 1 to 1 copy of vanilla resource scaling
 		local resources = this.m.Resources;
@@ -47,7 +46,7 @@
 		}
 		else
 		{
-			return createDefenders();
+			return __original();
 		}
 	}
 });
