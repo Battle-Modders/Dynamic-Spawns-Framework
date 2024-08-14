@@ -1,6 +1,5 @@
 
 ::include("mod_dynamic_spawns/classes_solid/spawnable");
-// ::includeFiles(::IO.enumerateFiles("mod_dynamic_spawns/classes"));
 ::includeFiles(::IO.enumerateFiles("mod_dynamic_spawns/classes_solid"));
 
 ::include("mod_dynamic_spawns/config");
