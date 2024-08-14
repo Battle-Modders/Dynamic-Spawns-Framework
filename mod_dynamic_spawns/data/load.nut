@@ -1,3 +1,11 @@
-::includeFiles(::IO.enumerateFiles("mod_dynamic_spawns/data/units"));
-::includeFiles(::IO.enumerateFiles("mod_dynamic_spawns/data/unitblocks"));
-::includeFiles(::IO.enumerateFiles("mod_dynamic_spawns/data/parties"));
+local function includeFiles( _path )
+{
+	foreach (file in ::IO.enumerateFiles())
+	{
+		::include(file);
+	}
+}
+
+includeFiles("mod_dynamic_spawns/data/units");
+includeFiles("mod_dynamic_spawns/data/unitsblocks");
+includeFiles("mod_dynamic_spawns/data/parties");
