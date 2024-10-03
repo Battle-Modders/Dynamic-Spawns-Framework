@@ -146,7 +146,7 @@
 	function generateIdealSize()
 	{
 		if (!("Assets" in ::World) || ::World.Assets == null) return ::DynamicSpawns.Const.MainMenuIdealSize;	// fix for when we test this framework in the main menu
-		return ::Math.ceil(Math.max(6, ::World.Assets.getBrothersMaxInCombat()));
+		return ::Math.max(6, ::Math.min(::World.getPlayerRoster().getSize(), ::World.Assets.getBrothersMaxInCombat()));
 	}
 
 	function isIgnoringCost()
