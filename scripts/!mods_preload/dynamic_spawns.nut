@@ -3,7 +3,8 @@
 	ID = "mod_dynamic_spawns",
 	Name = "Dynamic Spawns",
 	GitHubURL = "https://github.com/Battle-Modders/Dynamic-Spawns-Framework",
-	Class = {}
+	Class = {},
+	CanRegister = false
 };
 
 ::DynamicSpawns.MH <- ::Hooks.register(::DynamicSpawns.ID, ::DynamicSpawns.Version, ::DynamicSpawns.Name);
@@ -27,6 +28,10 @@
 
 	// testing();
 });
+
+::DynamicSpawns.MH.queue(function() {
+	::DynamicSpawns.CanRegister = true;
+}, ::Hooks.QueueBucket.AfterHooks)
 
 function testing()
 {

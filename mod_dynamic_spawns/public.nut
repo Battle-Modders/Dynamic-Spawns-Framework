@@ -10,6 +10,11 @@
  */
 ::DynamicSpawns.Public.registerParty <- function( _partyDef )
 {
+	if (!::DynamicSpawns.CanRegister)
+	{
+		throw "trying to register before AfterHooks";
+	}
+
 	if ("Variants" in _partyDef)
 	{
 		if (_partyDef.len() > 2)
@@ -89,6 +94,11 @@
  */
 ::DynamicSpawns.Public.registerUnitBlock <- function( _unitBlockDef )
 {
+	if (!::DynamicSpawns.CanRegister)
+	{
+		throw "trying to register before AfterHooks";
+	}
+
 	// Temporary "fix" to convert old defs to new style
 	if ("UnitDefs" in _unitBlockDef)
 	{
@@ -112,6 +122,11 @@
  */
 ::DynamicSpawns.Public.registerUnit <- function( _unitDef )
 {
+	if (!::DynamicSpawns.CanRegister)
+	{
+		throw "trying to register before AfterHooks";
+	}
+
 	// Temporary "fix" to convert old defs to new style
 	if ("SubPartyDef" in _unitDef)
 	{
