@@ -114,10 +114,20 @@
 		}
 		else
 		{
+			local currentTierWidth = 0;
+			foreach (i, unit in this.__DynamicSpawnables)
+			{
+				if (this.__DynamicSpawnables[i].getTotal() != 0) currentTierWidth++;
+			}
+
+			/// Checks whether spawning a unit behind the index _index would violate tier TierWidth of this Block
+			/// @return true, if no violation will occur
 			local function satisfiesTierWidth( _index )
 			{
-				_index += this.TierWidth;
-				return _index >= this.__DynamicSpawnables.len() || this.__DynamicSpawnables[_index].getTotal() == 0;
+				if (this.__DynamicSpawnables[_index].getTotal() != 0) return true;	// We always satisfy the tierwidth when the tier already has spawend units in it
+
+				// We only allow spawning into a new Tier, if the TierWidth still allows that
+				return this.TierWidth > currentTierWidth;
 			}
 			foreach (i, unit in this.__DynamicSpawnables)
 			{
