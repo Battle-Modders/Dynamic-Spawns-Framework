@@ -114,14 +114,23 @@
 		}
 		else
 		{
-			local function satisfiesTierWidth( _index )
+			local spawnables = this.__DynamicSpawnables.filter(@(_, _unit) _unit.canSpawn());
+			if (spawnables.len() == 0)
+				return null;
+
+			local function satisfiesTierWidth( _idx )
 			{
-				_index += this.TierWidth;
-				return _index >= this.__DynamicSpawnables.len() || this.__DynamicSpawnables[_index].getTotal() == 0;
+				for (local i = _idx + this.TierWidth; i < spawnables.len(); i++)
+				{
+					if (spawnables[i].getTotal() != 0)
+						return false;
+				}
+				return true;
 			}
-			foreach (i, unit in this.__DynamicSpawnables)
+
+			foreach (i, unit in spawnables)
 			{
-				if (satisfiesTierWidth(i) && unit.canSpawn())
+				if (satisfiesTierWidth(i))
 				{
 					return unit;
 				}
