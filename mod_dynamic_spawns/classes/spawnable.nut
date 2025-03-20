@@ -249,8 +249,6 @@
 		local total = this.getTotal();
 		if (total < this.getHardMin()) return true;
 		if (total >= this.getHardMax()) return false;
-		local topPartyTotal = this.getTopParty().getTotal();
-		if (topPartyTotal < this.getPartySizeMin() || topPartyTotal >= this.getPartySizeMax()) return false;
 		if (this.satisfiesRatioMin() && !this.isWithinRatioMax()) return false;
 		return true;
 	}

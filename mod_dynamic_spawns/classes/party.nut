@@ -64,47 +64,94 @@
 		this.callOnBeforeSpawnStart();
 
 		base.spawn();
-		while (this.canDoAnotherCycle())
+		local function doSpawnCycles()
 		{
-			if (this.__ForcedSpawnable != null)
+			while (this.canDoAnotherCycle())
 			{
-				if (::DynamicSpawns.Const.DetailedLogging) ::logInfo("Doing forced spawn!");
-				this.__ForcedSpawnable.spawnUnit();
-				this.__ForcedSpawnable = null;
-			}
-			else if (this.__UpgradeAffordables.len() > 0 && (this.__SpawnAffordables.len() == 0 || ::MSU.Math.randf(0.0, 1.0) < this.getUpgradeChance() * this.getTotal().tofloat() / this.getIdealSize()))
-			{
-				if (::DynamicSpawns.Const.DetailedLogging)
+				if (this.__ForcedSpawnable != null)
 				{
-					local str = "Possible Upgrades: ";
-					foreach (spawnable, weight in this.__UpgradeAffordables)
+					if (::DynamicSpawns.Const.DetailedLogging) ::logInfo("Doing forced spawn!");
+					this.__ForcedSpawnable.spawnUnit();
+					this.__ForcedSpawnable = null;
+				}
+				else if (this.__UpgradeAffordables.len() > 0 && (this.__SpawnAffordables.len() == 0 || ::MSU.Math.randf(0.0, 1.0) < this.getUpgradeChance() * this.getTotal().tofloat() / this.getIdealSize()))
+				{
+					if (::DynamicSpawns.Const.DetailedLogging)
 					{
-						str += spawnable.getLogName() + " (" + weight + "), ";
+						local str = "Possible Upgrades: ";
+						foreach (spawnable, weight in this.__UpgradeAffordables)
+						{
+							str += spawnable.getLogName() + " (" + weight + "), ";
+						}
+						::logInfo(str.slice(0, -2));
 					}
-					::logInfo(str.slice(0, -2));
+
+					this.__UpgradeAffordables.roll().upgradeUnit();
+				}
+				else if (this.__SpawnAffordables.len() > 0)
+				{
+					if (::DynamicSpawns.Const.DetailedLogging)
+					{
+						local str = "Possible Spawns: ";
+						foreach (spawnable, weight in this.__SpawnAffordables)
+						{
+							str += spawnable.getLogName() + " (" + weight + "), ";
+						}
+						::logInfo(str.slice(0, -2));
+					}
+					this.__SpawnAffordables.roll().spawnUnit();
+				}
+				else
+				{
+					throw "tried to run a cycle with no spawnable or upgradeable";
 				}
 
-				this.__UpgradeAffordables.roll().upgradeUnit();
+				this.callOnCycle(this);
 			}
-			else if (this.__SpawnAffordables.len() > 0)
+		}
+
+		doSpawnCycles();
+
+		// Check if any spawnable violated its PartySizeMin or PartySizeMax and if yes then remove it from the party
+		// and refund its resources. Then do more cycles until the returned resources are used up on other units.
+		// While this may now lead to a situation where the PartySizeMin would have been fulfilled, but practically
+		// that situation was only achievable by not spawning those particular spawnables, so its fine.
+		if (this.getTopParty() == this)
+		{
+			local total = this.getTotal();
+			local validatePartySizeMinMax;
+			validatePartySizeMinMax = function( _spawnable )
 			{
-				if (::DynamicSpawns.Const.DetailedLogging)
+				local ret = true;
+				for (local i = _spawnable.__DynamicSpawnables.len() - 1; i >= 0; i--)
 				{
-					local str = "Possible Spawns: ";
-					foreach (spawnable, weight in this.__SpawnAffordables)
+					local s = _spawnable.__DynamicSpawnables[i];
+					if (total < s.getPartySizeMin() || total > s.getPartySizeMax())
 					{
-						str += spawnable.getLogName() + " (" + weight + "), ";
+						ret = false;
+
+						s.getParty().addResources(s.getWorth());
+
+						if (::DynamicSpawns.Const.DetailedLogging)
+						{
+							::logInfo(format("%s%s violated party size requirements so removing it and returning %.1f resources. Remaining resources: %.1f", ::DynamicSpawns.getIndent(), s.getLogName(), s.getWorth(), s.getParty().getResources()));
+						}
+
+						_spawnable.__DynamicSpawnables.remove(i);
 					}
-					::logInfo(str.slice(0, -2));
+					if (ret)
+					{
+						ret = validatePartySizeMinMax(s);
+					}
 				}
-				this.__SpawnAffordables.roll().spawnUnit();
-			}
-			else
-			{
-				throw "tried to run a cycle with no spawnable or upgradeable";
+				return ret;
 			}
 
-			this.callOnCycle(this);
+			while (!validatePartySizeMinMax(this))
+			{
+				doSpawnCycles();
+				total = this.getTotal();
+			}
 		}
 
 		this.callOnSpawnEnd();
