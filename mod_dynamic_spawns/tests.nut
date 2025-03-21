@@ -129,7 +129,8 @@
 			_tile = ::World.getTileSquare(playerTile.SquareCoords.X - 2, playerTile.SquareCoords.Y - 2);
 		}
 
-		::World.FactionManager.getFactionOfType(_factionType).spawnEntity(_tile, "DynamicSpawns Test", false, _spawn, _resources);
+		local minibossify = 0;
+		::World.FactionManager.getFactionOfType(_factionType).spawnEntity(_tile, "DynamicSpawns Test", false, _spawn, _resources, minibossify);
 
 		::World.setPlayerPos(::World.State.getPlayer().getPos());
 		::World.setPlayerVisionRadius(::World.State.getPlayer().getVisionRadius());
