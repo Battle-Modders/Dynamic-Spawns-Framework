@@ -15,9 +15,11 @@ local assignTroops = ::Const.World.Common.assignTroops;
 		dynamicParty.spawn(_resources);
 		_partyList = [
 			{
-				Cost = _resources,
+				// Vanilla does not deal with a Cost of 0 well, because it uses the Cost as weight in its random draw, so a party with 0 cost will never be picked
+				// So we make sure, that Cost is at least 1, as a fail-safe
+				Cost = ::Math.max(1, _resources),
 				Troops = dynamicParty.getTroops(),
-				Body = dynamicParty.getFigure()
+				Body = dynamicParty.getFigure(),
 				VisionMult = dynamicParty.VisionMult,
 				VisibilityMult = dynamicParty.VisibilityMult,
 				MovementSpeedMult = dynamicParty.MovementSpeedMult
