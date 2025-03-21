@@ -5,7 +5,7 @@
 // Generate a list of Units from _partyList given _resources resources and then add them to the party _worldParty
 // _partyList is always an Array of Tables from the Table "::Const.World.Spawn" in order to stay backwards compatible with Vanilla
 local assignTroops = ::Const.World.Common.assignTroops;
-::Const.World.Common.assignTroops = function( _worldParty, _partyList, _resources, _weightMode = 1 )
+::Const.World.Common.assignTroops = function( _worldParty, _partyList, _resources, _minibossify = 0, _weightMode = 1 )
 {
 	_resources *= _weightMode == this.WeightMode.Weakest ? 0.7 : ::MSU.Math.randf(0.7, 1.0); // This accounts for vanilla choosing a random party composition allowing for picking slightly weaker as well
 
@@ -39,7 +39,7 @@ local assignTroops = ::Const.World.Common.assignTroops;
 		::MSU.Log.printStackTrace();
 	}
 
-	return assignTroops(_worldParty, _partyList, _resources, _weightMode);
+	return assignTroops(_worldParty, _partyList, _resources, _minibossify, _weightMode);
 }
 
 // Generate troops given a partyList and resources and adds those to a given array under a set faction
