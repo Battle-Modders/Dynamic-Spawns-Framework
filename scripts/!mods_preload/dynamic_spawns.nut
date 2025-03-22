@@ -1,5 +1,5 @@
 ::DynamicSpawns <- {
-	Version = "0.3.5",
+	Version = "0.4.0-alpha.0",
 	ID = "mod_dynamic_spawns",
 	Name = "Dynamic Spawns",
 	GitHubURL = "https://github.com/Battle-Modders/Dynamic-Spawns-Framework",
@@ -7,8 +7,13 @@
 	CanRegister = false
 };
 
+local requiredMods = [
+	"vanilla >= 1.5.1-4",
+	"mod_msu"
+];
+
 ::DynamicSpawns.MH <- ::Hooks.register(::DynamicSpawns.ID, ::DynamicSpawns.Version, ::DynamicSpawns.Name);
-::DynamicSpawns.MH.require("mod_msu");
+::DynamicSpawns.MH.require(requiredMods);
 ::DynamicSpawns.MH.queue(">mod_msu", function() {
 	::DynamicSpawns.Mod <- ::MSU.Class.Mod(::DynamicSpawns.ID, ::DynamicSpawns.Version, ::DynamicSpawns.Name);
 
