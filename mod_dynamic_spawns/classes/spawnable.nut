@@ -34,12 +34,6 @@
 		this.copyDataFromDef(_def);
 	}
 
-	// Temporary function to test with current Reforged dsf implementation
-	function getSpawnProcess()
-	{
-		return this.getTopParty();
-	}
-
 	function init()
 	{
 		this.__StaticSpawnables = [];
