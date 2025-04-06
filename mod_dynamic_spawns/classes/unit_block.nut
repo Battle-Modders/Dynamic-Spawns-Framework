@@ -118,6 +118,9 @@
 			if (spawnables.len() == 0)
 				return null;
 
+			// Returns true if all the units at and above "my index + this.TierWidth" have no units spawned yet.
+			// Because we check units from index 0 onwards and if any higher unit beyond the TierWidth already
+			// has units spawned, then we should not spawn this unit as it would violate the TierWidth.
 			local function satisfiesTierWidth( _idx )
 			{
 				for (local i = _idx + this.TierWidth; i < spawnables.len(); i++)
