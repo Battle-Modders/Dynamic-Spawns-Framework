@@ -1,5 +1,5 @@
 ::DynamicSpawns <- {
-	Version = "0.4.0-alpha.0",
+	Version = "0.4.0",
 	ID = "mod_dynamic_spawns",
 	Name = "Dynamic Spawns",
 	GitHubURL = "https://github.com/Battle-Modders/Dynamic-Spawns-Framework",
@@ -8,7 +8,7 @@
 };
 
 local requiredMods = [
-	"vanilla >= 1.5.1-4",
+	"vanilla >= 1.5.1-6",
 	"mod_msu"
 ];
 
