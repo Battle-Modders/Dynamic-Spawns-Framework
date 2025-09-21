@@ -242,10 +242,11 @@
 		{
 			if (_spawn && spawnable.canSpawn())
 			{
-				if (spawnable.satisfiesRatioMin() == false)
+				if (spawnable.satisfiesRatioMin() == false || spawnable.getHardMin() > spawnable.getTotal())
 				{
+					// We want to force a spawn that is below its RatioMin or which is below its HardMin
 					this.__ForcedSpawnable = spawnable;
-					return; // Early return for performance because we want to force a spawn that is below its RatioMin
+					return; 	// Early return for performance as we found a force-spawn
 				}
 				local weight = spawnable.getSpawnWeight();
 				if (weight != 0)
