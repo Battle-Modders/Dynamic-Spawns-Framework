@@ -126,7 +126,7 @@
 		local ret = this.getTotal();
 		if (this.__ParentSpawnable != null)
 			ret += 3 * (this.__ParentSpawnable.__DynamicSpawnables.len() - 1 - this.__ParentSpawnable.__DynamicSpawnables.find(this));
-		return ret * (1.0 / ::Math.pow(this.getCost(), 2));
+		return ret * (1.0 / ::Math.pow(this.getMinCost(), 2));
 	}
 
 	function getTroop()
@@ -139,6 +139,22 @@
 		return typeof this.Figure == "array" ? this.Figure[::Math.rand(0, this.Figure.len() -1)] : this.Figure;
 	}
 
+	// Calculate the minimum cost for spawning this unit, including the mincost of any sub spawnables
+	function getMinCost()
+	{
+		local ret = this.getCost();
+		if (__StaticSpawnables != null)
+		{
+			foreach (spawnable in this.__StaticSpawnables)
+			{
+				ret += spawnable.getMinCost();
+			}
+		}
+		return ret;
+	}
+
+	// Calculate the predicted, minimum resource cost of spawning this unit, considering any static spawnables
+	// This is useful when considering upgrading unit blocks of the same unit but with scaling bodyguards
 	function getPredictedWorth()
 	{
 		local ret = this.getCost();

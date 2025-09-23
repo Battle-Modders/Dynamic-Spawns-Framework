@@ -304,6 +304,19 @@
 		return this.getTopParty().__IsLocation;
 	}
 
+	// Return the cost of this party, if it was spawned with 0 available resources
+	// As a result only static spawnables and those, forced with HardMin > 0 will spawn and contribute to the MinCost
+	// The same call might still result in varying results, if a bodyguard definition uses a HardMin but randomized unitblock
+	// This function is meant to be used for determining whether a unit can spawn and how to sort units inside of UnitBlocks (if those units have bodyguards)
+	function getMinCost()
+	{
+		local wasLogging = ::DynamicSpawns.Const.Logging
+		::DynamicSpawns.Const.Logging = false;
+		local ret = (clone this).init().spawn(0).getWorth();
+		::DynamicSpawns.Const.Logging = wasLogging;
+		return ret;
+	}
+
 	function getTroops()
 	{
 		local ret = [];
@@ -356,7 +369,7 @@
 		local units = getUnitsWithFigure(this);
 		if (units.len() != 0)
 		{
-			units.sort(@(a, b) a.getCost() <=> b.getCost());
+			units.sort(@(a, b) a.getMinCost() <=> b.getMinCost());
 			return units.top().getFigure();
 		}
 
