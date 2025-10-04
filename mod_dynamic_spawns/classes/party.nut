@@ -185,8 +185,9 @@
 	function canDoAnotherCycle()
 	{
 		local total = this.getTotal();
-		if (total >= this.getHardMax() || (total >= this.getHardMin() && this.getResources() <= 0)) return false;
-		this.prepareAffordables(true, this.getTotal() >= this.getIdealSize());
+		if (total >= this.getHardMin() && this.getResources() <= 0)
+			return false;
+		this.prepareAffordables(total < this.getHardMax(), this.getTotal() >= this.getIdealSize());
 		return this.__ForcedSpawnable != null || this.__SpawnAffordables.len() != 0 || this.__UpgradeAffordables.len() != 0;
 	}
 
