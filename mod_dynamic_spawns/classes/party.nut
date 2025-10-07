@@ -74,7 +74,7 @@
 					this.__ForcedSpawnable.spawnUnit();
 					this.__ForcedSpawnable = null;
 				}
-				else if (this.__UpgradeAffordables.len() > 0 && (this.__SpawnAffordables.len() == 0 || ::MSU.Math.randf(0.0, 1.0) < this.getUpgradeChance() * this.getTotal().tofloat() / this.getIdealSize()))
+				else if (this.__UpgradeAffordables.len() > 0 && (this.__SpawnAffordables.len() == 0 || ::MSU.Math.randf(0.0, 1.0) < this.getUpgradeChance() * this.getTotal().tofloat() / ::Math.min(this.getHardMax(), this.getIdealSize())))
 				{
 					if (::DynamicSpawns.Const.DetailedLogging)
 					{
@@ -187,7 +187,7 @@
 		local total = this.getTotal();
 		if (total >= this.getHardMin() && this.getResources() <= 0)
 			return false;
-		this.prepareAffordables(total < this.getHardMax(), this.getTotal() >= this.getIdealSize());
+		this.prepareAffordables(total < this.getHardMax(), total >= ::Math.min(this.getHardMax(), this.getIdealSize()));
 		return this.__ForcedSpawnable != null || this.__SpawnAffordables.len() != 0 || this.__UpgradeAffordables.len() != 0;
 	}
 
