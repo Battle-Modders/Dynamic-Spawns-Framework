@@ -54,7 +54,7 @@
 
 	function sort()
 	{
-		this.__DynamicSpawnables.sort(@(a, b) a.getCost() <=> b.getCost());
+		this.__DynamicSpawnables.sort(@(a, b) a.getMinCost() <=> b.getMinCost());
 	}
 
 	function spawnUnit()
@@ -93,7 +93,7 @@
 				tiers++;
 				for (local j = i + 1; j < this.__DynamicSpawnables.len(); j++)	// for loop because the next very unitType could have some requirements (like playerstrength) preventing spawn
 				{
-					if (this.__DynamicSpawnables[j].canSpawn(unit.getCost()))
+					if (this.__DynamicSpawnables[j].canSpawn(unit.getMinCost()))
 					{
 						choices.add({Unit = unit, UpgradeUnit = this.__DynamicSpawnables[j]}, unit.getUpgradeWeight());
 						break;	// We are only interested in the closest possible upgrade path, not all of them

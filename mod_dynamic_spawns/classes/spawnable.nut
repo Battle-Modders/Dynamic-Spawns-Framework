@@ -356,6 +356,11 @@
 		return this.StrengthMax;
 	}
 
+	function getMinCost()
+	{
+		return 0;
+	}
+
 	function getPredictedWorth()
 	{
 		local resources = this.getParty().getResources();
