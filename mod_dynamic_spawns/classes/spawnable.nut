@@ -227,6 +227,7 @@
 		if (weight < 0)
 		{
 			::logError(format("Spawnable %s in party %s got a negative spawn weight when it is at or above its RatioMax", this.getID(), this.getTopParty().getID()));
+			weight = 0;
 		}
 		return weight;
 	}
