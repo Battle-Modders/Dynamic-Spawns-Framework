@@ -68,7 +68,7 @@
 		if (::DynamicSpawns.Const.DetailedLogging)
 		{
 			::DynamicSpawns.Indent++;
-			::logInfo(format("%sUpgrading %s to %s", ::DynamicSpawns.getIndent(), info.Unit.Troop, info.UpgradeUnit.Troop));
+			::logInfo(format("%sUpgrading %s to %s", ::DynamicSpawns.getIndent(), info.Unit.getLogName(), info.UpgradeUnit.getLogName()));
 		}
 		local despawn = info.Unit.despawnUnit();
 		local spawn = info.UpgradeUnit.spawnUnit();

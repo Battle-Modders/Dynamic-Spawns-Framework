@@ -57,7 +57,7 @@
 		if (::DynamicSpawns.Const.Logging)
 		{
 			::DynamicSpawns.Indent++;
-			::logWarning(format("%sStarting spawn of party %s with resources: %.1f", ::DynamicSpawns.getIndent(), this.getID(), this.getStartingResources()));
+			::logWarning(format("%sStarting spawn of party %s with resources: %.1f", ::DynamicSpawns.getIndent(), this.getLogNameChain(), this.getStartingResources()));
 		}
 
 		this.excludeSpawnables();
@@ -78,7 +78,7 @@
 				{
 					if (::DynamicSpawns.Const.DetailedLogging)
 					{
-						local str = "Possible Upgrades: ";
+						local str = format("%sPossible Upgrades in %s: ", ::DynamicSpawns.getIndent(), this.getLogName());
 						foreach (spawnable, weight in this.__UpgradeAffordables)
 						{
 							str += spawnable.getLogName() + " (" + weight + "), ";
@@ -92,7 +92,7 @@
 				{
 					if (::DynamicSpawns.Const.DetailedLogging)
 					{
-						local str = "Possible Spawns: ";
+						local str = format("%sPossible Spawns in %s: ", ::DynamicSpawns.getIndent(), this.getLogName());
 						foreach (spawnable, weight in this.__SpawnAffordables)
 						{
 							str += spawnable.getLogName() + " (" + weight + "), ";
@@ -161,10 +161,10 @@
 		if (::DynamicSpawns.Const.Logging)
 		{
 			::DynamicSpawns.Indent++;
-			::logInfo(format("%sSpawned %s worth %.1f resources", ::DynamicSpawns.getIndent(), this.getLogName(), this.getWorth()));
+			::logInfo(format("%sSpawned %s worth %.1f resources (Chain: %s)", ::DynamicSpawns.getIndent(), this.getLogName(), this.getWorth(), this.getLogNameChain()));
 			::DynamicSpawns.Indent--;
 
-			::logWarning(format("%sFinished spawn of Party %s. Remaining resources: %.1f", ::DynamicSpawns.getIndent(), this.getID(), this.getResources()));
+			::logWarning(format("%sFinished spawn of Party %s. Remaining resources: %.1f", ::DynamicSpawns.getIndent(), this.getLogName(), this.getResources()));
 			::DynamicSpawns.Indent--;
 		}
 
@@ -379,7 +379,7 @@
 		}
 		else
 		{
-			local parentTotal = this.__ParentSpawnable instanceof ::DynamicSpawns.Class.Unit ? this.__ParentSpawnable.getUnits().len() - 1 : this.__ParentSpawnable.getTotal();
+			local parentTotal = this.__ParentSpawnable instanceof ::DynamicSpawns.Class.Unit ? this.__ParentSpawnable.getUnits().len() : this.__ParentSpawnable.getTotal();
 			::logInfo(format("%s%s : %i (%.1f%%) (Worth: %.1f)", ::DynamicSpawns.getIndent(), this.getLogName(), this.getTotal().tointeger(), (this.getTotal() / parentTotal) * 100, this.getWorth()));
 		}
 
