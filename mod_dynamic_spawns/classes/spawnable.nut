@@ -361,12 +361,15 @@
 		local resources = this.getParty().getResources();
 		local wasLogging = ::DynamicSpawns.Const.Logging
 		::DynamicSpawns.Const.Logging = false;
+		local detailedLogging = ::DynamicSpawns.Const.DetailedLogging;
+		::DynamicSpawns.Const.DetailedLogging = false;
 		local ret = (clone this).init().spawn().getWorth();
 		if (this.getParty().getResources() < resources)
 		{
 			this.getParty().addResources(ret);
 		}
 		::DynamicSpawns.Const.Logging = wasLogging;
+		::DynamicSpawns.Const.DetailedLogging = detailedLogging;
 		return ret;
 	}
 
@@ -456,5 +459,18 @@
 	{
 		local idx = this.getID().find("(in"); // find the (instance 0x233e234f) suffix and remove it
 		return idx == null || idx == 0 ? this.getID() : this.getID().slice(0, idx);
+	}
+
+	function getLogNameChain()
+	{
+		local arr = [this.getLogName()];
+		local p = this.getParentSpawnable();
+		while (p != null)
+		{
+			arr.push(p.getLogName());
+			p = p.getParentSpawnable();
+		}
+		arr.reverse();
+		return arr.reduce(@(_a, _b) _a + "|" + _b);
 	}
 }

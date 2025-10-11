@@ -21,7 +21,7 @@
 		if (::DynamicSpawns.Const.DetailedLogging)
 		{
 			::DynamicSpawns.Indent++;
-			::logInfo(format("%sSpawned %s worth %.1f resources", ::DynamicSpawns.getIndent(), this.getLogName(), this.getWorth()));
+			::logInfo(format("%sSpawned %s worth %.1f resources in Chain: %s", ::DynamicSpawns.getIndent(), this.getLogName(), this.getWorth(), this.getLogNameChain()));
 			::DynamicSpawns.Indent--;
 		}
 		return this;
@@ -44,7 +44,7 @@
 		if (::DynamicSpawns.Const.DetailedLogging)
 		{
 			::DynamicSpawns.Indent++;
-			::logInfo(format("%sSpawned %s worth %.1f resources. Remaining resources: %.1f", ::DynamicSpawns.getIndent(), unit.getLogName(), unit.getWorth(), unit.getParty().getResources()));
+			::logInfo(format("%sSpawned %s worth %.1f resources. Remaining resources: %.1f. Chain: %s", ::DynamicSpawns.getIndent(), unit.getLogName(), unit.getWorth(), unit.getParty().getResources(), unit.getLogNameChain()));
 			::DynamicSpawns.Indent--;
 		}
 		return ret;
@@ -57,7 +57,7 @@
 		if (::DynamicSpawns.Const.DetailedLogging)
 		{
 			::DynamicSpawns.Indent++;
-			::logInfo(format("%sDespawned %s worth %.1f resources. Remaining resources: %.1f", ::DynamicSpawns.getIndent(), spawn.getLogName(), spawn.getWorth(), this.getParty().getResources()));
+			::logInfo(format("%sDespawned %s worth %.1f resources. Remaining resources: %.1f. Chain: %s", ::DynamicSpawns.getIndent(), spawn.getLogName(), spawn.getWorth(), this.getParty().getResources(), spawn.getLogNameChain()));
 			::DynamicSpawns.Indent--;
 		}
 		return spawn;
@@ -188,10 +188,5 @@
 		}
 
 		::DynamicSpawns.Indent--;
-	}
-
-	function getLogName()
-	{
-		return this.Troop;
 	}
 }
