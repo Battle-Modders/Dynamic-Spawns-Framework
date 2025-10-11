@@ -16,19 +16,6 @@
 
 	function spawn()
 	{
-		this.__Instances.push(this);
-		base.spawn();
-		if (::DynamicSpawns.Const.DetailedLogging)
-		{
-			::DynamicSpawns.Indent++;
-			::logInfo(format("%sSpawned %s worth %.1f resources in Chain: %s", ::DynamicSpawns.getIndent(), this.getLogName(), this.getWorth(), this.getLogNameChain()));
-			::DynamicSpawns.Indent--;
-		}
-		return this;
-	}
-
-	function spawnUnit()
-	{
 		local unit = clone this;
 		unit.__Instances = [];
 		if (this.__StaticSpawnables.len() != 0)
@@ -39,7 +26,8 @@
 		}
 		this.__Instances.push(unit);
 
-		local ret = unit.spawn();
+		local ret = base.spawn.call(unit);
+		unit.__Instances.push(unit);
 		this.getParty().addResources(-unit.getWorth());
 		if (::DynamicSpawns.Const.DetailedLogging)
 		{
@@ -50,7 +38,7 @@
 		return ret;
 	}
 
-	function despawnUnit()
+	function despawn()
 	{
 		local spawn = this.__Instances.remove(::Math.rand(0, this.__Instances.len() - 1));
 		this.getParty().addResources(spawn.getWorth());

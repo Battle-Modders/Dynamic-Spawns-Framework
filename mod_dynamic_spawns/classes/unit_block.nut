@@ -59,7 +59,7 @@
 
 	function spawnUnit()
 	{
-		return this.chooseUnitForSpawn().spawnUnit();
+		return this.chooseUnitForSpawn().spawn();
 	}
 
 	function upgradeUnit()
@@ -70,8 +70,8 @@
 			::DynamicSpawns.Indent++;
 			::logInfo(format("%sUpgrading %s to %s", ::DynamicSpawns.getIndent(), info.Unit.getLogName(), info.UpgradeUnit.getLogName()));
 		}
-		local despawn = info.Unit.despawnUnit();
-		local spawn = info.UpgradeUnit.spawnUnit();
+		local despawn = info.Unit.despawn();
+		local spawn = info.UpgradeUnit.spawn();
 		if (::DynamicSpawns.Const.DetailedLogging)
 		{
 			::DynamicSpawns.Indent--;
