@@ -54,7 +54,7 @@
 
 	function sort()
 	{
-		this.__DynamicSpawnables.sort(@(a, b) a.getCost() <=> b.getCost());
+		::DynamicSpawns.__stableSort(this.__DynamicSpawnables, @(a, b) a.getCost() <=> b.getCost());
 	}
 
 	function spawnUnit()
