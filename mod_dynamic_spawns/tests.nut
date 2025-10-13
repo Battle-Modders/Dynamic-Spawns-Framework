@@ -153,38 +153,42 @@
     function printSpawnAverage( _partyID, _resources, _fixedResources = false, _iterations = 500 )
     {
     	local addValues;
-    	addValues = function( _parent, _spawnable )
+    	addValues = function( _parent, _spawnable, _isUnitInstance = false )
 		{
-			if ((_spawnable instanceof ::DynamicSpawns.Class.Unit) && _spawnable.__Instances.len() > 0 && _spawnable.__Instances[0] != _spawnable)
+			local id = _spawnable.getLogName();
+			local t = _spawnable.getTotal();
+
+			if (!_isUnitInstance)
 			{
-				foreach (instance in _spawnable.__Instances)
-				{
-					addValues(_parent, instance);
-				}
-			}
-			else
-			{
-				local id = _spawnable.getLogName();
 				if (!(id in _parent))
 				{
-					_parent[id] <- {
-						Total = _spawnable.getTotal()
-					};
+					_parent[id] <- { Total = t,	Min = t, Max = t };
+
 					if (_spawnable instanceof ::DynamicSpawns.Class.Unit)
 						_parent[id].Cost <- _spawnable.Cost;
 				}
 				else
 				{
-					_parent[id].Total += _spawnable.getTotal();
+					_parent[id].Total += t;
+					_parent[id].Min = ::Math.min(_parent[id].Min, t);
+					_parent[id].Max = ::Math.max(_parent[id].Max, t);
 				}
+			}
 
-				foreach (spawnable in _spawnable.__DynamicSpawnables)
+			foreach (spawnable in _spawnable.__DynamicSpawnables)
+			{
+				addValues(_parent[id], spawnable);
+			}
+			foreach (spawnable in _spawnable.__StaticSpawnables)
+			{
+				addValues(_parent[id], spawnable);
+			}
+
+			if (_spawnable instanceof ::DynamicSpawns.Class.Unit && _spawnable.__Instances.len() > 0 && _spawnable.__Instances[0] != _spawnable)
+			{
+				foreach (instance in _spawnable.__Instances)
 				{
-					addValues(_parent[id], spawnable);
-				}
-				foreach (spawnable in _spawnable.__StaticSpawnables)
-				{
-					addValues(_parent[id], spawnable);
+					addValues(_parent, instance, true);
 				}
 			}
 		}
@@ -192,8 +196,10 @@
 		printValues = function( _key, _data )
 		{
 			::DynamicSpawns.Indent++;
-			::logInfo(format("%s%s : %.2f", ::DynamicSpawns.getIndent(), _key, (_data.Total / _iterations)));
+			::logInfo(format("%s%s : %.2f (%i - %i)", ::DynamicSpawns.getIndent(), _key, (_data.Total / _iterations), _data.Min, _data.Max));
 			delete _data.Total;
+			delete _data.Min;
+			delete _data.Max;
 			local ordered = [];
 			foreach (key, value in _data)
 			{
