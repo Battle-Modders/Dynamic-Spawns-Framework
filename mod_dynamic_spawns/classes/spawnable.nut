@@ -195,13 +195,23 @@
 		return ret;
 	}
 
+	// Will this spawnable remain within the RatioMax if it were to spawn 1 more unit and parent total were to go up by 1
 	function isWithinRatioMax( _total = null )
 	{
-		local referencedTotal = ::Math.max(this.getParentSpawnable().getTotal() + 1, this.getParentSpawnable().getHardMin());
+		local referencedTotal = ::Math.max(this.getParentSpawnable().getTotal(), this.getParentSpawnable().getHardMin()) + 1;
 		local total = _total == null ? this.getTotal() : _total;
-		return total < ::Math.round(referencedTotal * this.getRatioMax());
+		return total + 1 <= ::Math.round(referencedTotal * this.getRatioMax());
 	}
 
+	// Does this spawnable satisfy its RatioMax with its current/given total
+	function satisfiesRatioMax( _total = null )
+	{
+		local referencedTotal = ::Math.max(this.getParentSpawnable().getTotal(), this.getParentSpawnable().getHardMin());
+		local total = _total == null ? this.getTotal() : _total;
+		return total <= ::Math.round(referencedTotal * this.getRatioMax());
+	}
+
+	// Does this spawnable satisfy its RatioMin with its current/given total
 	function satisfiesRatioMin( _total = null )
 	{
 		local ratio = this.getRatioMin();
@@ -222,19 +232,9 @@
 	function getSpawnWeight()
 	{
 		// Weighted-Spawns: All Spawnables that won't surpass their RatioMax if they were to get the next spawn, compete against each other for a random spawn
-		local referencedTotal = ::Math.max(this.getParentSpawnable().getTotal() + 1, this.getParentSpawnable().getHardMin());
-		local myTotal = this.getTotal();
-		local ratioMax = this.getRatioMax();
-		local weight = ratioMax - myTotal / referencedTotal.tofloat();
-		if (weight < 0)
-		{
-			if (::DynamicSpawns.Const.DetailedLogging)
-			{
-				::logError(format("Spawnable %s in party %s got a negative spawn weight of %f (RatioMax: %f, MyTotal: %i, ReferencedTotal: %i)", this.getLogName(), this.getTopParty().getLogName(), weight, ratioMax, myTotal, referencedTotal));
-			}
-			weight = 0;
-		}
-		return weight;
+		local referencedTotal = ::Math.max(this.getParentSpawnable().getTotal(), this.getParentSpawnable().getHardMin()) + 1;
+		local afterSpawnRatio = (this.getTotal() + 1) / referencedTotal.tofloat();
+		return ::Math.maxf(0.0, this.getRatioMax() - afterSpawnRatio);
 	}
 
 	function getUpgradeWeight()
