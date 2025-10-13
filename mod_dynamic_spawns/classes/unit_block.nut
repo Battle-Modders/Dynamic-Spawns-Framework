@@ -86,22 +86,28 @@
 		// Ignore the highest tier
 		for (local i = 0; i < this.__DynamicSpawnables.len() - 1 && tiers < this.TierWidth - 1; i++)
 		{
-			local unit = this.__DynamicSpawnables[i];
-			local count = unit.getTotal();
+			local oldUnit = this.__DynamicSpawnables[i];
+			local count = oldUnit.getTotal();
 			if (count == 0)
 				continue;
 
 			// Upgrading will reduce this unit's count by 1. So we need to ensure that that won't violate its RatioMin or HardMin
 			local predictedCount = count - 1;
-			if (!unit.satisfiesRatioMin(predictedCount) || predictedCount < unit.getHardMin())
+			if (!oldUnit.satisfiesRatioMin(predictedCount) || predictedCount < oldUnit.getHardMin())
 				continue;
 
 			tiers++;
 			for (local j = i + 1; j < this.__DynamicSpawnables.len(); j++)	// for loop because the next very unitType could have some requirements (like playerstrength) preventing spawn
 			{
-				if (this.__DynamicSpawnables[j].canSpawn(unit.getCost()))
+				local newUnit = this.__DynamicSpawnables[j];
+				if (!newUnit.satisfiesRatioMax(newUnit.getTotal() + 1))
+					continue;
+
+				oldUnit.chooseDespawn();
+
+				if (newUnit.canSpawn(oldUnit.getDespawnInstance().getWorth()))
 				{
-					choices.add({Unit = unit, UpgradeUnit = this.__DynamicSpawnables[j]}, unit.getUpgradeWeight());
+					choices.add({Unit = oldUnit, UpgradeUnit = newUnit}, oldUnit.getUpgradeWeight());
 					break;	// We are only interested in the closest possible upgrade path, not all of them
 				}
 			}

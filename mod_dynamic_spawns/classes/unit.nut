@@ -7,11 +7,29 @@
 	Cost = 1.0;
 
 	__Instances = null; // Each spawn of this unit is kept as an instance here. This is for being able to spawn/despawn individual instances which may vary due to spawns from their __StaticSpawnables
+	__DespawnIdx = null;
 
 	function init()
 	{
 		this.__Instances = [];
 		return base.init();
+	}
+
+	function chooseDespawn( _force = false )
+	{
+		if (this.__DespawnIdx == null || _force)
+		{
+			this.__DespawnIdx = ::Math.rand(0, this.__Instances.len() - 1);
+		}
+	}
+
+	function getDespawnInstance()
+	{
+		if (this.__DespawnIdx == null)
+			this.chooseDespawn();
+
+		if (this.__DespawnIdx != null)
+			return this.__Instances[this.__DespawnIdx];
 	}
 
 	function spawn()
@@ -40,7 +58,10 @@
 
 	function despawn()
 	{
-		local spawn = this.__Instances.remove(::Math.rand(0, this.__Instances.len() - 1));
+		this.chooseDespawn();
+		local spawn = this.__Instances.remove(this.__DespawnIdx);
+		this.__DespawnIdx = null;
+
 		this.getParty().addResources(spawn.getWorth());
 		if (::DynamicSpawns.Const.DetailedLogging)
 		{
