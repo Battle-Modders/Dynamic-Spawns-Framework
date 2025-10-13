@@ -60,8 +60,8 @@
 			::logWarning(format("%sStarting spawn of party %s with resources: %.1f", ::DynamicSpawns.getIndent(), this.getLogNameChain(), this.getStartingResources()));
 		}
 
-		this.excludeSpawnables();
 		this.callOnBeforeSpawnStart();
+		this.excludeSpawnables();
 
 		base.spawn();
 		local function doSpawnCycles()
