@@ -119,10 +119,10 @@
 // This feature is planned to be implemented in MSU but until that happens we've implemented a private version of it here.
 ::DynamicSpawns.__stableSort <- function( _array, _compareFunc = null )
 {
-	if (_array.len() <= 1)
+	local len = _array.len();
+	if (len <= 1)
 		return _array;
 
-	local len = _array.len();
 	for (local i = 1; i < len; i++)
 	{
 		local key = _array[i];
