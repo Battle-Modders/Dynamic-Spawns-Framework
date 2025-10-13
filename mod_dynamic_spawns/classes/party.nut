@@ -176,6 +176,12 @@
 	function setupResources( _resources )
 	{
 		this.__StartingResources = _resources != null ? _resources : this.getDefaultResources();
+		// Restrict the max resources available to subparties to be just enough
+		// that the total worth of their parent spawnable cannot exceed the top party's affordability
+		if (this.getTopParty() != this)
+		{
+			this.__StartingResources = ::Math.minf(this.getTopParty().getResources() - this.getParentSpawnable().getWorth(), this.__StartingResources);
+		}
 		this.__Resources = this.__StartingResources;
 	}
 
