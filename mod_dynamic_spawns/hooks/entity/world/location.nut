@@ -2,6 +2,7 @@
 	::DynamicSpawns.MH.hook("scripts/entity/world/location", function(q) {
 		q.createDefenders = @(__original) function()
 		{
+			local DefenderSpawnDay_original = this.m.DefenderSpawnDay;
 			__original();
 
 			// We let the original function spawn a vanilla party. Then we look at the
@@ -26,6 +27,10 @@
 						Troops = dynamicParty.spawn(worth).getTroops()
 					}
 				];
+
+				// Revert the DefenderSpawnDay back to what it was before the vanilla party spawned
+				// in case some mod is using this variable for custom logic inside createDefenders
+				this.m.DefenderSpawnDay = DefenderSpawnDay_original;
 
 				// Call the original function again to now spawn our dynamic party
 				__original();
