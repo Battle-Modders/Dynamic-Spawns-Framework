@@ -198,9 +198,10 @@
 	// Will this spawnable remain within the RatioMax if it were to spawn 1 more unit and parent total were to go up by 1
 	function isWithinRatioMax( _total = null )
 	{
-		local referencedTotal = ::Math.max(this.getParentSpawnable().getTotal(), this.getParentSpawnable().getHardMin()) + 1;
+		local referencedTotal = ::Math.max(this.getParentSpawnable().getTotal() + 1, this.getParentSpawnable().getHardMin());
 		local total = _total == null ? this.getTotal() : _total;
-		return total + 1 <= ::Math.round(referencedTotal * this.getRatioMax());
+		// It should be `total + 1 <=` but we're dealing with integers here so `total <` is more efficient
+		return total < ::Math.round(referencedTotal * this.getRatioMax());
 	}
 
 	// Does this spawnable satisfy its RatioMax with its current/given total
@@ -232,7 +233,7 @@
 	function getSpawnWeight()
 	{
 		// Weighted-Spawns: All Spawnables that won't surpass their RatioMax if they were to get the next spawn, compete against each other for a random spawn
-		local referencedTotal = ::Math.max(this.getParentSpawnable().getTotal(), this.getParentSpawnable().getHardMin()) + 1;
+		local referencedTotal = ::Math.max(this.getParentSpawnable().getTotal() + 1, this.getParentSpawnable().getHardMin());
 		local afterSpawnRatio = this.getTotal() / referencedTotal.tofloat();
 		return ::Math.maxf(0.0, this.getRatioMax() - afterSpawnRatio);
 	}
