@@ -4,7 +4,10 @@
 	Name = "Dynamic Spawns",
 	GitHubURL = "https://github.com/Battle-Modders/Dynamic-Spawns-Framework",
 	Class = {},
-	CanRegister = false
+	CanRegister = false,
+	QueueBucket = {
+		Late = []
+	}
 };
 
 local requiredMods = [
@@ -35,7 +38,15 @@ local requiredMods = [
 });
 
 ::DynamicSpawns.MH.queue(function() {
+	foreach (fn in ::DynamicSpawns.QueueBucket.Late)
+	{
+		fn();
+	}
+}, ::Hooks.QueueBucket.Late)
+
+::DynamicSpawns.MH.queue(function() {
 	::DynamicSpawns.CanRegister = true;
+	delete ::DynamicSpawns.QueueBucket;
 }, ::Hooks.QueueBucket.AfterHooks)
 
 function testing()
