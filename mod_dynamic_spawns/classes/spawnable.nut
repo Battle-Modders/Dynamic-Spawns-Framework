@@ -213,13 +213,13 @@
 	}
 
 	// Does this spawnable satisfy its RatioMin with its current/given total
-	function satisfiesRatioMin( _total = null )
+	function satisfiesRatioMin( _total = null, _parentTotal = null )
 	{
 		local ratio = this.getRatioMin();
 		if (ratio == 0.0)
 			return true;
 
-		local parentTotal = this.getParentSpawnable().getTotal();
+		local parentTotal = _parentTotal == null ? this.getParentSpawnable().getTotal() : _parentTotal;
 
 		if (parentTotal == 0)
 			return false;
@@ -232,10 +232,10 @@
 
 	function getSpawnWeight()
 	{
-		// Weighted-Spawns: All Spawnables that won't surpass their RatioMax if they were to get the next spawn, compete against each other for a random spawn
+		// Spawnables are more weighted to spawn the further they are from their maximum possible units
 		local referencedTotal = ::Math.max(this.getParentSpawnable().getTotal() + 1, this.getParentSpawnable().getHardMin());
-		local afterSpawnRatio = this.getTotal() / referencedTotal.tofloat();
-		return ::Math.maxf(0.0, this.getRatioMax() - afterSpawnRatio);
+		local maxUnits = ::Math.min(this.getHardMax(), ::Math.ceil(this.getRatioMax() * referencedTotal));
+		return maxUnits - this.getTotal();
 	}
 
 	function getUpgradeWeight()

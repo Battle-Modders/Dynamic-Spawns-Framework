@@ -267,6 +267,29 @@
 					this.__UpgradeAffordables.add(spawnable, weight);
 			}
 		}
+
+		// If spawning a spawnable will put its sibling DynamicSpawnable(s) below
+		// their RatioMin then we reduce the weight of that spawnable.
+		if (_spawn)
+		{
+			// Convert the weighted container into an array with each idx being [weight, spawnable]
+			local spawnables = this.__SpawnAffordables.toArray(false);
+			// The total that will be after the spawn of 1 unit, therefore we do +1
+			local parentTotal = this.getTotal() + 1;
+			foreach (pair1 in spawnables)
+			{
+				foreach (pair2 in spawnables)
+				{
+					if (pair1 == pair2)
+						continue;
+
+					if (!pair2[1].satisfiesRatioMin(null, parentTotal))
+					{
+						this.__SpawnAffordables.setWeight(pair1[1], pair1[0] * 0.1);
+					}
+				}
+			}
+		}
 	}
 
 	function spawnUnit()
