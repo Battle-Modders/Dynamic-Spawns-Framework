@@ -233,7 +233,7 @@
 	{
 		// Weighted-Spawns: All Spawnables that won't surpass their RatioMax if they were to get the next spawn, compete against each other for a random spawn
 		local referencedTotal = ::Math.max(this.getParentSpawnable().getTotal(), this.getParentSpawnable().getHardMin()) + 1;
-		local afterSpawnRatio = (this.getTotal() + 1) / referencedTotal.tofloat();
+		local afterSpawnRatio = this.getTotal() / referencedTotal.tofloat();
 		return ::Math.maxf(0.0, this.getRatioMax() - afterSpawnRatio);
 	}
 
