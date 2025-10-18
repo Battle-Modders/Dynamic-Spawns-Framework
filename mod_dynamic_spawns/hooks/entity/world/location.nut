@@ -1,52 +1,42 @@
-::DynamicSpawns.MH.hook("scripts/entity/world/location", function(q) {
-	q.createDefenders = @(__original) function()
-	{
-		// This is 1 to 1 copy of vanilla resource scaling
-		local resources = this.m.Resources;
-		if (this.m.IsScalingDefenders)
+::DynamicSpawns.QueueBucket.Late.push(function() {
+	::DynamicSpawns.MH.hook("scripts/entity/world/location", function(q) {
+		q.createDefenders = @(__original) function()
 		{
-			resources = resources * ::Math.minf(3.0, 1.0 + ::World.getTime().Days * 0.0075);
-		}
+			local DefenderSpawnDay_original = this.m.DefenderSpawnDay;
+			__original();
 
-		if (!this.isAlliedWithPlayer())
-		{
-			resources = resources * ::Const.Difficulty.EnemyMult[::World.Assets.getCombatDifficulty()];
-		}
-
-		if (::Time.getVirtualTimeF() - this.m.LastSpawnTime <= 60.0)
-		{
-			resources = resources * 0.75;
-		}
-
-		local dynamicParty = ::DynamicSpawns.Static.retrieveDynamicParty(this.m.DefenderSpawnList, resources);
-		if (dynamicParty != null)
-		{
-			this.m.Troops = [];		// Whatever was in this camp before is getting wiped
-
-			if (::Time.getVirtualTimeF() - this.m.LastSpawnTime <= 60.0)
+			// We let the original function spawn a vanilla party. Then we look at the
+			// worth of this party and replace it with our dynamic party of similar worth.
+			// This method ensures that any resource scaling etc. from the original function
+			// and any modifications thereof by mods etc. are automatically accounted for.
+			local worth = 0;
+			foreach (t in this.m.Troops)
 			{
-				this.m.DefenderSpawnDay = ::World.getTime().Days - 7;
-			}
-			else
-			{
-				this.m.DefenderSpawnDay = ::World.getTime().Days;
+				worth += t.Cost;
 			}
 
-			dynamicParty.__IsLocation = true; // TODO: Not so happy with this, should think of something better
-			// The above calculations are a copy of vanilla code
-			foreach (troop in dynamicParty.spawn(resources).getTroops())
+			local dynamicParty = ::DynamicSpawns.Static.retrieveDynamicParty(this.m.DefenderSpawnList, worth);
+			if (dynamicParty != null)
 			{
-				for (local i = 0; i < troop.Num; i++)
-				{
-					::Const.World.Common.addTroop(this, troop, false);
-				}
-			}
+				// We force the __original function to choose this dynamically spawned party
+				// by making it the only available choice by switcherooing DefenderSpawnList.
+				local DefenderSpawnList_original = this.m.DefenderSpawnList;
+				this.m.DefenderSpawnList = [
+					{
+						Cost = worth,
+						Troops = dynamicParty.spawn(worth).getTroops()
+					}
+				];
 
-			this.updateStrength();
+				// Revert the DefenderSpawnDay back to what it was before the vanilla party spawned
+				// in case some mod is using this variable for custom logic inside createDefenders
+				this.m.DefenderSpawnDay = DefenderSpawnDay_original;
+
+				// Call the original function again to now spawn our dynamic party
+				__original();
+
+				this.m.DefenderSpawnList = DefenderSpawnList_original;
+			}
 		}
-		else
-		{
-			return __original();
-		}
-	}
+	});
 });
