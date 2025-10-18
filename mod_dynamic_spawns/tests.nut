@@ -264,11 +264,6 @@
     	if (typeof _vanillaPartyList == "string")
     		_vanillaPartyList = ::Const.World.Spawn[_vanillaPartyList];
 
-    	local t = {
-    		Total = 0,
-    		Worth = 0
-    	};
-
     	if (!_fixedResources)
     	{
     		if (_vanillaPartyList[_vanillaPartyList.len() - 1].Cost < _resources * 0.7)
@@ -287,6 +282,19 @@
     	foreach (key, troop in ::Const.World.Spawn.Troops)
     	{
     		scriptToTroopNameMap[troop.Script] <- key;
+    	}
+
+    	local t = {
+    		Total = 0,
+    		Worth = 0
+    	};
+
+    	foreach (party in _vanillaPartyList)
+    	{
+    		foreach (troop in party.Troops)
+    		{
+	    		t[scriptToTroopNameMap[troop.Type.Script]] <- 0;
+    		}
     	}
 
     	local potential;
@@ -408,7 +416,7 @@
     	this.printSpawnAverage(_partyID, _resources, _fixedResources, _iterations);
     }
 
-    function printVanillaPartyInfo( _party, _minResources = null, _maxResources = null )
+    function printVanillaPartyInfo( _party )
     {
     	if (typeof _party == "string")
     		_party = ::Const.World.Spawn[_party];
@@ -420,35 +428,16 @@
     	}
 
     	local troopInfo = {};
-
-    	local partyCount = 0;
-    	local minIdx = -1;
-    	local maxIdx = _party.len() - 1;
-    	local sizes = [];
+    	local sizes = array(_party.len());
 
     	foreach (i, party in _party)
     	{
-    		if (_minResources != null && party.Cost < _minResources)
-    		{
-    			continue;
-    		}
-    		else if (minIdx == -1)
-    			minIdx = i;
-
-    		if (_maxResources != null && party.Cost > _maxResources)
-    		{
-    			maxIdx = i - 1;
-    			break;
-    		}
-
-    		partyCount++;
-
     		local size = 0.0;
 			foreach (troop in party.Troops)
 			{
 				size += troop.Num;
 			}
-			sizes.push(size);
+			sizes[i] = size;
     		foreach (troop in party.Troops)
     		{
     			local name = troopToNameMap[troop.Type];
@@ -458,7 +447,7 @@
     					StartingResourceMin = party.Cost,
     					StartingResourceMax = party.Cost,
     					PartySizeMin = size,
-    					NumMin = troop.Num,
+    					NumMin = i != 0 ? 0 : troop.Num,
     					NumMax = troop.Num,
     					RatioMin = troop.Num / size,
     					RatioMax = troop.Num / size,
@@ -485,21 +474,22 @@
     	local sizeMin = sizes.len() == 0 ? 0 : sizes[0];
     	local sizeMax = sizes.len() == 0 ? 0 : sizes.top();
 
-    	if (minIdx == -1)
-    		minIdx = 0;
-
-		::logInfo("Total variants: " + partyCount);
+		::logInfo("Total variants: " + _party.len());
     	::logInfo("SizeMin: " + sizeMin);
     	::logInfo("SizeMax: " + sizeMax);
-    	::logInfo("CostMin: " + _party[minIdx].Cost);
-    	::logInfo("CostMax: " + _party[maxIdx].Cost);
+    	::logInfo("CostMin: " + _party[0].Cost);
+    	::logInfo("CostMax: " + _party.top().Cost);
     	foreach (name, info in troopInfo)
     	{
-    		local startingResourceMin = info.StartingResourceMin == _party[minIdx].Cost ? "0" : info.StartingResourceMin + "";
-    		local startingResourceMax = info.StartingResourceMax == _party[maxIdx].Cost ? "None" : info.StartingResourceMax + "";
+    		local startingResourceMin = info.StartingResourceMin == _party[0].Cost ? "0" : info.StartingResourceMin + "";
+    		local startingResourceMax = info.StartingResourceMax == _party.top().Cost ? "None" : info.StartingResourceMax + "";
     		local partySizeMin = info.PartySizeMin == sizeMin ? "None" : info.PartySizeMin + "";
     		local exclusionChance = 1.0 - info.PartyCount.tofloat() / (1 + info.LastPartyIdx - info.FirstPartyIdx);
-    		::logInfo(format("%s: StartingResourceMin: %s, StartingResourceMax: %s, PartySizeMin: %s, NumMin: %i, NumMax: %i, RatioMin: %.2f, RatioMax: %.2f, ExclusionChance: %.2f", name, startingResourceMin, startingResourceMax, partySizeMin, info.NumMin, info.NumMax, info.PartyCount == partyCount ? info.RatioMin : 0.0, info.RatioMax, exclusionChance));
+    		if (info.LastPartyIdx < _party.len() - 1)
+    		{
+    			info.NumMin = 0;
+    		}
+    		::logInfo(format("%s: StartingResourceMin: %s, StartingResourceMax: %s, PartySizeMin: %s, NumMin: %i, NumMax: %i, RatioMin: %.2f, RatioMax: %.2f, ExclusionChance: %.2f", name, startingResourceMin, startingResourceMax, partySizeMin, info.NumMin, info.NumMax, info.RatioMin, info.RatioMax, exclusionChance));
     	}
     }
 };
