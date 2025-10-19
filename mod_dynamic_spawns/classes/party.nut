@@ -426,11 +426,15 @@
 		}
 		else
 		{
+			local worth = this.getWorth();
 			local parentTotal = this.__ParentSpawnable instanceof ::DynamicSpawns.Class.Unit ? this.__ParentSpawnable.getUnits().len() : this.__ParentSpawnable.getTotal();
-			::logInfo(format("%s%s : %i (%.1f%%) (Worth: %.1f)", ::DynamicSpawns.getIndent(), this.getLogName(), this.getTotal().tointeger(), (this.getTotal() / parentTotal) * 100, this.getWorth()));
+			::logInfo(format("%s%s : %i (%.1f%%) (Worth: %.1f, %.1f%%)", ::DynamicSpawns.getIndent(), this.getLogName(), this.getTotal().tointeger(), (this.getTotal() / parentTotal) * 100, worth, 100 * worth / this.__ParentSpawnable.getWorth()));
 		}
 
-		base.printToLog();
+		if (this.getTotal() != 0)
+		{
+			base.printToLog();
+		}
 
 		::DynamicSpawns.Indent--;
 	}

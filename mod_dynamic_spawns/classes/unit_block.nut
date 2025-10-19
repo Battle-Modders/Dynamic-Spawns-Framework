@@ -166,9 +166,13 @@
 			return;
 
 		::DynamicSpawns.Indent++;
-		::logInfo(format("%s%s : %i (%.1f%%) (Worth: %.1f):", ::DynamicSpawns.getIndent(), this.getLogName(), this.getTotal().tointeger(), (this.getTotal() / this.__ParentSpawnable.getTotal()) * 100, this.getWorth()));
+		local worth = this.getWorth();
+		::logInfo(format("%s%s : %i (%.1f%%) (Worth: %.1f, %.1f%%):", ::DynamicSpawns.getIndent(), this.getLogName(), this.getTotal().tointeger(), (this.getTotal() / this.__ParentSpawnable.getTotal()) * 100, worth, 100 * worth / this.__ParentSpawnable.getWorth()));
 
-		base.printToLog();
+		if (this.getTotal() != 0)
+		{
+			base.printToLog();
+		}
 
 		::DynamicSpawns.Indent--;
 	}

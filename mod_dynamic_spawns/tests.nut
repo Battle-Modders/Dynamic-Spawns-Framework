@@ -201,26 +201,31 @@
 		{
 			::DynamicSpawns.Indent++;
 			::logInfo(format("%s%s : %.2f (%i - %i)", ::DynamicSpawns.getIndent(), _key, (_data.Total / _iterations), _data.Min, _data.Max));
-			delete _data.Total;
-			delete _data.Min;
-			delete _data.Max;
-			local ordered = [];
-			foreach (key, value in _data)
+			local t = delete _data.Total;
+			// Only print subspawnables for spawnables that had at least 1 unit spawned
+			// otherwise its just spam.
+			if (t != 0)
 			{
-				if (key == "Cost")
-					continue;
-
-				if ("Cost" in value)
-					ordered.push([key, value]);
-				else
-					printValues(key, value);
-			}
-			if (ordered.len() != 0)
-			{
-				ordered.sort(@(a, b) a[1].Cost <=> b[1].Cost);
-				foreach (entry in ordered)
+				delete _data.Min;
+				delete _data.Max;
+				local ordered = [];
+				foreach (key, value in _data)
 				{
-					printValues(entry[0], entry[1]);
+					if (key == "Cost")
+						continue;
+
+					if ("Cost" in value)
+						ordered.push([key, value]);
+					else
+						printValues(key, value);
+				}
+				if (ordered.len() != 0)
+				{
+					ordered.sort(@(a, b) a[1].Cost <=> b[1].Cost);
+					foreach (entry in ordered)
+					{
+						printValues(entry[0], entry[1]);
+					}
 				}
 			}
 

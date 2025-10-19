@@ -176,31 +176,32 @@
 			return;
 		}
 
-		::DynamicSpawns.Indent++;
-
-		local numUnits = this.getUnits().len();
-		if (numUnits == this.__Instances.len())
+		if (this.__Instances[0] == this)
 		{
-			::logInfo(format("%s%s : %i (%.1f%%) (Worth: %.1f)", ::DynamicSpawns.getIndent(), this.getLogName(), numUnits, (numUnits / this.__ParentSpawnable.getTotal()) * 100, this.getWorth()));
+			base.printToLog();
 		}
 		else
 		{
-			::logInfo(format("%s%s : %i (%.1f%%) + %i (Worth: %.1f)", ::DynamicSpawns.getIndent(), this.getLogName(), this.getTotal(), (this.getTotal() / this.__ParentSpawnable.getTotal()) * 100, numUnits - 1, this.getWorth()));
-		}
+			::DynamicSpawns.Indent++;
 
-		if (this.__Instances[0] != this)
-		{
+			local worth = this.getWorth();
+			local numUnits = this.getUnits().len();
+			if (numUnits == this.__Instances.len())
+			{
+				::logInfo(format("%s%s : %i (%.1f%%) (Worth: %.1f, %.1f%%)", ::DynamicSpawns.getIndent(), this.getLogName(), numUnits, (numUnits / this.__ParentSpawnable.getTotal()) * 100, worth, 100 * worth / this.__ParentSpawnable.getWorth()));
+			}
+			else
+			{
+				::logInfo(format("%s%s : %i (%.1f%%) + %i (Worth: %.1f, %.1f%%)", ::DynamicSpawns.getIndent(), this.getLogName(), this.getTotal(), (this.getTotal() / this.__ParentSpawnable.getTotal()) * 100, numUnits - 1, worth, 100 * worth / this.__ParentSpawnable.getWorth()));
+			}
+
 			foreach (inst in this.__Instances)
 			{
 				if (inst.getUnits().len() > 1)
 					inst.printToLog();
 			}
-		}
-		else
-		{
-			base.printToLog();
-		}
 
-		::DynamicSpawns.Indent--;
+			::DynamicSpawns.Indent--;
+		}
 	}
 }
