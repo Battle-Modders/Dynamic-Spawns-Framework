@@ -18,6 +18,9 @@
 			resources = resources * 0.75;
 		}
 
+		// This accounts for vanilla choosing a random party composition allowing for picking slightly weaker as well
+		resources *= ::MSU.Math.randf(0.75, 1.0);
+
 		local dynamicParty = ::DynamicSpawns.Static.retrieveDynamicParty(this.m.DefenderSpawnList, resources);
 		if (dynamicParty != null)
 		{

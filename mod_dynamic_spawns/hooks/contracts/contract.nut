@@ -4,6 +4,9 @@
 	// Note: This hook will potentially skip hooks from other mods when they execute their code at the end of this vanilla function
 	q.addUnitsToEntity = @(__original) function( _worldParty, _party, _resources )
 	{
+		// This accounts for vanilla choosing a random party composition allowing for picking slightly weaker as well
+		_resources *= ::MSU.Math.randf(0.7, 1.0);
+
 		local dynamicParty = ::DynamicSpawns.Static.retrieveDynamicParty(_party, _resources);
 		if (dynamicParty != null)
 		{
