@@ -148,6 +148,11 @@
 		return typeof this.Figure == "array" ? this.Figure[::Math.rand(0, this.Figure.len() -1)] : this.Figure;
 	}
 
+	function clear()
+	{
+		this.__Instances.clear();
+	}
+
 	function getPredictedWorth()
 	{
 		local ret = this.getCost();

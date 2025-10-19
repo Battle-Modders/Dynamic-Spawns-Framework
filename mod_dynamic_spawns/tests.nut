@@ -1,5 +1,6 @@
 // Collection of tests to find errors in the dynamic spawn party definitions early
 ::DynamicSpawns.Tests <- {
+	IsTesting = false,
 	/** check all Parties, UnitBlocks and Units for consistency. Print Errors into the log if there are surface level problems
 	*
 	* @Param _printInfo controls whether general information like summaries should be displayed
@@ -138,6 +139,8 @@
 
 	function printSpawn( _partyID, _resources, _fixedResources = false, _detailedLogging = false )
 	{
+		local wasTesting = ::DynamicSpawns.Tests.IsTesting;
+		::DynamicSpawns.Tests.IsTesting = true;
 		local wasLogging = ::DynamicSpawns.Const.Logging;
 		::DynamicSpawns.Const.Logging = true;
 		local wasDetailedLogging = ::DynamicSpawns.Const.DetailedLogging;
@@ -145,6 +148,7 @@
 		if (!_fixedResources)
 			_resources *= ::MSU.Math.randf(0.7, 1.0);
 		local ret = ::DynamicSpawns.Static.getRegisteredPartyVariant(_partyID, _resources).spawn(_resources);
+		::DynamicSpawns.Tests.IsTesting = wasTesting;
 		::DynamicSpawns.Const.Logging = wasLogging;
 		::DynamicSpawns.Const.DetailedLogging = wasDetailedLogging;
 		return ret;
@@ -223,6 +227,8 @@
 			::DynamicSpawns.Indent--;
 		}
 
+		local wasTesting = ::DynamicSpawns.Tests.IsTesting;
+		::DynamicSpawns.Tests.IsTesting = true;
 		local wasLogging = ::DynamicSpawns.Const.Logging;
     	::DynamicSpawns.Const.Logging = false;
     	local wasDetailedLogging = ::DynamicSpawns.Const.DetailedLogging;
@@ -248,6 +254,7 @@
     	printValues(party.getLogName(), data[party.getLogName()]);
     	::logInfo(format("Average Worth: %.2f", worth / _iterations));
 
+    	::DynamicSpawns.Tests.IsTesting = wasTesting;
     	::DynamicSpawns.Const.Logging = wasLogging;
     	::DynamicSpawns.Const.DetailedLogging = wasDetailedLogging;
     }

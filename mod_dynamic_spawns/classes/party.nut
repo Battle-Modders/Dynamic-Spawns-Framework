@@ -118,6 +118,7 @@
 		// that situation was only achievable by not spawning those particular spawnables, so its fine.
 		if (this.getTopParty() == this)
 		{
+			local softExclude = ::DynamicSpawns.Tests.IsTesting;
 			local total = this.getTotal();
 			local validatePartySizeMinMax;
 			validatePartySizeMinMax = function( _spawnable )
@@ -126,7 +127,7 @@
 				for (local i = _spawnable.__DynamicSpawnables.len() - 1; i >= 0; i--)
 				{
 					local s = _spawnable.__DynamicSpawnables[i];
-					if (total < s.getPartySizeMin() || total > s.getPartySizeMax())
+					if (s.getTotal() != 0 && (total < s.getPartySizeMin() || total > s.getPartySizeMax()))
 					{
 						ret = false;
 
@@ -137,7 +138,16 @@
 							::logInfo(format("%s%s violated party size requirements so removing it and returning %.1f resources. Remaining resources: %.1f", ::DynamicSpawns.getIndent(), s.getLogName(), s.getWorth(), s.getParty().getResources()));
 						}
 
-						_spawnable.__DynamicSpawnables.remove(i);
+						if (softExclude)
+						{
+							s.clear();
+							s.HardMax = 0;
+							s.HardMin = 0;
+						}
+						else
+						{
+							_spawnable.__DynamicSpawnables.remove(i);
+						}
 					}
 					if (ret)
 					{

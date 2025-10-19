@@ -366,6 +366,18 @@
 		return this.StrengthMax;
 	}
 
+	function clear()
+	{
+		foreach (s in this.__StaticSpawnables)
+		{
+			s.clear();
+		}
+		foreach (s in this.__DynamicSpawnables)
+		{
+			s.clear();
+		}
+	}
+
 	function getPredictedWorth()
 	{
 		local resources = this.getParty().getResources();
@@ -385,12 +397,21 @@
 
 	function excludeSpawnables()
 	{
+		local softExclude = ::DynamicSpawns.Tests.IsTesting;
 		for (local i = this.__DynamicSpawnables.len() - 1; i >= 0; i--)
 		{
 			local spawnable = this.__DynamicSpawnables[i];
 			if (::MSU.Math.randf(0.0, 1.0) < spawnable.getExclusionChance() || !spawnable.isValid())
 			{
-				this.__DynamicSpawnables.remove(i);
+				if (softExclude)
+				{
+					spawnable.HardMax = 0;
+					spawnable.HardMin = 0;
+				}
+				else
+				{
+					this.__DynamicSpawnables.remove(i);
+				}
 			}
 			else
 			{
