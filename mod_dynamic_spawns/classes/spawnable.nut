@@ -21,17 +21,59 @@
 	StrengthMin = 0;
 	StrengthMax = 900000;
 
-	__DynamicSpawnables = null;
+	// These are standalone spawnables that will perform a full spawn independently.
 	__StaticSpawnables = null;
+	// These are dependent spawnables that compete for spawning or upgrading during a
+	// cycle. The winner spawns/upgrades one unit in that cycle.
+	__DynamicSpawnables = null;
 
-	__Party = null; // The party this spawnable is a part of. Every spawnable should be part of a party, except the top party which isn't part of any party.
+	__ResourcesSource = null; // This has to be an instance of Party
 	__ParentSpawnable = null; // The spawnable that this spawnable was initialized by
+
+	__ChosenSpawn = null;
+	__ChosenUpgrade = null;
 
 	constructor( _def )
 	{
 		this.StaticDefs = {};
 		this.DynamicDefs = {};
 		this.copyDataFromDef(_def);
+	}
+
+	function spawnMinUnits()
+	{
+		foreach (s in this.__DynamicSpawnables)
+		{
+			s.spawnMinUnits();
+		}
+
+		local t = this.getTotal();
+		while (t++ < this.getHardMin() && this.canSpawn())
+		{
+			this.spawnUnit();
+			this.__ChosenSpawn = null;
+		}
+	}
+
+	function setResourcesSource( _spawnable )
+	{
+		this.__ResourcesSource = _spawnable.weakref();
+		foreach (s in this.__DynamicSpawnables)
+		{
+			s.setResourcesSource(_spawnable);
+		}
+	}
+
+	function getResources()
+	{
+		// ::logInfo("getResources: " + this.getLogNameChain());
+		return this.__ResourcesSource.getResources();
+	}
+
+	function addResources( _amount )
+	{
+		if (this.__ResourcesSource != null)
+			this.__ResourcesSource.__Resources += _amount;
 	}
 
 	function init()
@@ -60,6 +102,11 @@
 		return this;
 	}
 
+	function isIgnoringCost()
+	{
+		return this.getTotal() < this.getHardMin() || (this.__ResourcesSource != this && this.getParentSpawnable().isIgnoringCost());
+	}
+
 	function copyDataFromDef( _def )
 	{
 		foreach (key, value in _def)
@@ -70,44 +117,45 @@
 		}
 	}
 
+	// Virtual - children must overwrite and provide custom logic
 	function spawn()
 	{
-		foreach (spawnable in this.__StaticSpawnables)
-		{
-			spawnable.spawn();
-		}
 		return this;
 	}
 
-	function getTopParty()
+	// Virtual - children must overwrite and provide custom logic
+	function chooseSpawn( _force = false )
 	{
-		return this.__Party == null ? this : this.__Party.getTopParty();
 	}
 
-	function getParty()
+	// Virtual - children must overwrite and provide custom logic
+	function chooseUpgrade( _force = false )
 	{
-		return this.__Party;
 	}
 
-	function getParentSpawnable()
+	function spawnUnit()
 	{
-		return this.__ParentSpawnable;
+		return this.chooseSpawn().spawnUnit();
+	}
+
+	function upgradeUnit()
+	{
+		return this.chooseUpgrade().upgradeUnit();
 	}
 
 	function setParty( _party )
 	{
-		if (_party != null && this.__Party != null)
-			return;
-
 		this.__Party = _party == null ? null : _party.weakref();
-		foreach (spawnable in this.__StaticSpawnables)
-		{
-			spawnable.setParty(_party);
-		}
-		foreach (spawnable in this.__DynamicSpawnables)
-		{
-			spawnable.setParty(_party);
-		}
+	}
+
+	function getTopSpawnable()
+	{
+		return this.__ParentSpawnable == null ? this : this.__ParentSpawnable.getTopSpawnable();
+	}
+
+	function getParentSpawnable()
+	{
+		return this.__ParentSpawnable == null ? this : this.__ParentSpawnable;
 	}
 
 	function getSpawnable( _id )
@@ -248,13 +296,24 @@
 		return ret;
 	}
 
+	function isAffordable( _resources = null )
+	{
+		// ::logInfo("isAffordable: " + this.getLogNameChain());
+		if (this.isIgnoringCost())
+		{
+			return true;
+		}
+
+		return (_resources == null ? this.getResources() : _resources) >= this.getPredictedWorth();
+	}
+
 	function canSpawn()
 	{
-		local total = this.getTotal();
-		if (total < this.getHardMin()) return true;
-		if (total >= this.getHardMax()) return false;
-		if (this.satisfiesRatioMin() && !this.isWithinRatioMax()) return false;
-		return true;
+		local t = this.getTotal();
+		if (t < this.getHardMin())
+			return true;
+
+		return t < this.getHardMax() && (!this.satisfiesRatioMin() || this.isWithinRatioMax());
 	}
 
 	function canUpgrade()
@@ -274,13 +333,24 @@
 		return ::World.State.getPlayer().getStrength();		// This is cleaner but may be a bit inefficient compared to reading this value out once and saving it in a variable
 	}
 
+	function getTopParty()
+	{
+		return this.getTopSpawnable();
+	}
+
+	function getParty()
+	{
+		return this.__ResourcesSource;
+		// return this.__Party;
+	}
+
 	function isValid()
 	{
 		local playerStrength = ::Math.round(this.getPlayerStrength());
 		if (playerStrength < this.getStrengthMin() || playerStrength > this.getStrengthMax())
 			return false;
 
-		local topPartyStartingResources = ::Math.round(this.getTopParty().getStartingResources());
+		local topPartyStartingResources = ::Math.round(this.getTopSpawnable().getStartingResources());
 		if (topPartyStartingResources < this.getStartingResourceMin() || topPartyStartingResources > this.getStartingResourceMax())
 			return false;
 
@@ -380,15 +450,16 @@
 
 	function getPredictedWorth()
 	{
-		local resources = this.getParty().getResources();
-		local wasLogging = ::DynamicSpawns.Const.Logging
+		// ::logInfo("getPredictedWorth: " + this.getLogNameChain());
+		local wasLogging = ::DynamicSpawns.Const.Logging;
 		::DynamicSpawns.Const.Logging = false;
 		local detailedLogging = ::DynamicSpawns.Const.DetailedLogging;
 		::DynamicSpawns.Const.DetailedLogging = false;
-		local ret = (clone this).init().spawn().getWorth();
-		if (this.getParty().getResources() < resources)
+		this.chooseSpawn();
+		local ret = 0;
+		if (this.__ChosenSpawn != null)
 		{
-			this.getParty().addResources(ret);
+			ret = this.__ChosenSpawn.getPredictedWorth();
 		}
 		::DynamicSpawns.Const.Logging = wasLogging;
 		::DynamicSpawns.Const.DetailedLogging = detailedLogging;
@@ -420,26 +491,36 @@
 		}
 	}
 
+	function clear()
+	{
+		foreach (s in this.__StaticSpawnables)
+		{
+			s.clear();
+		}
+		foreach (s in this.__DynamicSpawnables)
+		{
+			s.clear();
+		}
+	}
+
 	function callOnBeforeSpawnStart()
 	{
 		this.onBeforeSpawnStart();
-		foreach (spawnable in this.__StaticSpawnables)
-		{
-			spawnable.callOnBeforeSpawnStart();
-		}
 		foreach (spawnable in this.__DynamicSpawnables)
 		{
 			spawnable.callOnBeforeSpawnStart();
 		}
 	}
 
+	function hasAffordableSpawn( _resources = null )
+	{
+		this.chooseSpawn();
+		return this.__ChosenSpawn != null && this.__ChosenSpawn.isAffordable(_resources);
+	}
+
 	function callOnSpawnEnd()
 	{
 		this.onSpawnEnd();
-		foreach (spawnable in this.__StaticSpawnables)
-		{
-			spawnable.callOnSpawnEnd();
-		}
 		foreach (spawnable in this.__DynamicSpawnables)
 		{
 			spawnable.callOnSpawnEnd();
@@ -449,24 +530,23 @@
 	function callOnCycle( _cycler )
 	{
 		this.onCycle(_cycler);
-		foreach (spawnable in this.__StaticSpawnables)
-		{
-			spawnable.callOnCycle(_cycler);
-		}
 		foreach (spawnable in this.__DynamicSpawnables)
 		{
 			spawnable.callOnCycle(_cycler);
 		}
 	}
 
+	// Only called by Parties on their DynamicSpawnables
 	function onBeforeSpawnStart()
 	{
 	}
 
+	// Only called by Parties on their DynamicSpawnables
 	function onSpawnEnd()
 	{
 	}
 
+	// Only called by Parties on their DynamicSpawnables
 	function onCycle( _cycler )
 	{
 	}
@@ -494,14 +574,17 @@
 
 	function getLogNameChain()
 	{
-		local arr = [this.getLogName()];
-		local p = this.getParentSpawnable();
-		while (p != null)
+		local arr = [];
+		local p = this;
+		while (p.getParentSpawnable() != p)
 		{
-			arr.push(p.getLogName());
+			local t = p.getTotal();
+			arr.push(format("%s (%i, %.2f)", p.getLogName(), t, t.tofloat() / p.getParentSpawnable().getTotal()));
 			p = p.getParentSpawnable();
 		}
+		arr.push(format("%s (%i)", p.getLogName(), p.getTotal()));
+
 		arr.reverse();
-		return arr.reduce(@(_a, _b) _a + "|" + _b);
+		return arr.reduce(@(_a, _b) _a + " | " + _b);
 	}
 }

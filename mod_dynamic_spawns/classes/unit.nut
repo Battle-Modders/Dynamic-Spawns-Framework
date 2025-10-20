@@ -7,66 +7,132 @@
 	Cost = 1.0;
 
 	__Instances = null; // Each spawn of this unit is kept as an instance here. This is for being able to spawn/despawn individual instances which may vary due to spawns from their __StaticSpawnables
-	__DespawnIdx = null;
+	__UnitContainer = null;
 
 	function init()
 	{
+		// ::logInfo("init: " + this.getLogName());
 		this.__Instances = [];
-		return base.init();
-	}
+		base.init();
+		return this;
+	}	
 
-	function chooseDespawn( _force = false )
+	function hasAffordableSpawn( _resources = null )
 	{
-		if (this.__DespawnIdx == null || _force)
+		_resources = _resources == null ? this.getResources() : _resources;
+		if (this.__StaticSpawnables.len() == 0)
 		{
-			this.__DespawnIdx = ::Math.rand(0, this.__Instances.len() - 1);
+			return this.getCost() < _resources;
 		}
-	}
 
-	function getDespawnInstance()
-	{
-		if (this.__DespawnIdx == null)
-			this.chooseDespawn();
+		if (this.__ChosenSpawn != null && this.isAffordable(_resources))
+		{
+			return true;
+		}
 
-		if (this.__DespawnIdx != null)
-			return this.__Instances[this.__DespawnIdx];
+		this.__ChosenSpawn = null;
+		this.chooseSpawn();
+		return this.isAffordable(_resources);
 	}
 
 	function spawn()
 	{
-		local unit = clone this;
-		unit.__Instances = [];
-		if (this.__StaticSpawnables.len() != 0)
-		{
-			unit.init();
-			unit.setParty(null);
-			unit.setParty(this.__Party);
-		}
-		this.__Instances.push(unit);
-
-		local ret = base.spawn.call(unit);
-		unit.__Instances.push(unit);
-		this.getParty().addResources(-unit.getWorth());
-		if (::DynamicSpawns.Const.DetailedLogging)
-		{
-			::DynamicSpawns.Indent++;
-			::logInfo(format("%sSpawned %s worth %.1f resources. Remaining resources: %.1f. Chain: %s", ::DynamicSpawns.getIndent(), unit.getLogName(), unit.getWorth(), unit.getParty().getResources(), unit.getLogNameChain()));
-			::DynamicSpawns.Indent--;
-		}
-		return ret;
+		return this.spawnUnit();
 	}
 
-	function despawn()
+	function chooseSpawn()
 	{
-		this.chooseDespawn();
-		local spawn = this.__Instances.remove(this.__DespawnIdx);
-		this.__DespawnIdx = null;
+		if (this.__ChosenSpawn != null)
+			return this.__ChosenSpawn;
 
-		this.getParty().addResources(spawn.getWorth());
+		if (this.__StaticSpawnables.len() == 0)
+		{
+			this.__ChosenSpawn = clone this;
+			this.__ChosenSpawn.__UnitContainer = this.weakref();
+			this.__ChosenSpawn.__Instances = [this.__ChosenSpawn];
+			return this.__ChosenSpawn;
+		}
+
+		local wasLogging = ::DynamicSpawns.Const.Logging
+		::DynamicSpawns.Const.Logging = false;
+		local detailedLogging = ::DynamicSpawns.Const.DetailedLogging;
+		::DynamicSpawns.Const.DetailedLogging = false;
+		local s = clone this;
+		s.init();
+		s.__Instances.push(s);
+		s.__UnitContainer = this.weakref();
+		foreach (spawnable in s.__StaticSpawnables)
+		{
+			spawnable.spawn();
+		}
+		::DynamicSpawns.Const.Logging = wasLogging;
+		::DynamicSpawns.Const.DetailedLogging = detailedLogging;
+		this.__ChosenSpawn = s;
+		return s;
+	}
+
+	function chooseUpgrade()
+	{
+		if (this.__ChosenUpgrade != null)
+			return this.__ChosenUpgrade;
+
+		if (this.__Instances.len() != 0)
+		{
+			this.__ChosenUpgrade = ::MSU.Array.rand(this.__Instances);
+			return this.__ChosenUpgrade;
+		}
+	}
+
+	function spawnUnit()
+	{
+		if (this.__UnitContainer != null)
+		{
+			return this.__UnitContainer.spawnUnit();
+		}
+
+		this.chooseSpawn();
+		if (this.__ChosenSpawn != null)
+		{
+			this.__Instances.push(this.__ChosenSpawn);
+			this.addResources(-this.__ChosenSpawn.getWorth());
+			if (::DynamicSpawns.Const.DetailedLogging)
+			{
+				local unit = this.__ChosenSpawn;
+				::DynamicSpawns.Indent++;
+				::logInfo(format("%sSpawned %s worth %.1f resources. Remaining resources: %.1f. Chain: %s", ::DynamicSpawns.getIndent(), unit.getLogName(), unit.getWorth(), unit.getResources(), unit.getLogNameChain()));
+				::DynamicSpawns.Indent--;
+				if (this.__StaticSpawnables.len() != 0)
+				{
+					unit.printToLog();
+				}
+			}
+			local ret = this.__ChosenSpawn;
+			if (this.__StaticSpawnables.len() != 0)
+			{
+				// ::MSU.Log.printStackTrace();
+				this.__ChosenSpawn = null;
+			}
+			return ret;
+		}
+	}
+
+	function upgradeUnit()
+	{
+		if (this.__UnitContainer != null)
+		{
+			return this.__UnitContainer.upgradeUnit();
+		}
+
+		this.chooseUpgrade();
+		local spawn = ::MSU.Array.removeByValue(this.__Instances, this.__ChosenUpgrade);
+		this.__ChosenUpgrade = null;
+
+		this.addResources(spawn.getWorth());
+
 		if (::DynamicSpawns.Const.DetailedLogging)
 		{
 			::DynamicSpawns.Indent++;
-			::logInfo(format("%sDespawned %s worth %.1f resources. Remaining resources: %.1f. Chain: %s", ::DynamicSpawns.getIndent(), spawn.getLogName(), spawn.getWorth(), this.getParty().getResources(), spawn.getLogNameChain()));
+			::logInfo(format("%sDespawned %s worth %.1f resources. Remaining resources: %.1f. Chain: %s", ::DynamicSpawns.getIndent(), spawn.getLogName(), spawn.getWorth(), this.getResources(), spawn.getLogNameChain()));
 			::DynamicSpawns.Indent--;
 		}
 		return spawn;
@@ -115,19 +181,36 @@
 		return false;
 	}
 
-	function canSpawn( _bonusResources = 0 )
-	{
-		if (!base.canSpawn())
-			return false;
+	// function canSpawn( _bonusResources = 0 )
+	// {
+	// 	if (!base.canSpawn())
+	// 		return false;
 
-		if (_bonusResources == 0)	// We only allow ignoring of Cost if for considering new units to spawn
-		{
-			return this.getParty().isIgnoringCost() || this.getPredictedWorth() <= this.getParty().getResources();
-		}
-		else	// Upgrading of units
-		{
-			return this.getPredictedWorth() <= this.getParty().getResources() + _bonusResources;
-		}
+	// 	if (_bonusResources == 0)	// We only allow ignoring of Cost if for considering new units to spawn
+	// 	{
+	// 		return this.getParty().isIgnoringCost() || this.getPredictedWorth() <= this.getParty().getResources();
+	// 	}
+	// 	else	// Upgrading of units
+	// 	{
+	// 		return this.getPredictedWorth() <= this.getParty().getResources() + _bonusResources;
+	// 	}
+	// }
+
+	function clear()
+	{
+		this.__Instances.clear();
+	}
+
+	function getPredictedWorth()
+	{
+		if (this.__UnitContainer != null)
+			return this.getWorth();
+
+		if (this.__StaticSpawnables.len() == 0)
+			return this.getCost();
+
+		this.chooseSpawn();
+		return this.__ChosenSpawn.getWorth();
 	}
 
 	function getUpgradeWeight()
@@ -146,21 +229,6 @@
 	function getFigure()
 	{
 		return typeof this.Figure == "array" ? this.Figure[::Math.rand(0, this.Figure.len() -1)] : this.Figure;
-	}
-
-	function clear()
-	{
-		this.__Instances.clear();
-	}
-
-	function getPredictedWorth()
-	{
-		local ret = this.getCost();
-		foreach (spawnable in this.__StaticSpawnables)
-		{
-			ret += spawnable.getPredictedWorth();
-		}
-		return ret;
 	}
 
 	function printToLog()
