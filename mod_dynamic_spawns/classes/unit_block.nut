@@ -6,6 +6,13 @@
 	TierWidth = 9999; // Specifies the maximum number of tiers that can simultaneously have spawned units
 	__WeightedDynamicSpawnables = null;
 
+	function callOnCycle( _cycler )
+	{
+		base.callOnCycle(_cycler);
+		this.__ChosenSpawn = null;
+		this.__ChosenUpgrade = null;
+	}
+
 	function init()
 	{
 		if (this.DynamicDefs.Units instanceof ::MSU.Class.WeightedContainer)
@@ -29,9 +36,9 @@
 		return this;
 	}
 
-	function onBeforeSpawnStart()
+	function excludeSpawnables()
 	{
-		base.onBeforeSpawnStart();
+		base.excludeSpawnables();
 		if (this.__WeightedDynamicSpawnables != null)
 		{
 			local ds = this.__DynamicSpawnables;
@@ -41,7 +48,6 @@
 
 	function spawn()
 	{
-		base.spawn();
 		this.spawnUnit();
 		if (::DynamicSpawns.Const.DetailedLogging)
 		{
@@ -57,36 +63,41 @@
 		::DynamicSpawns.__stableSort(this.__DynamicSpawnables, @(a, b) a.getCost() <=> b.getCost());
 	}
 
-	function spawnUnit()
-	{
-		return this.chooseUnitForSpawn().spawn();
-	}
-
 	function upgradeUnit()
 	{
-		local info = this.chooseUnitForUpgrade();
+		local info = this.chooseUpgrade();
 		if (::DynamicSpawns.Const.DetailedLogging)
 		{
 			::DynamicSpawns.Indent++;
-			::logInfo(format("%sUpgrading %s to %s", ::DynamicSpawns.getIndent(), info.Unit.getLogName(), info.UpgradeUnit.getLogName()));
+			::logInfo(format("%sUpgrading %s to %s (Net Cost: %i)", ::DynamicSpawns.getIndent(), info.Unit.getLogName(), info.UpgradeUnit.getLogName(), info.UpgradeUnit.__ChosenSpawn.getWorth() - info.Unit.__ChosenUpgrade.getWorth()));
 		}
-		local despawn = info.Unit.despawn();
-		local spawn = info.UpgradeUnit.spawn();
+		info.Unit.upgradeUnit();
+		info.UpgradeUnit.spawnUnit();
 		if (::DynamicSpawns.Const.DetailedLogging)
 		{
 			::DynamicSpawns.Indent--;
 		}
 	}
 
-	function chooseUnitForUpgrade()
+	function chooseUpgrade()
 	{
+		if (this.__ChosenUpgrade != null)
+			return this.__ChosenUpgrade;
+
 		local choices = ::MSU.Class.WeightedContainer();
 
-		local tiers = 0;
-		// Ignore the highest tier
-		for (local i = 0; i < this.__DynamicSpawnables.len() - 1 && tiers < this.TierWidth - 1; i++)
+		local spawnables = this.__DynamicSpawnables;
+		local tiersPresent = this.__DynamicSpawnables.filter(@(_, _u) _u.getTotal() != 0);
+		local lowestOnly = tiersPresent.len() >= this.TierWidth;
+		if (lowestOnly)
 		{
-			local oldUnit = this.__DynamicSpawnables[i];
+			spawnables = tiersPresent;
+		}
+
+		// Ignore the highest tier
+		for (local i = 0; i < spawnables.len() - 1; i++)
+		{
+			local oldUnit = spawnables[i];
 			local count = oldUnit.getTotal();
 			if (count == 0)
 				continue;
@@ -96,47 +107,84 @@
 			if (!oldUnit.satisfiesRatioMin(predictedCount) || predictedCount < oldUnit.getHardMin())
 				continue;
 
-			tiers++;
-			for (local j = i + 1; j < this.__DynamicSpawnables.len(); j++)	// for loop because the next very unitType could have some requirements (like playerstrength) preventing spawn
+			// Look at all the units above my tier and upgrade me to the nearest valid one
+			for (local j = i + 1; j < spawnables.len(); j++)
 			{
-				local newUnit = this.__DynamicSpawnables[j];
+				local newUnit = spawnables[j];
 				if (!newUnit.satisfiesRatioMax(newUnit.getTotal() + 1))
 					continue;
 
-				oldUnit.chooseDespawn();
-
-				if (newUnit.canSpawn(oldUnit.getDespawnInstance().getWorth()))
+				if (newUnit.canSpawn() && newUnit.chooseSpawn() != null && newUnit.isAffordable(this.getResources() + oldUnit.chooseUpgrade().getWorth()))
 				{
-					choices.add({Unit = oldUnit, UpgradeUnit = newUnit}, oldUnit.getUpgradeWeight());
+					// We delay the calculation of oldUnit.getUpgradeWeight() because in most cases it won't be 0
+					// so we only calculate it once we have found a valid upgrade path.
+					local upgradeWeight = oldUnit.getUpgradeWeight();
+					if (upgradeWeight == 0)
+					{
+						break;
+					}
+					// Favor lower tier units to upgrade
+					upgradeWeight *= 3 * (spawnables.len() - i);
+					choices.add({Unit = oldUnit, UpgradeUnit = newUnit}, upgradeWeight);
 					break;	// We are only interested in the closest possible upgrade path, not all of them
 				}
 			}
+
+			if (lowestOnly && choices.len() != 0)
+				break;
 		}
 
-		return choices.roll();
+		this.__ChosenUpgrade = choices.roll();
+		return this.__ChosenUpgrade;
 	}
 
-	function chooseUnitForSpawn()
+	function chooseSpawn()
 	{
+		if (this.__ChosenSpawn != null)
+			return this.__ChosenSpawn;
+
 		if (this.isRandom())
 		{
-			return this.__WeightedDynamicSpawnables.filter(@(unit, _) unit.canSpawn()).roll();
+			this.__ChosenSpawn = this.__WeightedDynamicSpawnables.filter(@(_unit, _) _unit.canSpawn() && _unit.chooseSpawn() != null && _unit.isAffordable()).roll();
 		}
 		else
 		{
-			local function satisfiesTierWidth( _index )
+			local spawnables = [];
+			foreach (i, s in this.__DynamicSpawnables)
 			{
-				_index += this.TierWidth;
-				return _index >= this.__DynamicSpawnables.len() || this.__DynamicSpawnables[_index].getTotal() == 0;
-			}
-			foreach (i, unit in this.__DynamicSpawnables)
-			{
-				if (satisfiesTierWidth(i) && unit.canSpawn())
+				if (s.canSpawn() && s.chooseSpawn() != null)
 				{
-					return unit;
+					// Early return with forcing the choice of a unit below its RatioMin
+					if (!s.satisfiesRatioMin())
+					{
+						this.__ChosenSpawn = s;
+						return this.__ChosenSpawn;
+					}
+					spawnables.push(s);
 				}
 			}
+
+			foreach (i, s in spawnables)
+			{
+				if (!this.satisfiesTierWidth(i, spawnables))
+					continue;
+
+				this.__ChosenSpawn = s;
+				break;
+			}
 		}
+
+		return this.__ChosenSpawn;
+	}
+
+	function satisfiesTierWidth( _idx, _spawnables )
+	{
+		for (local i = _idx + this.TierWidth; i < _spawnables.len(); i++)
+		{
+			if (_spawnables[i].getTotal() != 0)
+				return false;
+		}
+		return true;
 	}
 
 	function isRandom()
@@ -144,20 +192,9 @@
 		return this.__WeightedDynamicSpawnables != null;
 	}
 
-	function canSpawn()
-	{
-		if (!base.canSpawn())
-			return false;
-
-		return this.chooseUnitForSpawn() != null;
-	}
-
 	function canUpgrade()
 	{
-		if (this.isRandom())
-			return false;
-
-		return this.chooseUnitForUpgrade() != null;
+		return !this.isRandom() && this.__DynamicSpawnables.len() > 1;
 	}
 
 	function printToLog()
