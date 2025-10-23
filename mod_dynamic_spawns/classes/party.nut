@@ -103,6 +103,7 @@
 				}
 				else
 				{
+					::MSU.Log.printData(this);
 					throw "tried to run a cycle with no spawnable or upgradeable";
 				}
 
