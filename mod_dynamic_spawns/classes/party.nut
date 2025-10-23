@@ -167,11 +167,7 @@
 		if (this.getResources() <= 0 && !this.isIgnoringCost())
 			return false;
 
-		local total = this.getTotal();
-
-		// TODO: Probably replace with canSpawn() check and improve satisfiesRatioMin and isWithinRatioMax
-		// which are called from canSpawn() to account for the case of the spawnable being without parent
-		if (total < this.getHardMax())
+		if (this.canSpawn())
 		{
 			this.chooseSpawn();
 			if (this.__IsForceSpawn)
@@ -180,8 +176,8 @@
 			}
 		}
 
-		// TODO: Fix set upgrade chance to 100% if at or above HardMax
-		if (this.__ChosenSpawn == null || ::MSU.Math.randf(0.0, 1.0) < this.getUpgradeFactor() * total * 0.01)
+		// If we are at HardMax then ChosenSpawn will be null, which means Upgrading requires no chance roll
+		if (this.canUpgrade() && (this.__ChosenSpawn == null || ::MSU.Math.randf(0.0, 1.0) < this.getUpgradeFactor() * this.getTotal() * 0.01))
 		{
 			this.chooseUpgrade();
 			if (this.__ChosenUpgrade != null)

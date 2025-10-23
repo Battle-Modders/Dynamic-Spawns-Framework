@@ -155,7 +155,7 @@
 
 	function getParentSpawnable()
 	{
-		return this.__ParentSpawnable == null ? this : this.__ParentSpawnable;
+		return this.__ParentSpawnable;
 	}
 
 	function getSpawnable( _id )
@@ -246,6 +246,9 @@
 	// Will this spawnable remain within the RatioMax if it were to spawn 1 more unit and parent total were to go up by 1
 	function isWithinRatioMax( _total = null )
 	{
+		if (this.getParentSpawnable() == null)
+			return true;
+
 		local referencedTotal = ::Math.max(this.getParentSpawnable().getTotal() + 1, this.getParentSpawnable().getHardMin());
 		local total = _total == null ? this.getTotal() : _total;
 		// It should be `total + 1 <=` but we're dealing with integers here so `total <` is more efficient
@@ -255,6 +258,9 @@
 	// Does this spawnable satisfy its RatioMax with its current/given total
 	function satisfiesRatioMax( _total = null )
 	{
+		if (this.getParentSpawnable() == null)
+			return true;
+
 		local referencedTotal = ::Math.max(this.getParentSpawnable().getTotal(), this.getParentSpawnable().getHardMin());
 		local total = _total == null ? this.getTotal() : _total;
 		return total <= ::Math.round(referencedTotal * this.getRatioMax());
@@ -263,6 +269,9 @@
 	// Does this spawnable satisfy its RatioMin with its current/given total
 	function satisfiesRatioMin( _total = null, _parentTotal = null )
 	{
+		if (this.getParentSpawnable() == null)
+			return true;
+
 		local ratio = this.getRatioMin();
 		if (ratio == 0.0)
 			return true;
@@ -574,9 +583,12 @@
 
 	function getLogNameChain()
 	{
+		if (this.getParentSpawnable() == null)
+			return format("%s (%i)", this.getLogName(), this.getTotal());
+
 		local arr = [];
 		local p = this;
-		while (p.getParentSpawnable() != p)
+		while (p.getParentSpawnable() != null)
 		{
 			local t = p.getTotal();
 			arr.push(format("%s (%i, %.2f)", p.getLogName(), t, t.tofloat() / p.getParentSpawnable().getTotal()));
@@ -585,6 +597,7 @@
 		arr.push(format("%s (%i)", p.getLogName(), p.getTotal()));
 
 		arr.reverse();
+
 		return arr.reduce(@(_a, _b) _a + " | " + _b);
 	}
 }
