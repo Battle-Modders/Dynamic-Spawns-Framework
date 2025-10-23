@@ -99,7 +99,7 @@
 			{
 				local unit = this.__ChosenSpawn;
 				::DynamicSpawns.Indent++;
-				::logInfo(format("%sSpawned %s worth %.1f resources. Remaining resources: %.1f. Chain: %s", ::DynamicSpawns.getIndent(), unit.getLogName(), unit.getWorth(), unit.getResources(), unit.getLogNameChain()));
+				::logInfo(format("%sSpawned %s worth %.1f resources. Remaining resources: %.1f. Chain: %s", ::DynamicSpawns.getIndent(), unit.getLogName(), unit.getWorth(), unit.getResources(), this.getLogNameChain()));
 				::DynamicSpawns.Indent--;
 				if (this.__StaticSpawnables.len() != 0)
 				{
@@ -132,7 +132,7 @@
 		if (::DynamicSpawns.Const.DetailedLogging)
 		{
 			::DynamicSpawns.Indent++;
-			::logInfo(format("%sDespawned %s worth %.1f resources. Remaining resources: %.1f. Chain: %s", ::DynamicSpawns.getIndent(), spawn.getLogName(), spawn.getWorth(), this.getResources(), spawn.getLogNameChain()));
+			::logInfo(format("%sDespawned %s worth %.1f resources. Remaining resources: %.1f. Chain: %s", ::DynamicSpawns.getIndent(), spawn.getLogName(), spawn.getWorth(), this.getResources(), this.getLogNameChain()));
 			::DynamicSpawns.Indent--;
 		}
 		return spawn;
