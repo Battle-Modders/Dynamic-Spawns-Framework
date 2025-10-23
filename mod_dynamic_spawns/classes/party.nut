@@ -1,7 +1,10 @@
 // A party can contain all types (Unit, UnitBlock, Party) as DynamicSpawnables and StaticSpawnables
 ::DynamicSpawns.Class.Party <- class extends ::DynamicSpawns.Class.Spawnable
 {
+	// Temporary until mods update
 	IsUsingTopPartyResources = false;
+	IdealSizeLocationMult = 1.5;
+	UpgradeChance = 0.75;
 
 	DefaultFigure = "";
 	MovementSpeedMult = 1.0;
@@ -9,14 +12,12 @@
 	VisionMult = 1.0;
 
 	DefaultResources = 0;
-	UpgradeChance = 0.75;
-	IdealSizeLocationMult = 1.5;
+	UpgradeFactor = 6.25;
 
 	__Resources = 0;
 	__StartingResources = 0;
 
 	__IsLocation = false;
-	__IdealSize = 6;
 	__IsForceSpawn = false;
 
 	__SpawnAffordables = null;
@@ -46,11 +47,14 @@
 	function spawn( _resources = null )
 	{
 		this.setupResources(_resources);
-		this.__IdealSize = this.generateIdealSize();
-		if (this.isLocation())
-		{
-			this.__IdealSize *= this.IdealSizeLocationMult;
-		}
+		this.setResourcesSource(this);
+
+		// Temporary
+		this.UpgradeFactor = 100 * this.UpgradeChance.tofloat() / this.generateIdealSize();
+
+		this.callOnBeforeSpawnStart();
+
+		this.excludeSpawnables();
 
 		if (::DynamicSpawns.Const.Logging)
 		{
@@ -62,11 +66,6 @@
 		{
 			this.addResources(-s.spawn().getWorth());
 		}
-
-		this.setResourcesSource(this);
-
-		this.callOnBeforeSpawnStart();
-		this.excludeSpawnables();
 
 		this.spawnMinUnits();
 
@@ -181,8 +180,8 @@
 			}
 		}
 
-		local idealSize = ::Math.min(this.getHardMax(), this.getIdealSize());
-		if (total >= idealSize && (this.__ChosenSpawn == null || ::MSU.Math.randf(0.0, 1.0) < this.getUpgradeChance() * this.getTotal().tofloat() / idealSize))
+		// TODO: Fix set upgrade chance to 100% if at or above HardMax
+		if (this.__ChosenSpawn == null || ::MSU.Math.randf(0.0, 1.0) < this.getUpgradeFactor() * total * 0.01)
 		{
 			this.chooseUpgrade();
 			if (this.__ChosenUpgrade != null)
@@ -323,11 +322,6 @@
 		return this.__StartingResources;
 	}
 
-	function getIdealSize()
-	{
-		return this.__IdealSize;
-	}
-
 	function setupResources( _resources )
 	{
 		this.__StartingResources = _resources != null ? _resources : this.getDefaultResources();
@@ -340,9 +334,9 @@
 		return this.__IsLocation;
 	}
 
-	function getUpgradeChance()
+	function getUpgradeFactor()
 	{
-		return this.UpgradeChance;
+		return this.UpgradeFactor;
 	}
 
 	function generateIdealSize()

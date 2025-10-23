@@ -26,7 +26,7 @@ local requiredMods = [
 		DetailedLogging = false,
 		Iterations = 3,
 		Benchmark = false,
-		MainMenuIdealSize = 12
+		MainMenuIdealSize = 12 // Temporary
 	};
 
 	::include("mod_dynamic_spawns/load.nut");
