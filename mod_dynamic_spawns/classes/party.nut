@@ -76,7 +76,10 @@
 		// and refund its resources. Then do more cycles until the returned resources are used up on other units.
 		// While this may now lead to a situation where the PartySizeMin would have been fulfilled, but practically
 		// that situation was only achievable by not spawning those particular spawnables, so its fine.
-		this.validateSpawn();
+		if (this.getParentSpawnable() == null)
+		{
+			this.validateSpawn();
+		}
 
 		this.callOnSpawnEnd();
 
@@ -175,7 +178,7 @@
 		}
 
 		// If we are at HardMax then ChosenSpawn will be null, which means Upgrading requires no chance roll
-		if (this.canUpgrade() && (this.__ChosenSpawn == null || ::Math.rand(1, 100) < this.getUpgradeFactor() * this.getTotal()))
+		if (this.canUpgrade() && (this.__ChosenSpawn == null || ::Math.rand(1, 100) <= this.getUpgradeFactor() * this.getTotal()))
 		{
 			this.chooseUpgrade();
 			if (this.__ChosenUpgrade != null)
