@@ -285,7 +285,7 @@
 
 		if (this.__UpgradeAffordables.len() != 0 && ::DynamicSpawns.Const.DetailedLogging)
 		{
-			local str = format("%sPossible Upgrades in %s: ", ::DynamicSpawns.getIndent(), this.getLogName());
+			local str = format("%sPossible Upgrades (Chance: %.0f%%) in %s: ", ::DynamicSpawns.getIndent(), this.__ChosenSpawn == null ? 100.0 : this.getUpgradeFactor() * this.getTotal(), this.getLogName());
 			foreach (spawnable, weight in this.__UpgradeAffordables) str += spawnable.getLogName() + " (" + weight + "), ";
 			::logInfo(str.slice(0, -2));
 		}
