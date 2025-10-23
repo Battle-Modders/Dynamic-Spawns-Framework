@@ -289,6 +289,10 @@
 
 	function getSpawnWeight()
 	{
+		// Forced to spawn if below RatioMin
+		if (!this.satisfiesRatioMin())
+			return -1;
+
 		// Spawnables are more weighted to spawn the further they are from their maximum possible units
 		local referencedTotal = ::Math.max(this.getParentSpawnable().getTotal() + 1, this.getParentSpawnable().getHardMin());
 		local maxUnits = ::Math.min(this.getHardMax(), ::Math.ceil(this.getRatioMax() * referencedTotal));

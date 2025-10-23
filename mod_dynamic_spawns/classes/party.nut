@@ -18,7 +18,6 @@
 	__StartingResources = 0;
 
 	__IsLocation = false;
-	__IsForceSpawn = false;
 
 	__SpawnAffordables = null;
 	__UpgradeAffordables = null;
@@ -35,7 +34,6 @@
 	{
 		base.callOnCycle(_cycler);
 		this.__ChosenSpawn = null;
-		this.__IsForceSpawn = false;
 		this.__ChosenUpgrade = null;
 	}
 
@@ -170,7 +168,7 @@
 		if (this.canSpawn())
 		{
 			this.chooseSpawn();
-			if (this.__IsForceSpawn)
+			if (this.__ChosenSpawn != null && !this.__ChosenSpawn.satisfiesRatioMin())
 			{
 				return true;
 			}
@@ -228,7 +226,6 @@
 				if (!s.satisfiesRatioMin())
 				{
 					this.__ChosenSpawn = s;
-					this.__IsForceSpawn = true;
 					if (::DynamicSpawns.Const.DetailedLogging) ::logInfo("Doing forced spawn!");
 					return this.__ChosenSpawn;
 				}
@@ -295,12 +292,6 @@
 
 		this.__ChosenUpgrade = this.__UpgradeAffordables.roll();
 		return this.__ChosenUpgrade;
-	}
-
-	function spawnUnit()
-	{
-		this.__IsForceSpawn = false;
-		return base.spawnUnit();
 	}
 
 	function getParty()
