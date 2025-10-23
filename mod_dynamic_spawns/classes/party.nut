@@ -175,7 +175,7 @@
 		}
 
 		// If we are at HardMax then ChosenSpawn will be null, which means Upgrading requires no chance roll
-		if (this.canUpgrade() && (this.__ChosenSpawn == null || ::MSU.Math.randf(0.0, 1.0) < this.getUpgradeFactor() * this.getTotal() * 0.01))
+		if (this.canUpgrade() && (this.__ChosenSpawn == null || ::Math.rand(1, 100) < this.getUpgradeFactor() * this.getTotal()))
 		{
 			this.chooseUpgrade();
 			if (this.__ChosenUpgrade != null)
