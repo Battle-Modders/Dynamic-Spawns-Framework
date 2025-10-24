@@ -294,14 +294,6 @@
     		Worth = 0
     	};
 
-    	foreach (party in _vanillaPartyList)
-    	{
-    		foreach (troop in party.Troops)
-    		{
-	    		t[scriptToTroopNameMap[troop.Type.Script]] <- 0;
-    		}
-    	}
-
     	local potential;
     	local total_weight;
     	for (local i =0; i < _iterations; i++)
@@ -366,10 +358,23 @@
 	    	{
 	    		t.Total += troop.Num;
 	    		local name = scriptToTroopNameMap[troop.Type.Script];
+	    		local n = troop.Num;
 	    		if (!(name in t))
-	    			t[name] <- troop.Num;
+	    		{
+	    			t[name] <- {
+	    				NumMin = n,
+	    				NumMax = n,
+	    				Num = n,
+	    				PartyCount = 1
+	    			}
+	    		}
 	    		else
-	    			t[name] += troop.Num;
+	    		{
+	    			t[name].Num += n;
+	    			t[name].NumMin = ::Math.min(t[name].NumMin, n);
+	    			t[name].NumMax = ::Math.max(t[name].NumMax, n);
+	    			t[name].PartyCount++;
+	    		}
 	    	}
     	}
 
@@ -386,9 +391,9 @@
     	delete t.Worth;
 
     	::DynamicSpawns.Indent += 2;
-    	foreach (name, num in t)
+    	foreach (name, info in t)
     	{
-    		::logInfo(format("%s%s : %.2f", ::DynamicSpawns.getIndent(), name, (num / _iterations)));
+    		::logInfo(format("%s%s : %.2f (%i - %i)", ::DynamicSpawns.getIndent(), name, (info.Num / _iterations), info.PartyCount < _iterations ? 0 : info.NumMin, info.NumMax));
     	}
     	::DynamicSpawns.Indent -= 2;
     	if (_iterations == 1)
@@ -452,7 +457,7 @@
     					StartingResourceMin = party.Cost,
     					StartingResourceMax = party.Cost,
     					PartySizeMin = size,
-    					NumMin = i != 0 ? 0 : troop.Num,
+    					NumMin = troop.Num,
     					NumMax = troop.Num,
     					RatioMin = troop.Num / size,
     					RatioMax = troop.Num / size,
@@ -490,9 +495,10 @@
     		local startingResourceMax = info.StartingResourceMax == _party.top().Cost ? "None" : info.StartingResourceMax + "";
     		local partySizeMin = info.PartySizeMin == sizeMin ? "None" : info.PartySizeMin + "";
     		local exclusionChance = 1.0 - info.PartyCount.tofloat() / (1 + info.LastPartyIdx - info.FirstPartyIdx);
-    		if (info.LastPartyIdx < _party.len() - 1)
+    		if (info.PartyCount < _party.len())
     		{
     			info.NumMin = 0;
+    			info.RatioMin = 0;
     		}
     		::logInfo(format("%s: StartingResourceMin: %s, StartingResourceMax: %s, PartySizeMin: %s, NumMin: %i, NumMax: %i, RatioMin: %.2f, RatioMax: %.2f, ExclusionChance: %.2f", name, startingResourceMin, startingResourceMax, partySizeMin, info.NumMin, info.NumMax, info.RatioMin, info.RatioMax, exclusionChance));
     	}
