@@ -124,12 +124,12 @@
 	}
 
 	// Virtual - children must overwrite and provide custom logic
-	function chooseSpawn( _force = false )
+	function chooseSpawn()
 	{
 	}
 
 	// Virtual - children must overwrite and provide custom logic
-	function chooseUpgrade( _force = false )
+	function chooseUpgrade()
 	{
 	}
 
@@ -311,7 +311,6 @@
 
 	function isAffordable( _resources = null )
 	{
-		// ::logInfo("isAffordable: " + this.getLogNameChain());
 		if (this.isIgnoringCost())
 		{
 			return true;
@@ -354,7 +353,6 @@
 	function getParty()
 	{
 		return this.__ResourcesSource;
-		// return this.__Party;
 	}
 
 	function isValid()
@@ -463,20 +461,8 @@
 
 	function getPredictedWorth()
 	{
-		// ::logInfo("getPredictedWorth: " + this.getLogNameChain());
-		local wasLogging = ::DynamicSpawns.Const.Logging;
-		::DynamicSpawns.Const.Logging = false;
-		local detailedLogging = ::DynamicSpawns.Const.DetailedLogging;
-		::DynamicSpawns.Const.DetailedLogging = false;
 		this.chooseSpawn();
-		local ret = 0;
-		if (this.__ChosenSpawn != null)
-		{
-			ret = this.__ChosenSpawn.getPredictedWorth();
-		}
-		::DynamicSpawns.Const.Logging = wasLogging;
-		::DynamicSpawns.Const.DetailedLogging = detailedLogging;
-		return ret;
+		return this.__ChosenSpawn == null ? 0 : this.__ChosenSpawn.getPredictedWorth();
 	}
 
 	function excludeSpawnables()

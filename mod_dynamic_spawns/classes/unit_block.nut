@@ -48,7 +48,6 @@
 
 	function spawn()
 	{
-		// base.spawn();
 		this.spawnUnit();
 		if (::DynamicSpawns.Const.DetailedLogging)
 		{

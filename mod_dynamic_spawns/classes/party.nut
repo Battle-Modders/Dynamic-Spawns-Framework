@@ -100,6 +100,7 @@
 		return this;
 	}
 
+	// TODO: Fix potential RatioMax and RatioMin violation upon removal of violators of PartySizeMin and PartySizeMax
 	function validateSpawn()
 	{
 		local softExclude = ::DynamicSpawns.Tests.IsTesting;
@@ -113,8 +114,6 @@
 
 			foreach (i, s in spawnables)
 			{
-				// ::logInfo("Validating " + _funcName + " " + s.getLogName());
-				// ::logInfo("Validating " + s.getLogName() + " " + s.getTotal());
 				if (s.getTotal() != 0 && (_funcName == "getPartySizeMin" ? total < s.getPartySizeMin() : total > s.getPartySizeMax()))
 				{
 					s.addResources(s.getWorth());
@@ -193,7 +192,6 @@
 
 	function doCycle()
 	{
-		// ::logInfo("doCycle " + this.getLogNameChain());
 		if (this.__ChosenSpawn != null)
 		{
 			this.spawnUnit();
@@ -219,11 +217,6 @@
 		this.__SpawnAffordables.clear();
 		foreach (s in this.__DynamicSpawnables)
 		{
-			// ::logInfo(s.getLogNameChain());
-			// ::logInfo(s.canSpawn());
-			// ::logInfo(s.chooseSpawn() != null);
-			// ::logInfo(s.isAffordable());
-			// ::logInfo(format("%s %s %s %s", s.getLogNameChain(), s.canSpawn() + "", "" + (s.chooseSpawn() != null), "" + s.isAffordable()));
 			if (s.canSpawn() && s.hasAffordableSpawn())
 			{
 				if (!s.satisfiesRatioMin())
@@ -315,7 +308,6 @@
 	function setupResources( _resources )
 	{
 		this.__StartingResources = _resources != null ? _resources : this.getDefaultResources();
-		// ::logInfo("clamping setupResources " + this.getLogNameChain() + " to " + this.__StartingResources + " topPartyResources: " + this.getParentSpawnable().getResources() + " parentSpawnableWorth: " + this.getParentSpawnable().getWorth());
 		this.__Resources = this.__StartingResources;
 	}
 

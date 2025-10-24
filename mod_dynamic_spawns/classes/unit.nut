@@ -11,7 +11,6 @@
 
 	function init()
 	{
-		// ::logInfo("init: " + this.getLogName());
 		this.__Instances = [];
 		base.init();
 		return this;
@@ -109,7 +108,6 @@
 			local ret = this.__ChosenSpawn;
 			if (this.__StaticSpawnables.len() != 0)
 			{
-				// ::MSU.Log.printStackTrace();
 				this.__ChosenSpawn = null;
 			}
 			return ret;
@@ -180,21 +178,6 @@
 	{
 		return false;
 	}
-
-	// function canSpawn( _bonusResources = 0 )
-	// {
-	// 	if (!base.canSpawn())
-	// 		return false;
-
-	// 	if (_bonusResources == 0)	// We only allow ignoring of Cost if for considering new units to spawn
-	// 	{
-	// 		return this.getParty().isIgnoringCost() || this.getPredictedWorth() <= this.getParty().getResources();
-	// 	}
-	// 	else	// Upgrading of units
-	// 	{
-	// 		return this.getPredictedWorth() <= this.getParty().getResources() + _bonusResources;
-	// 	}
-	// }
 
 	function clear()
 	{
