@@ -123,6 +123,8 @@
 					{
 						break;
 					}
+					// Favor lower tier units to upgrade
+					upgradeWeight *= 3 * (spawnables.len() - i);
 					choices.add({Unit = oldUnit, UpgradeUnit = newUnit}, upgradeWeight);
 					break;	// We are only interested in the closest possible upgrade path, not all of them
 				}
