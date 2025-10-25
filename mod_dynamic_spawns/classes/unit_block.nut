@@ -114,7 +114,7 @@
 				if (!newUnit.satisfiesRatioMax(newUnit.getTotal() + 1))
 					continue;
 
-				if (newUnit.canSpawn() && newUnit.isAffordable(this.getResources() + oldUnit.chooseUpgrade().getWorth()))
+				if (newUnit.canSpawn() && newUnit.chooseSpawn() != null && newUnit.isAffordable(this.getResources() + oldUnit.chooseUpgrade().getWorth()))
 				{
 					// We delay the calculation of oldUnit.getUpgradeWeight() because in most cases it won't be 0
 					// so we only calculate it once we have found a valid upgrade path.
