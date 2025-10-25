@@ -514,7 +514,7 @@
 	function hasAffordableSpawn( _resources = null )
 	{
 		this.chooseSpawn();
-		return this.__ChosenSpawn != null && this.__ChosenSpawn.isAffordable(_resources);
+		return this.__ChosenSpawn != null && this.__ChosenSpawn.canSpawn() && this.__ChosenSpawn.hasAffordableSpawn(_resources);
 	}
 
 	function callOnSpawnEnd()
