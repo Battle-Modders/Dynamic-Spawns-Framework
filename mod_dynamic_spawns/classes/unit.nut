@@ -21,7 +21,7 @@
 		_resources = _resources == null ? this.getResources() : _resources;
 		if (this.__StaticSpawnables.len() == 0)
 		{
-			return this.getCost() < _resources;
+			return this.isAffordable(_resources);
 		}
 
 		if (this.__ChosenSpawn != null && this.isAffordable(_resources))
