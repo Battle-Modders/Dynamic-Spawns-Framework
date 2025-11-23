@@ -48,7 +48,7 @@
 		this.setResourcesSource(this);
 
 		// Temporary
-		this.UpgradeFactor = 100 * this.UpgradeChance.tofloat() / this.generateIdealSize();
+		// this.UpgradeFactor = 100 * this.UpgradeChance.tofloat() / this.generateIdealSize();
 
 		this.callOnBeforeSpawnStart();
 
