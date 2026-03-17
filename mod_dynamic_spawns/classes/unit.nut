@@ -198,7 +198,7 @@
 
 	function getUpgradeWeight()
 	{
-		return this.getTotal() / ::Math.pow(this.getCost(), 2);
+		return this.getUpgradeWeightMult() * this.getTotal() / ::Math.pow(this.getCost(), 2);
 	}
 
 	function getTroop()

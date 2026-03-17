@@ -21,6 +21,9 @@
 	StrengthMin = 0;
 	StrengthMax = 900000;
 
+	SpawnWeightMult = 1.0;
+	UpgradeWeightMult = 1.0;
+
 	// These are standalone spawnables that will perform a full spawn independently.
 	__StaticSpawnables = null;
 	// These are dependent spawnables that compete for spawning or upgrading during a
@@ -296,7 +299,12 @@
 		// Spawnables are more weighted to spawn the further they are from their maximum possible units
 		local referencedTotal = ::Math.max(this.getParentSpawnable().getTotal() + 1, this.getParentSpawnable().getHardMin());
 		local maxUnits = ::Math.min(this.getHardMax(), ::Math.ceil(this.getRatioMax() * referencedTotal));
-		return maxUnits - this.getTotal();
+		return (maxUnits - this.getTotal()) * this.getSpawnWeightMult();
+	}
+
+	function getSpawnWeightMult()
+	{
+		return this.SpawnWeightMult;
 	}
 
 	function getUpgradeWeight()
@@ -306,7 +314,12 @@
 		{
 			ret += spawnable.getUpgradeWeight();
 		}
-		return ret;
+		return ret * this.getUpgradeWeightMult();
+	}
+
+	function getUpgradeWeightMult()
+	{
+		return this.UpgradeWeightMult;
 	}
 
 	function isAffordable( _resources = null )
