@@ -251,12 +251,13 @@
 			party = ::DynamicSpawns.Static.getRegisteredPartyVariant(_partyID, resources);
 			party.spawn(resources);
 			worth += party.getWorth();
+			party.ID = _partyID;
 			addValues(data, party);
 		}
 
 		_iterations = _iterations.tofloat();
 
-		printValues(party.getLogName(), data[party.getLogName()]);
+		printValues(_partyID, data[_partyID]);
 		::logInfo(format("Average Worth: %.2f", worth / _iterations));
 
 		::DynamicSpawns.Tests.IsTesting = wasTesting;
