@@ -292,6 +292,8 @@
 
 		local t = {
 			Total = 0,
+			NumMin = 999,
+			NumMax = 0
 			Worth = 0
 		};
 
@@ -355,6 +357,7 @@
 			}
 
 			t.Worth += p.Cost;
+			local totalBefore = t.Total;
 			foreach (troop in p.Troops)
 			{
 				t.Total += troop.Num;
@@ -377,6 +380,10 @@
 					t[name].PartyCount++;
 				}
 			}
+
+			local partyTotal = t.Total - totalBefore;
+			t.NumMin = ::Math.min(t.NumMin, partyTotal);
+			t.NumMax = ::Math.max(t.NumMax, partyTotal);
 		}
 
 		_iterations = _iterations.tofloat();
@@ -386,7 +393,7 @@
 		else
 			::logInfo("-- Vanilla Spawn Average -- ");
 
-		::logInfo(format("Total: %.2f", (t.Total / _iterations)));
+		::logInfo(format("Total: %.2f (%i - %i)", (t.Total / _iterations), delete t.NumMin, delete t.NumMax));
 		local worth = t.Worth / _iterations;
 		delete t.Total;
 		delete t.Worth;
