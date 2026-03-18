@@ -14,7 +14,12 @@
 		this.__Instances = [];
 		base.init();
 		return this;
-	}	
+	}
+
+	function hasValidDynamicSpawnable()
+	{
+		return true;
+	}
 
 	function hasAffordableSpawn( _resources = null )
 	{

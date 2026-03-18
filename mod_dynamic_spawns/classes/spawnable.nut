@@ -386,7 +386,17 @@
 		if (this.getHardMax() <= 0)
 			return false;
 
-		return true;
+		return this.hasValidDynamicSpawnable();
+	}
+
+	function hasValidDynamicSpawnable()
+	{
+		foreach (s in this.__DynamicSpawnables)
+		{
+			if (s.isValid())
+				return true;
+		}
+		return false;
 	}
 
 	function determinesFigure()
