@@ -54,7 +54,6 @@
 		while (t++ < this.getHardMin() && this.canSpawn())
 		{
 			this.spawnUnit();
-			this.__ChosenSpawn = null;
 		}
 	}
 
@@ -138,7 +137,9 @@
 
 	function spawnUnit()
 	{
-		return this.chooseSpawn().spawnUnit();
+		local ret = this.chooseSpawn().spawnUnit();
+		this.__ChosenSpawn = null;
+		return ret;
 	}
 
 	function upgradeUnit()
