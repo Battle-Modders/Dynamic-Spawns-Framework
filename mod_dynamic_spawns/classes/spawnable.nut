@@ -383,6 +383,9 @@
 		if (days < this.getDaysMin() || days > this.getDaysMax())
 			return false;
 
+		if (this.getHardMax() <= 0)
+			return false;
+
 		return true;
 	}
 
