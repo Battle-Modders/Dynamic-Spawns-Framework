@@ -247,10 +247,26 @@
 		return ret;
 	}
 
+	// Returns true if this is the only valid dynamic spawnable in its parent.
+	function isSoleValidSpawnable()
+	{
+		if (this.getParentSpawnable() == null)
+			return true;
+
+		foreach (s in this.getParentSpawnable().__DynamicSpawnables)
+		{
+			if (s != this && s.isValid())
+				return false;
+		}
+
+		return true;
+	}
+
 	// Will this spawnable remain within the RatioMax if it were to spawn 1 more unit and parent total were to go up by 1
 	function isWithinRatioMax( _total = null )
 	{
-		if (this.getParentSpawnable() == null)
+		// If I am the only dynamic spawnable in my parent then my ratio is irrelevant.
+		if (this.isSoleValidSpawnable())
 			return true;
 
 		local referencedTotal = ::Math.max(this.getParentSpawnable().getTotal() + 1, this.getParentSpawnable().getHardMin());
@@ -262,7 +278,8 @@
 	// Does this spawnable satisfy its RatioMax with its current/given total
 	function satisfiesRatioMax( _total = null )
 	{
-		if (this.getParentSpawnable() == null)
+		// If I am the only dynamic spawnable in my parent then my ratio is irrelevant.
+		if (this.isSoleValidSpawnable())
 			return true;
 
 		local referencedTotal = ::Math.max(this.getParentSpawnable().getTotal(), this.getParentSpawnable().getHardMin());
@@ -273,8 +290,10 @@
 	// Does this spawnable satisfy its RatioMin with its current/given total
 	function satisfiesRatioMin( _total = null, _parentTotal = null )
 	{
-		if (this.getParentSpawnable() == null)
-			return true;
+		// If I am the only dynamic spawnable in my parent then my ratio is irrelevant.
+		// So we never satisfy RatioMin. This means we are always available to spawn.
+		if (this.isSoleValidSpawnable())
+			return false;
 
 		local ratio = this.getRatioMin();
 		if (ratio == 0.0)
