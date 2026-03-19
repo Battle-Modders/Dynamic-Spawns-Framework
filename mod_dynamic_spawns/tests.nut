@@ -485,10 +485,13 @@
 		return ret;
 	}
 
-	function printVanillaPartyInfo( _party, _mergeUnits = null )
+	function printVanillaPartyInfo( _party, _mergeUnits = null, _filterFunc = null )
 	{
 		if (typeof _party == "string")
 			_party = ::Const.World.Spawn[_party];
+
+		if (_filterFunc != null)
+			_party = _party.filter(@(_, _p) _filterFunc(_p));
 
 		local troopToNameMap = {};
 		foreach (key, troop in ::Const.World.Spawn.Troops)
