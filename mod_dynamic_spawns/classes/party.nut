@@ -4,7 +4,7 @@
 	// Temporary until mods update
 	IsUsingTopPartyResources = false;
 	IdealSizeLocationMult = 1.5;
-	UpgradeChance = 0.75;
+	UpgradeChance = 75;
 
 	DefaultFigure = "";
 	MovementSpeedMult = 1.0;
@@ -12,7 +12,6 @@
 	VisionMult = 1.0;
 
 	DefaultResources = 0;
-	UpgradeFactor = null;
 
 	__Resources = 0;
 	__StartingResources = 0;
@@ -28,6 +27,16 @@
 		this.__SpawnAffordables = ::MSU.Class.WeightedContainer();
 		this.__UpgradeAffordables = ::MSU.Class.WeightedContainer();
 		return this;
+	}
+
+	function __getUpgradeChance()
+	{
+		return this.getUpgradeChance();
+	}
+
+	function getUpgradeChance()
+	{
+		return this.UpgradeChance;
 	}
 
 	function callOnCycle( _cycler )
@@ -48,12 +57,6 @@
 		this.setResourcesSource(this);
 
 		this.callOnBeforeSpawnStart();
-
-		// Temporary - legacy support for older spawnlists using generateIdealSize and UpgradeChance.
-		if (this.UpgradeFactor == null)
-		{
-			this.UpgradeFactor = 100 * this.UpgradeChance.tofloat() / this.generateIdealSize();
-		}
 
 		this.excludeSpawnables();
 
@@ -180,7 +183,7 @@
 		}
 
 		// If we are at HardMax then ChosenSpawn will be null, which means Upgrading requires no chance roll
-		if (this.canUpgrade() && (this.__ChosenSpawn == null || ::Math.rand(1, 100) <= this.getUpgradeFactor() * this.getTotal()))
+		if (this.canUpgrade() && (this.__ChosenSpawn == null || ::Math.rand(1, 100) <= this.__getUpgradeChance()))
 		{
 			this.chooseUpgrade();
 			if (this.__ChosenUpgrade != null)
@@ -284,7 +287,7 @@
 
 		if (this.__UpgradeAffordables.len() != 0 && ::DynamicSpawns.Const.DetailedLogging)
 		{
-			local str = format("%sPossible Upgrades (Chance: %.0f%%) in %s: ", ::DynamicSpawns.getIndent(), this.__ChosenSpawn == null ? 100.0 : this.getUpgradeFactor() * this.getTotal(), this.getLogName());
+			local str = format("%sPossible Upgrades (Chance: %.0f%%) in %s: ", ::DynamicSpawns.getIndent(), this.__ChosenSpawn == null ? 100.0 : this.__getUpgradeChance(), this.getLogName());
 			foreach (spawnable, weight in this.__UpgradeAffordables) str += spawnable.getLogName() + " (" + weight + "), ";
 			::logInfo(str.slice(0, -2));
 		}
