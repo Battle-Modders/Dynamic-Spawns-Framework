@@ -426,7 +426,58 @@
     	this.printSpawnAverage(_partyID, _resources, _fixedResources, _iterations);
     }
 
-    function printVanillaPartyInfo( _party )
+    // Returns a copy of a vanilla spawnlist where the given units are merged.
+    // E.g. OrcWarrior and OrcWarriorLOW can be merged into one.
+    // _mergeUnits is an array which contains arrays of units which are all replaced with the first unit of that array.
+    // e.g. [ ["OrcWarrior", "OrcWarriorLOW"], ["OrcYoung", "OrcYoungLOW"] ]
+    // will replace OrcWarriorLOW with OrcWarrior and OrcYoungLOW with OrcYoung.
+	function getVanillaPartyWithMergedUnits( _party, _mergeUnits )
+	{
+		local redirect = {};
+		foreach (b in _mergeUnits)
+		{
+			local target = ::Const.World.Spawn.Troops[b[0]];
+			for (local i = 1; i < b.len(); i++)
+			{
+				redirect[::Const.World.Spawn.Troops[b[i]]] <- target;
+			}
+		}
+
+		local ret = [];
+		foreach (p in _party)
+		{
+			local troops = {};
+			foreach (t in p.Troops)
+			{
+				local type = t.Type;
+				if (type in redirect)
+				{
+					type = redirect[type];
+				}
+				if (type in troops)
+				{
+					troops[type] += t.Num;
+				}
+				else
+				{
+					troops[type] <- t.Num;
+				}
+			}
+			local troopsArray = [];
+			foreach (t, num in troops)
+			{
+				troopsArray.push({Type = t, Num = num});
+			}
+			ret.push({
+				Cost = p.Cost,
+				Troops = troopsArray
+			});
+		}
+
+		return ret;
+	}
+
+    function printVanillaPartyInfo( _party, _mergeUnits = null )
     {
     	if (typeof _party == "string")
     		_party = ::Const.World.Spawn[_party];
@@ -436,6 +487,11 @@
     	{
     		troopToNameMap[troop] <- key;
     	}
+
+		if (_mergeUnits != null)
+		{
+			_party = this.getVanillaPartyWithMergedUnits(_party, _mergeUnits);
+		}
 
     	local troopInfo = {};
     	local sizes = array(_party.len());
