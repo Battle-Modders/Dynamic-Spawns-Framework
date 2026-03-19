@@ -493,6 +493,12 @@
 		if (_filterFunc != null)
 			_party = _party.filter(@(_, _p) _filterFunc(_p));
 
+		if (_party.len() == 0)
+		{
+			::logInfo("No parties after filter.");
+			return;
+		}
+
 		local troopToNameMap = {};
 		foreach (key, troop in ::Const.World.Spawn.Troops)
 		{
@@ -569,5 +575,136 @@
 			}
 			::logInfo(format("%s: StartingResourceMin: %s, StartingResourceMax: %s, PartySizeMin: %s, NumMin: %i, NumMax: %i, RatioMin: %.2f, RatioMax: %.2f, ExclusionChance: %.2f", name, startingResourceMin, startingResourceMax, partySizeMin, info.NumMin, info.NumMax, info.RatioMin, info.RatioMax, exclusionChance));
 		}
+	}
+
+	// Prints all the parties in a vanilla spawnlist. _mergeUnits can be used (see documentation of getVanillaPartyWithMergedUnits)
+	// _filterFunc can be used to filter down the vanilla spawnlist.
+	function printVanillaSpawnlist( _party, _mergeUnits = null, _filterFunc = null )
+	{
+		if (typeof _party == "string")
+			_party = ::Const.World.Spawn[_party];
+
+		if (_filterFunc != null)
+			_party = _party.filter(@(_, _p) _filterFunc(_p));
+
+		if (_party.len() == 0)
+		{
+			::logInfo("No parties after filter.");
+			return;
+		}
+
+		if (_mergeUnits != null)
+		{
+			_party = this.getVanillaPartyWithMergedUnits(_party, _mergeUnits);
+		}
+
+		local troopToNameMap = {};
+		foreach (key, troop in ::Const.World.Spawn.Troops)
+		{
+			troopToNameMap[troop] <- key;
+		}
+
+		local total = 0.0;
+
+		local mapFunc1 = function( _t )
+		{
+			total += _t.Num;
+			return [troopToNameMap[_t.Type], _t.Num];
+		}
+
+		local mapFunc2 = @( _entry ) format("%s: %i (%.2f)", _entry[0], _entry[1], _entry[1] / total);
+
+		foreach (p in _party)
+		{
+			local info = p.Troops.map(mapFunc1).map(mapFunc2).reduce(@(_a, _b) _a + ", " + _b);
+			::logInfo(format("%i (%i) -- %s", p.Cost, total.tointeger(), info));
+			total = 0.0;
+		}
+
+		// Go through each party's troops
+		// Check which troops are present. Combine them into a string key
+		// Bump number
+
+		local compositions = {};
+		foreach (p in _party)
+		{
+			local troops = [];
+
+			foreach (t in p.Troops)
+			{
+				troops.push(troopToNameMap[t.Type]);
+			}
+
+			local key = ::DynamicSpawns.__stableSort(troops).reduce(@(_a, _b) _a + ", " + _b);
+
+			if (key in compositions)
+			{
+				compositions[key].Num++;
+				compositions[key].CostMin = ::Math.min(compositions[key].CostMin, p.Cost);
+				compositions[key].CostMax = ::Math.max(compositions[key].CostMax, p.Cost);
+			}
+			else
+			{
+				compositions[key] <- {
+					Num = 1,
+					CostMin = p.Cost
+					CostMax = p.Cost
+				};
+			}
+		}
+		::logInfo("Total Variants: " + _party.len() + " of which: Composition (Num, CostMin - CostMax)")
+		foreach (c, info in compositions)
+		{
+			::logInfo(format("- %s (%i, %i - %i)", c, info.Num, info.CostMin, info.CostMax));
+		}
+	}
+
+	// Similar to printVanillaPartyInfo but allows you to specify `_buckets` of resources values
+	// and prints info for each bucket separately. For _mergeUnits see the documentation of getVanillaPartyWithMergedUnits.
+	// _filterFunc can be used to filter the spawnlist.
+	// _buckets is an array of len 2 arrays which are the start and end of Cost.
+	// e.g. [ [100, 200], [200, 300], [300, 600] ]
+	// willl print the info for the spawnlist in the Cost Range 100-200, 200-300 and 300-600.
+	function printVanillaPartyInfoSegments( _party, _mergeUnits = null, _filterFunc = null, _buckets = null )
+	{
+		if (typeof _party == "string")
+			_party = ::Const.World.Spawn[_party];
+
+		if (_filterFunc != null)
+			_party = _party.filter(@(_, _p) _filterFunc(_p));
+
+		if (_party.len() == 0)
+		{
+			::logInfo("No parties after filter.");
+			return;
+		}
+
+		local min = _party[0].Cost;
+		local max = _party.top().Cost;
+
+		local currMin = -100;
+		local currMax = 0;
+
+		_filterFunc = @(_party) _party.Cost > currMin && _party.Cost < currMax;
+
+		local currBucket = 0;
+		local stop = false;
+
+		while (currMax < max)
+		{
+			if (_buckets != null)
+			{
+				currMin = _buckets[currBucket][0];
+				currMax = _buckets[currBucket++][1];
+			}
+			else
+			{
+				currMin += 100;
+				currMax += 100;
+			}
+
+			printVanillaPartyInfo(_party, _mergeUnits, _filterFunc);
+		}
+		printVanillaPartyInfo(_party, _mergeUnits);
 	}
 };
