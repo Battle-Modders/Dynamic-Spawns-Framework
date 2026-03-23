@@ -690,7 +690,7 @@
 		local currBucket = 0;
 		local stop = false;
 
-		while (currMax < max)
+		while (currMax <= max)
 		{
 			if (_buckets != null)
 			{
