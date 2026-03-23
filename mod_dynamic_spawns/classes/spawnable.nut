@@ -291,9 +291,10 @@
 	function satisfiesRatioMin( _total = null, _parentTotal = null )
 	{
 		// If I am the only dynamic spawnable in my parent then my ratio is irrelevant.
-		// So we never satisfy RatioMin. This means we are always available to spawn.
-		if (this.isSoleValidSpawnable())
-			return false;
+		// This is probably unnecesary to check in satisfiesRatioMin as only the RatioMax needs
+		// to always be valid for sole spawnables.
+		// if (this.isSoleValidSpawnable())
+		// 	return true;
 
 		local ratio = this.getRatioMin();
 		if (ratio == 0.0)
