@@ -1,9 +1,6 @@
 // A party can contain all types (Unit, UnitBlock, Party) as DynamicSpawnables and StaticSpawnables
 ::DynamicSpawns.Class.Party <- class extends ::DynamicSpawns.Class.Spawnable
 {
-	// Temporary until mods update
-	IsUsingTopPartyResources = false;
-	IdealSizeLocationMult = 1.5;
 	UpgradeChance = 75;
 
 	DefaultFigure = "";
