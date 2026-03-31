@@ -49,7 +49,7 @@ local addUnitsToCombat = ::Const.World.Common.addUnitsToCombat;
 ::Const.World.Common.addUnitsToCombat = function( _into, _partyList, _resources, _faction, _minibossify = 0 )
 {
 	_resources *= ::MSU.Math.randf(0.7, 1.0); // This accounts for vanilla choosing a random party composition allowing for picking slightly weaker as well
-	local dynamicParty = ::DynamicSpawns.Static.retrieveDynamicParty(_partyList, _resources, _into);
+	local dynamicParty = ::DynamicSpawns.Static.retrieveDynamicParty(_partyList, _resources); // no world entity to pass here
 	if (dynamicParty != null)
 	{
 		dynamicParty.spawn(_resources);
