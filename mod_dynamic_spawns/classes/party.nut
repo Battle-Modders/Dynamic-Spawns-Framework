@@ -314,6 +314,8 @@
 		this.__Resources = this.__StartingResources;
 	}
 
+	// This can be null if the party was spawned without a world party defined e.g. testing or scripted combat.
+	// Therefore, one should always do a null check before doing further operations on the returned value.
 	function getWorldEntity()
 	{
 		return this.__WorldEntity;
