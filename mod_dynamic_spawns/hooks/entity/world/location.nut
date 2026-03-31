@@ -21,7 +21,7 @@
 		// This accounts for vanilla choosing a random party composition allowing for picking slightly weaker as well
 		resources *= ::MSU.Math.randf(0.75, 1.0);
 
-		local dynamicParty = ::DynamicSpawns.Static.retrieveDynamicParty(this.m.DefenderSpawnList, resources);
+		local dynamicParty = ::DynamicSpawns.Static.retrieveDynamicParty(this.m.DefenderSpawnList, resources, this);
 		if (dynamicParty != null)
 		{
 			this.m.Troops = [];		// Whatever was in this camp before is getting wiped
@@ -35,7 +35,6 @@
 				this.m.DefenderSpawnDay = ::World.getTime().Days;
 			}
 
-			dynamicParty.__IsLocation = true; // TODO: Not so happy with this, should think of something better
 			// The above calculations are a copy of vanilla code
 			foreach (troop in dynamicParty.spawn(resources).getTroops())
 			{

@@ -9,7 +9,7 @@ local assignTroops = ::Const.World.Common.assignTroops;
 {
 	_resources *= _weightMode == this.WeightMode.Weakest ? 0.7 : ::MSU.Math.randf(0.7, 1.0); // This accounts for vanilla choosing a random party composition allowing for picking slightly weaker as well
 
-	local dynamicParty = ::DynamicSpawns.Static.retrieveDynamicParty(_partyList, _resources);
+	local dynamicParty = ::DynamicSpawns.Static.retrieveDynamicParty(_partyList, _resources, _worldParty);
 	if (dynamicParty != null)
 	{
 		dynamicParty.spawn(_resources);
@@ -49,7 +49,7 @@ local addUnitsToCombat = ::Const.World.Common.addUnitsToCombat;
 ::Const.World.Common.addUnitsToCombat = function( _into, _partyList, _resources, _faction, _minibossify = 0 )
 {
 	_resources *= ::MSU.Math.randf(0.7, 1.0); // This accounts for vanilla choosing a random party composition allowing for picking slightly weaker as well
-	local dynamicParty = ::DynamicSpawns.Static.retrieveDynamicParty(_partyList, _resources);
+	local dynamicParty = ::DynamicSpawns.Static.retrieveDynamicParty(_partyList, _resources, _into);
 	if (dynamicParty != null)
 	{
 		dynamicParty.spawn(_resources);

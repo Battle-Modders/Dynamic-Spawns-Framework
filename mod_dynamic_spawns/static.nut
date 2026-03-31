@@ -9,13 +9,18 @@
  *
  * @Return DSF-Party object if one exists for the given vanilla party list; null if none was set for it
  */
-::DynamicSpawns.Static.retrieveDynamicParty <- function( _vanillaPartyList, _resources = null )
+::DynamicSpawns.Static.retrieveDynamicParty <- function( _vanillaPartyList, _resources = null, _worldEntity = null )
 {
 	if (typeof _vanillaPartyList != "array") return null;
 	if (_vanillaPartyList.len() == 0) return null;
 	if (!("DynamicSpawnsPartyID" in _vanillaPartyList[0])) return null;
 
-	return this.getRegisteredPartyVariant(_vanillaPartyList[0].DynamicSpawnsPartyID, _resources);
+	local ret = this.getRegisteredPartyVariant(_vanillaPartyList[0].DynamicSpawnsPartyID, _resources);
+	if (ret != null)
+	{
+		ret.setWorldEntity(_worldEntity);
+	}
+	return ret;
 }
 
 /** Return a dynamic party definition given a vanilla party definition

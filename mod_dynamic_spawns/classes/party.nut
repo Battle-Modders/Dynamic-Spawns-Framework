@@ -13,7 +13,7 @@
 	__Resources = 0;
 	__StartingResources = 0;
 
-	__IsLocation = false;
+	__WorldEntity = null;
 
 	__SpawnAffordables = null;
 	__UpgradeAffordables = null;
@@ -314,9 +314,14 @@
 		this.__Resources = this.__StartingResources;
 	}
 
-	function isLocation()
+	function getWorldEntity()
 	{
-		return this.__IsLocation;
+		return this.__WorldEntity;
+	}
+
+	function setWorldEntity( _entity )
+	{
+		this.__WorldEntity = _entity;
 	}
 
 	function getUpgradeFactor()
