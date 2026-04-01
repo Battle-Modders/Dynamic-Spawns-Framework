@@ -7,10 +7,9 @@
 		// This accounts for vanilla choosing a random party composition allowing for picking slightly weaker as well
 		_resources *= ::MSU.Math.randf(0.7, 1.0);
 
-		local dynamicParty = ::DynamicSpawns.Static.retrieveDynamicParty(_party, _resources);
+		local dynamicParty = ::DynamicSpawns.Static.retrieveDynamicParty(_party, _resources, _worldParty);
 		if (dynamicParty != null)
 		{
-			dynamicParty.__IsLocation = _worldParty.isLocation();
 			dynamicParty.spawn(_resources);
 
 			_party = [

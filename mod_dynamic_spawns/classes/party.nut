@@ -13,7 +13,7 @@
 	__Resources = 0;
 	__StartingResources = 0;
 
-	__IsLocation = false;
+	__WorldEntity = null;
 
 	__SpawnAffordables = null;
 	__UpgradeAffordables = null;
@@ -314,9 +314,16 @@
 		this.__Resources = this.__StartingResources;
 	}
 
-	function isLocation()
+	// This can be null if the party was spawned without a world party defined e.g. testing or scripted combat.
+	// Therefore, one should always do a null check before doing further operations on the returned value.
+	function getWorldEntity()
 	{
-		return this.__IsLocation;
+		return this.__WorldEntity;
+	}
+
+	function setWorldEntity( _entity )
+	{
+		this.__WorldEntity = _entity;
 	}
 
 	function getUpgradeFactor()
