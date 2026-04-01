@@ -7,7 +7,7 @@
 
 	RatioMin = 0.00;
 	RatioMax = 1.00;
-	ExclusionChance = 0.0;
+	ExclusionChance = 0;
 	DeterminesFigure = true;
 
 	HardMin = 0;
@@ -518,7 +518,7 @@
 		for (local i = this.__DynamicSpawnables.len() - 1; i >= 0; i--)
 		{
 			local spawnable = this.__DynamicSpawnables[i];
-			if (::MSU.Math.randf(0.0, 1.0) < spawnable.getExclusionChance() || !spawnable.isValid())
+			if (::Math.rand(1, 100) <= spawnable.getExclusionChance() || !spawnable.isValid())
 			{
 				if (softExclude)
 				{

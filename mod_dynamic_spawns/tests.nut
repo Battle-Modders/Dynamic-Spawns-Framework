@@ -567,13 +567,13 @@
 			local startingResourceMin = info.StartingResourceMin == _party[0].Cost ? "0" : info.StartingResourceMin + "";
 			local startingResourceMax = info.StartingResourceMax == _party.top().Cost ? "None" : info.StartingResourceMax + "";
 			local partySizeMin = info.PartySizeMin == sizeMin ? "None" : info.PartySizeMin + "";
-			local exclusionChance = 1.0 - info.PartyCount.tofloat() / (1 + info.LastPartyIdx - info.FirstPartyIdx);
+			local exclusionChance = (1.0 - info.PartyCount.tofloat() / (1 + info.LastPartyIdx - info.FirstPartyIdx)) * 100;
 			if (info.PartyCount < _party.len())
 			{
 				info.NumMin = 0;
 				info.RatioMin = 0;
 			}
-			::logInfo(format("%s: StartingResourceMin: %s, StartingResourceMax: %s, PartySizeMin: %s, NumMin: %i, NumMax: %i, RatioMin: %.2f, RatioMax: %.2f, ExclusionChance: %.2f", name, startingResourceMin, startingResourceMax, partySizeMin, info.NumMin, info.NumMax, info.RatioMin, info.RatioMax, exclusionChance));
+			::logInfo(format("%s: StartingResourceMin: %s, StartingResourceMax: %s, PartySizeMin: %s, NumMin: %i, NumMax: %i, RatioMin: %.2f, RatioMax: %.2f, ExclusionChance: %.1f", name, startingResourceMin, startingResourceMax, partySizeMin, info.NumMin, info.NumMax, info.RatioMin, info.RatioMax, exclusionChance));
 		}
 	}
 
