@@ -63,9 +63,24 @@
 			::logWarning(format("%sStarting spawn of %s with resources: %.1f", ::DynamicSpawns.getIndent(), this.getLogNameChain(), this.getStartingResources()));
 		}
 
-		foreach (s in this.__StaticSpawnables)
+		if (this.__StaticSpawnables.len() != 0)
 		{
-			this.addResources(-s.spawn().getWorth());
+			if (::DynamicSpawns.Const.Logging)
+			{
+				::DynamicSpawns.Indent++;
+				::logInfo(format("%sSpawning Static Spawnables of %s", ::DynamicSpawns.getIndent(), this.getLogNameChain()));
+			}
+
+			foreach (s in this.__StaticSpawnables)
+			{
+				this.addResources(-s.spawn().getWorth());
+			}
+
+			if (::DynamicSpawns.Const.Logging)
+			{
+				::logInfo(format("%sFinished Static Spawnables of %s. Remaining resources: %.1f", ::DynamicSpawns.getIndent(), this.getLogNameChain(), this.getResources()));
+				::DynamicSpawns.Indent--;
+			}
 		}
 
 		this.spawnMinUnits();
