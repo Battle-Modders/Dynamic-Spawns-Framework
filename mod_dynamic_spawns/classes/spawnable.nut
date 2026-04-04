@@ -69,7 +69,7 @@
 	function getResources()
 	{
 		// ::logInfo("getResources: " + this.getLogNameChain());
-		return this.__ResourcesSource.getResources();
+		return this.__ResourcesSource == null ? 0 : this.__ResourcesSource.getResources();
 	}
 
 	function addResources( _amount )

@@ -45,7 +45,7 @@
 
 	function getResources()
 	{
-		return this.__ResourcesSource == this ? this.__Resources : this.__ResourcesSource.getResources();
+		return this.__ResourcesSource == this ? this.__Resources : base.getResources();
 	}
 
 	function spawn( _resources = null )
