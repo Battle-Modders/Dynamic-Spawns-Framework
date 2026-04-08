@@ -15,3 +15,8 @@ foreach (file in ::IO.enumerateFiles("mod_dynamic_spawns/hooks"))
 {
 	::include(file);
 }
+
+foreach (file in ::IO.enumerateFiles("mod_dynamic_spawns/msu_systems"))
+{
+	::include(file);
+}
