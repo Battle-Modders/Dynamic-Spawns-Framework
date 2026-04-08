@@ -490,10 +490,9 @@
 		if (typeof _party == "string")
 			_party = ::Const.World.Spawn[_party];
 
-		if (_filterFunc != null)
-			_party = _party.filter(@(_, _p) _filterFunc(_p));
+		local filteredParty = _filterFunc == null ? _party : _party.filter(@(_, _p) _filterFunc(_p));
 
-		if (_party.len() == 0)
+		if (filteredParty.len() == 0)
 		{
 			::logInfo("No parties after filter.");
 			return;
@@ -510,45 +509,67 @@
 			_party = this.getVanillaPartyWithMergedUnits(_party, _mergeUnits);
 		}
 
-		local troopInfo = {};
-		local sizes = array(_party.len());
+		local troopValidityInfo = {};
+		foreach (p in _party)
+		{
+			local size = 0;
+			foreach (troop in p.Troops)
+			{
+				size += troop.Num;
+			}
+			foreach (troop in p.Troops)
+			{
+				local name = troopToNameMap[troop.Type];
+				if (!(name in troopValidityInfo))
+				{
+					troopValidityInfo[name] <- {
+						StartingResourceMin = p.Cost,
+						StartingResourceMax = p.Cost,
+						PartySizeMin = size
+					}
+				}
+				else
+				{
+					local info = troopValidityInfo[name];
+					info.StartingResourceMax = p.Cost;
+					info.PartySizeMin = ::Math.min(info.PartySizeMin, size);
+				}
+			}
+		}
 
-		foreach (i, party in _party)
+		local troopInfo = {};
+		local sizes = array(filteredParty.len());
+
+		foreach (i, p in filteredParty)
 		{
 			local size = 0.0;
-			foreach (troop in party.Troops)
+			foreach (troop in p.Troops)
 			{
 				size += troop.Num;
 			}
 			sizes[i] = size;
-			foreach (troop in party.Troops)
+			foreach (troop in p.Troops)
 			{
 				local name = troopToNameMap[troop.Type];
 				if (!(name in troopInfo))
 				{
 					troopInfo[name] <- {
-						StartingResourceMin = party.Cost,
-						StartingResourceMax = party.Cost,
-						PartySizeMin = size,
 						NumMin = troop.Num,
 						NumMax = troop.Num,
 						RatioMin = troop.Num / size,
 						RatioMax = troop.Num / size,
-						PartyCount = 1,
-						FirstPartyIdx = i,
-						LastPartyIdx = i
+						PartyCount = 1
 					}
 				}
 				else
 				{
+
 					local info = troopInfo[name];
-					info.StartingResourceMax = party.Cost;
 					info.NumMin = ::Math.min(info.NumMin, troop.Num);
 					info.NumMax = ::Math.max(info.NumMax, troop.Num);
 					info.RatioMin = ::Math.minf(info.RatioMin, troop.Num / size);
 					info.RatioMax = ::Math.maxf(info.RatioMax, troop.Num / size);
 					info.PartyCount++;
-					info.LastPartyIdx = i;
 				}
 			}
 		}
@@ -557,18 +578,33 @@
 		local sizeMin = sizes.len() == 0 ? 0 : sizes[0];
 		local sizeMax = sizes.len() == 0 ? 0 : sizes.top();
 
-		::logInfo("Total variants: " + _party.len());
+		::logInfo("Total variants: " + filteredParty.len());
 		::logInfo("SizeMin: " + sizeMin);
 		::logInfo("SizeMax: " + sizeMax);
-		::logInfo("CostMin: " + _party[0].Cost);
-		::logInfo("CostMax: " + _party.top().Cost);
+		::logInfo("CostMin: " + filteredParty[0].Cost);
+		::logInfo("CostMax: " + filteredParty.top().Cost);
+
 		foreach (name, info in troopInfo)
 		{
-			local startingResourceMin = info.StartingResourceMin == _party[0].Cost ? "0" : info.StartingResourceMin + "";
-			local startingResourceMax = info.StartingResourceMax == _party.top().Cost ? "None" : info.StartingResourceMax + "";
-			local partySizeMin = info.PartySizeMin == sizeMin ? "None" : info.PartySizeMin + "";
-			local exclusionChance = (1.0 - info.PartyCount.tofloat() / (1 + info.LastPartyIdx - info.FirstPartyIdx)) * 100;
-			if (info.PartyCount < _party.len())
+			local validityInfo = troopValidityInfo[name];
+			local idx = 0;
+			while (filteredParty[idx].Cost < validityInfo.StartingResourceMin)
+			{
+				idx++;
+			}
+			local startingIdx = idx;
+			idx = filteredParty.len() - 1;
+			while (filteredParty[idx].Cost > validityInfo.StartingResourceMax)
+			{
+				idx--;
+			}
+			local endingIdx = idx;
+
+			local startingResourceMin = validityInfo.StartingResourceMin == _party[0].Cost ? "0" : validityInfo.StartingResourceMin + "";
+			local startingResourceMax = validityInfo.StartingResourceMax == _party.top().Cost ? "None" : validityInfo.StartingResourceMax + "";
+			local partySizeMin = validityInfo.PartySizeMin == sizeMin ? "None" : validityInfo.PartySizeMin + "";
+			local exclusionChance = (1.0 - info.PartyCount.tofloat() / (1 + endingIdx - startingIdx)) * 100;
+			if (info.PartyCount < filteredParty.len())
 			{
 				info.NumMin = 0;
 				info.RatioMin = 0;
