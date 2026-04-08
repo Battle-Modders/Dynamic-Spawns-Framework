@@ -685,7 +685,7 @@
 		local currMin = -100;
 		local currMax = 0;
 
-		_filterFunc = @(_party) _party.Cost > currMin && _party.Cost < currMax;
+		_filterFunc = @(_party) _party.Cost >= currMin && _party.Cost <= currMax;
 
 		local currBucket = 0;
 		local stop = false;
